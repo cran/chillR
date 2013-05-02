@@ -1,0 +1,96 @@
+\name{chilling_hourtable}
+
+\alias{chilling_hourtable}
+
+\title{Add chilling and heat accumulation to table of hourly temperatures}
+
+\description{This function calculates cumulative values for three chill metrics and one heat metric for every hour of an hourly temperature record.
+The count is restarted on a specified date each year.}
+
+\usage{
+chilling_hourtable(THourly, Start_JDay)
+}
+
+\arguments{
+  \item{THourly}{   a dataframe of stacked hourly temperatures (e.g. produced by stack_hourly_temps). This data frame must have a column
+for Year, a column for JDay (Julian date, or day of the year), a column for Hour and a column for Temp (hourly temperature).}
+  \item{Start_JDay}{   the start date (in Julian date, or day of the year) of the calculation for the four metrics. The count is restarted on this date every year.}
+}
+
+\details{Chill metrics are calculated as given in the references below. Chilling Hours are all hours with temperatures between 0 and 7.2 degrees C.
+Units of the Utah Model are calculated as suggested by Richardson et al. (1974) (different weights for different temperature ranges, and negation of
+chilling by warm temperatures). Chill Portions are calculated according to Fishman et al. (1987a,b). More honestly, they are calculated according to an
+Excel sheet produced by Amnon Erez and colleagues, which converts the complex equations in the Fishman papers into relatively simple Excel functions.
+These were translated into R. References to papers that include the full functions are given below.
+Growing Degree Hours are calculated according to Anderson et al. (1986), using the default values they suggest.}
+
+\value{   data frame consisting of all the columns of the THourly input data frame, plus the following additional columns: Chilling_Hours (cumulative
+number of Chilling Hours since the last Start_JDay), Chill_Portions (same for units of the Dynamic Models), Chill_Units (same for units of the Utah Model) and GDH
+(same for Growing Degree Hours).}
+
+\references{
+Model references:
+
+Chilling Hours:
+
+Weinberger JH (1950) Chilling requirements of peach varieties. Proc Am Soc Hortic Sci 56, 122-128
+
+Bennett JP (1949) Temperature and bud rest period. Calif Agric 3 (11), 9+12
+
+Utah Model: 
+
+Richardson EA, Seeley SD, Walker DR (1974) A model for estimating the completion of rest for Redhaven and Elberta peach trees. HortScience 9(4), 331-332
+
+Dynamic Model:
+
+Erez A, Fishman S, Linsley-Noakes GC, Allan P (1990) The dynamic model for rest completion in peach buds. Acta Hortic 276, 165-174
+
+Fishman S, Erez A, Couvillon GA (1987a) The temperature dependence of dormancy breaking in plants - computer simulation of processes studied under controlled temperatures. J Theor Biol 126(3), 309-321
+
+Fishman S, Erez A, Couvillon GA (1987b) The temperature dependence of dormancy breaking in plants - mathematical analysis of a two-step model involving a cooperative transition. J Theor Biol 124(4), 473-483
+
+Growing Degree Hours:
+
+Anderson JL, Richardson EA, Kesner CD (1986) Validation of chill unit and flower bud phenology models for 'Montmorency' sour cherry. Acta Hortic 184, 71-78
+
+Model comparisons and model equations:
+
+Luedeling E, Zhang M, Luedeling V and Girvetz EH, 2009. Sensitivity of winter chill models for fruit and nut trees to climatic changes expected in California's Central Valley. Agriculture, Ecosystems and Environment 133, 23-31
+
+Luedeling E, Zhang M, McGranahan G and Leslie C, 2009. Validation of winter chill models using historic records of walnut phenology. Agricultural and Forest Meteorology 149, 1854-1864
+
+Luedeling E and Brown PH, 2011. A global analysis of the comparability of winter chill models for fruit and nut trees. International Journal of Biometeorology 55, 411-421
+
+Luedeling E, Kunz A and Blanke M, 2011. Mehr Chilling fuer Obstbaeume in waermeren Wintern? (More winter chill for fruit trees in warmer winters?). Erwerbs-Obstbau 53, 145-155
+
+
+Review on chilling models in a climate change context:
+
+Luedeling E, 2012. Climate change impacts on winter chill for temperate fruit and nut production: a review. Scientia Horticulturae 144, 218-229
+
+The chillR package
+
+Luedeling E, Kunz A and Blanke M, in press. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology.
+}
+
+\author{Eike Luedeling}
+
+\note{After doing extensive model comparisons, and reviewing a lot of relevant literature, I do not recommend using the Chilling Hours or Utah Models,
+especially in warm climates! The Dynamic Model (Chill Portions), though far from perfect, seems much more reliable.}
+
+\examples{
+
+weather<-KA_weather[which(KA_weather$Year>2008),]
+weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
+weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
+
+THourly<-make_hourly_temps(50.4,weather)
+
+stack<-stack_hourly_temps(hour_file=THourly)
+
+cht<-chilling_hourtable(stack,20)
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{ chill and heat calculation }
+

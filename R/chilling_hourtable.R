@@ -1,0 +1,109 @@
+chilling_hourtable <-
+function (THourly,Start_JDay)             #THourly is a data frame with columns Year, JDay, Hour and Temp
+{
+  cols<-colnames(THourly)
+  
+  THourly<-THourly[which(!is.na(THourly[,"Temp"])),]
+  
+  #Chilling Hours
+  CH_range<-which(THourly$Temp<=7.2&THourly$Temp>=0)
+  THourly[,"CH_weights"]<-0
+  THourly[CH_range,"CH_weights"]<-1
+  THourly[,"CH"]<-0
+  #      for (nl in normal_lines) {THourly[nl,"CH"]<-THourly[nl-1,"CH"]+THourly[nl,"CH_weights"]}
+  
+  #Utah Model
+  Utah_range_0.5<-which(THourly$Temp<=2.4&THourly$Temp>1.4|
+    THourly$Temp<=12.4&THourly$Temp>9.1)
+  Utah_range_1.0<-which(THourly$Temp<=9.1&THourly$Temp>2.4)
+  Utah_range_min0.5<-which(THourly$Temp<=18.0&THourly$Temp>15.9)
+  Utah_range_min1.0<-which(THourly$Temp>18.0)
+  THourly[,"Utah_weights"]<-0
+  THourly[Utah_range_0.5,"Utah_weights"]<-0.5
+  THourly[Utah_range_1.0,"Utah_weights"]<-1
+  THourly[Utah_range_min0.5,"Utah_weights"]<-(-0.5)
+  THourly[Utah_range_min1.0,"Utah_weights"]<-(-1)
+  
+  
+  #Dynamic Model
+  e0<-4153.5
+  e1<-12888.8
+  a0<-139500
+  a1<-2567000000000000000
+  slp<-1.6
+  tetmlt<-277
+  aa<-a0/a1
+  ee<-e1-e0
+  
+  
+  THourly[,"TK"]<-THourly$Temp+273
+  THourly[,"ftmprt"]<-slp*tetmlt*(THourly[,"TK"]-tetmlt)/THourly[,"TK"]
+  THourly[,"sr"]<-exp(THourly[,"ftmprt"])
+  THourly[,"xi"]<-THourly[,"sr"]/(1+THourly[,"sr"])
+  THourly[,"xs"]<-aa*exp(ee/THourly[,"TK"])
+  THourly[,"ak1"]<-a1*exp(-e1/THourly[,"TK"])
+  THourly[1,"interE"]<-0
+  
+  memo<-new.env(hash=TRUE)
+  
+  
+  
+  posi<-1
+  assign(x=paste(1),value=0,envir=memo)
+  E=0
+  
+  xs<-THourly[,"xs"]
+  xi<-THourly[,"xi"]
+  ak1<-THourly[,"ak1"]
+  S<-ak1
+  S[1]<-0
+  E<-S
+  options(scipen=30)
+  
+  for (l in 2:nrow(THourly))  {if(E[l-1]<1)
+  {S[l]<-E[l-1]
+   E[l]<-xs[l]-(xs[l]-S[l])*exp(-ak1[l])} else
+   {S[l]<-E[l-1]-E[l-1]*xi[l-1]
+    E[l]<-xs[l]-(xs[l]-S[l])*exp(-ak1[l])}
+  }
+  THourly[,"interE"]<-E
+  
+  
+  
+  
+  THourly[which(THourly$interE<1),"delt"]<-0
+  THourly[which(THourly$interE>=1),"delt"]<-THourly[which(THourly$interE>=1),"interE"]*THourly[which(THourly$interE>=1),"xi"]
+  
+  Stress<-1
+  Tb<-4
+  Tu<-25
+  Tc<-36
+  
+  THourly[,"GDH_weight"]<-0
+  THourly[which(THourly$Temp>=Tb&THourly$Temp<=Tu),"GDH_weight"]<-Stress*(Tu-Tb)/2*
+    (1+cos(pi+pi*(THourly[which(THourly$Temp>=Tb&THourly$Temp<=Tu),"Temp"]-Tb)/(Tu-Tb)))
+  THourly[which(THourly$Temp>Tu&THourly$Temp<=Tc),"GDH_weight"]<-Stress*(Tu-Tb)*
+    (1+cos(pi/2+pi/2*(THourly[which(THourly$Temp>Tu&THourly$Temp<=Tc),"Temp"]-Tu)/(Tc-Tu)))
+  
+  
+  add_up_weights<-function(THourly,outcol,weightcol,SDay)
+  {weights<-THourly[,weightcol]
+   SD<-THourly$JDay==SDay
+   temp<-weights
+   temp[1]<-0
+   nn<-nrow(THourly)
+   for (l in 2:nn)
+     if (SD[l]) {temp[l]<-0} else
+     {temp[l]<-temp[l-1]+weights[l]}
+   THourly[,outcol]<-temp  
+   return(THourly)
+  }
+  
+  THourly<-add_up_weights(THourly,"Chilling_Hours","CH_weights",Start_JDay)
+  THourly<-add_up_weights(THourly,"Chill_Portions","delt",Start_JDay)
+  THourly<-add_up_weights(THourly,"Chill_Units","Utah_weights",Start_JDay)
+  THourly<-add_up_weights(THourly,"GDH","GDH_weight",Start_JDay)
+  
+  return(THourly[,c(cols,"Chilling_Hours","Chill_Portions","Chill_Units","GDH")])
+  
+}
