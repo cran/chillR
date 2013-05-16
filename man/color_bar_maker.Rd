@@ -1,0 +1,55 @@
+\name{color_bar_maker}
+
+\alias{color_bar_maker}
+
+\title{Make color scheme for bar plots in outputs of the chillR package}
+
+\description{Function to make color schemes for color bar plots in the chillR package. Colors are assigned based on values in two columns of
+a data frame. One column contains a threshold, below which col3 is assigned. If values are above the threshold, the value in the other
+column determines the color: col1 if  the value is negative, col2 if positive. This function is useful for making the PLS output figures in the chillR package.}
+
+\usage{
+color_bar_maker(column_yn, column_quant, threshold, col1, col2, col3)
+}
+
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{column_yn}{   numeric vector containing the data, on which the threshold is to be applied. In the case of the PLS output, this is the data from the VIP column.}
+  \item{column_quant}{   numeric vector containing the data that determines whether items from column_yn that are above the threshold get assigned col1 or col2.}
+  \item{threshold}{   threshold for values from column_yn to be used for deciding which bars should get col3 and which ones should move on to the next
+decision step (col1 or col2)}
+  \item{col1}{   a color (either a color name or a number) this is applied where column_yn is above the threshold, and column_quant is negative}
+  \item{col2}{   a color (either a color name or a number) this is applied where column_yn is above the threshold, and column_quant is positive}
+  \item{col3}{   a color (either a color name or a number) this is applied where column_yn is below the threshold}
+}
+
+\value{   a vector of colors, which can be used as col argument when making plots}
+
+\references{
+Luedeling E, Kunz A and Blanke M, in press. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology.
+}
+
+\author{Eike Luedeling}
+
+\examples{
+weather<-KA_weather[which(KA_weather$Year>2004&!(KA_weather$Year==2005&KA_weather$Month<6)),]
+weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
+weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
+
+THourly<-make_hourly_temps(50.4,weather)
+
+PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
+
+PLS_results<-PLS_pheno(
+  weather_data_frame=KA_weather,
+  split_month=6,   #last month in same year
+  bio_data_frame=KA_bloom,
+  PLS_results_path=PLS_results_path)
+
+colbar<-color_bar_maker(PLS_results$PLS_output$VIP,PLS_results$PLS_output$Coefficient,0.8,
+       "RED","DARK GREEN","GREY")
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{ utility }
+
