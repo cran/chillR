@@ -9,23 +9,21 @@ e.g. fruit tree flowering or leaf emergence, to mean daily rates of chill (with 
 It produces figures that illustrate statistical correlations between temperature variation during certain phases and the timing of phenological events.}
 
 \usage{
-PLS_chill_force(daily_chill, bio_data_frame, split_month, PLS_results_path,
-crossvalidate = TRUE, image_type = "png", colorscheme = "normal")
+PLS_chill_force(daily_chill_obj,bio_data_frame,split_month,
+       expl.var=30,ncomp.fix=NULL,return.all=FALSE,crossvalidate="none")
 }
 
 \arguments{
-  \item{daily_chill}{   a daily chill object. This should be generated with the daily_chill function.}
+  \item{daily_chill_obj}{   a daily chill object. This should be generated with the daily_chill function.}
   \item{bio_data_frame}{   a data frame that contains information on the timing of phenological events by year. It should consist of two columns called Year and pheno.
 Data in the pheno column should be in Julian date (day of the year).}
   \item{split_month}{   the procedure analyzes data by phenological year, which can start and end in any month during the calendar year (currently only at the beginning of a month).
 This variable indicates the last month (e.g. 5 for May) that should be included in the record for a given phenological year. All subsequent months are
 assigned to the following phenological year.}
-  \item{PLS_results_path}{   The path where analysis outputs should be saved. Should end with '/'}
-  \item{crossvalidate}{   boolean variable indicating whether or not to use cross validation in the PLS procedure. Defaults to TRUE, which should be acceptable in most cases.}
-  \item{image_type}{   the type of image to produce. This currently has only two options: "tiff" or anything else (the default). If this is not "tiff", a png image is produced. The "tiff" option was
-added to produce publishable figures that adhere to the requirements of most scientific journals.}
-  \item{colorscheme}{   the color scheme for the figure. This currently has only two options: "bw" or anythings else (the default). "bw" produces a grayscale
-image, otherwise the image is in color}
+  \item{expl.var}{   percentage of the variation in the dependent variable that the PLS model should explain. This is used as a threshold in finding the appropriate number of components in the PLS regression procedure.}
+  \item{ncomp.fix}{   fixed number of components for the PLS model. Defaults to NULL, so that the number is automatically determined, but it can also be set by the user.}  
+  \item{return.all}{   boolean variable indicating whether or not the full set of PLS results should be returned by the function. If this is set to TRUE, the function output is a list with two elements (besides the object_type string): PLS_summary and PLS_output; if it is set to FALSE, only the PLS_summary is returned.}
+  \item{crossvalidate}{   character variable indicating what kind of validation should be performed by the PLS procedure. This defaults to "none", but the plsr function (of the pls package) also takes "CV" and "LOO" as inputs. See the documentation for the plsr function for details.}
 }
 
 \details{PLS regression is useful for exploring the relationship between daily chill and heat accumulation rates and biological phenomena that only occur once per year.
@@ -55,9 +53,10 @@ Growing Degree Hours are calculated according to Anderson et al. (1986), using t
 }
 
 \value{
- \item{weather_file}{   the daily_chill object used for the PLS analysis. This is similar to the daily_chill input.}   
- \item{PLS_output}{   a data frame containing all important outputs of the PLS regression. Columns are Date (in MMDD format), JDay (Julian date, or day of the year),
-Coefficient (the PLS model coefficient for each daily temperature variable), and VIP (the Variable Importance in the Projection score).}
+ \item{object_type}{   the character string "PLS_chillforce_pheno". This is only needed for choosing the correct method for the plot_PLS function.}
+ \item{Chilling_Hours}{   a list with elements PLS_summary and (if(return.all=TRUE) PLS_output. These contain the results of the PLS analysis that used Chilling Hours and Growing Degree Hours as independent variables.}
+ \item{Utah_Chill_Units}{   a list with elements PLS_summary and (if(return.all=TRUE) PLS_output. These contain the results of the PLS analysis that used Chill Units of the Utah Model and Growing Degree Hours as independent variables.}
+  \item{Chill_Portions}{   a list with elements PLS_summary and (if(return.all=TRUE) PLS_output. These contain the results of the PLS analysis that used Chill Portions and Growing Degree Hours as independent variables.}
 }
 
 \references{
@@ -113,7 +112,7 @@ Mevik B-H, Wehrens R, Liland KH (2011) PLS: Partial Least Squares and Principal 
 
 Some applications of the PLS procedure:
 
-Luedeling E, Kunz A and Blanke M, in press. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology.
+Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology 57,679-689.
 
 Yu H, Luedeling E and Xu J, 2010. Stronger winter than spring warming delays spring phenology on the Tibetan Plateau. Proceedings of the National Academy of Sciences (PNAS) 107 (51), 22151-22156.
 
@@ -121,29 +120,29 @@ Yu H, Xu J, Okuto E and Luedeling E, 2012. Seasonal Response of Grasslands to Cl
 
 The exact procedure was used here:
 
-Luedeling E, Guo L, Dai J, Leslie C, Blanke M. Differential responses of trees to temperature variation during the chilling and forcing phases. under review.
+Luedeling E, Guo L, Dai J, Leslie C, Blanke M, 2013. Differential responses of trees to temperature variation during the chilling and forcing phases. Agricultural and Forest Meteorology 181, 33-42.
 
 The chillR package:
 
-Luedeling E, Kunz A and Blanke M, in press. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology.
+Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology 57,679-689.
 }
-\author{Eike Luedeling}
+\author{Eike Luedeling, with contributions from Sabine Guesewell}
 
 \note{After doing extensive model comparisons, and reviewing a lot of relevant literature, I do not recommend using the Chilling Hours or Utah Models,
 especially in warm climates! The Dynamic Model (Chill Portions), though far from perfect, seems much more reliable.}
 
 \examples{
 
-weather<-KA_weather[which(KA_weather$Year>2004&!(KA_weather$Year==2005&KA_weather$Month<6)),]
+weather<-make_all_day_table(KA_weather) 
 weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
 weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
 
 dc<-daily_chill(stack_hourly_temps(hour_file=make_hourly_temps(50.4,weather)), 11)
 
-plscf<-PLS_chill_force(daily_chill=dc, bio_data_frame=KA_bloom, split_month=6,
-     PLS_results_path=paste(getwd(),"/PLS_output",sep=""),
-     crossvalidate = TRUE, image_type = "png",
-     colorscheme = "normal")
+plscf<-PLS_chill_force(daily_chill=dc, bio_data_frame=KA_bloom, split_month=6)
+
+PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
+plot_PLS(plscf,PLS_results_path)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

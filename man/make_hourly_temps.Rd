@@ -12,14 +12,14 @@
   \item{latitude}{the geographic latitude (in decimal degrees) of the location of interest}
   \item{year_file}{a data frame containing data on daily minimum temperature (called Tmin), daily maximum temperature (called Tmax), and date information.
 Dates can either be specified by two columns called Year and JDay, which contain the Year and Julian date (day of the year), or as three columns called Year, Month and Day.
-year_file cannot have any missing values, so it may be a good idea to process the relevant columns with interpolate_gaps before.}
+year_file cannot have any missing values, so it may be a good idea to process the relevant columns with make_all_day_table and interpolate_gaps before.}
 }
 \details{Temperature estimates are based on an idealized daily temperature curve that uses a sine curve for daytime warming and a logarithmic decay function
 for nighttime cooling. The input data frame can have more columns, which are preserved, but ignored in the processing. References to papers outlining the
 procedures are given below.}
 
 \value{data frame containing all the columns of year_file, plus 24 columns for hourly temperatures (called Hour_1 ... Hour_24).}
-\references{Luedeling E, Kunz A and Blanke M, in press. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology.
+\references{Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology 57,679-689.
 
 Luedeling E, Girvetz EH, Semenov MA and Brown PH, 2011. Climate change affects winter chill for temperate fruit and nut trees. PLoS ONE 6(5), e20155.
 
@@ -36,7 +36,7 @@ Almorox J, Hontoria C and Benito M, 2005. Statistical validation of daylength de
 \author{Eike Luedeling}
 
 \examples{
-weather<-KA_weather
+weather<-make_all_day_table(KA_weather)
 Tmin_int<-interpolate_gaps(KA_weather[,"Tmin"])
 weather[,"Tmin"]<-Tmin_int$interp
 weather[,"Tmin_interpolated"]<-Tmin_int$missing

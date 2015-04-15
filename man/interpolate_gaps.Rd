@@ -20,13 +20,12 @@ a second vector, which contains information on which values were filled in by in
  \item{missing}{   boolean vector of the same length as interp and x, which marks all gaps in x as TRUE}
 }
 
-\references{Luedeling E, Kunz A and Blanke M, in press. Identification of chilling and heat requirements of cherry trees - a statistical approach.
-International Journal of Biometeorology.}
+\references{Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology 57,679-689.}
 
 \author{Eike Luedeling}
 
 \examples{
-weather<-KA_weather
+weather<-make_all_day_table(KA_weather)
 Tmin_int<-interpolate_gaps(KA_weather[,"Tmin"])
 weather[,"Tmin"]<-Tmin_int$interp
 weather[,"Tmin_interpolated"]<-Tmin_int$missing

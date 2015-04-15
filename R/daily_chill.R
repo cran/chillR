@@ -20,9 +20,6 @@ THourly[Utah_range_1.0,"Utah_weights"]<-1
 THourly[Utah_range_min0.5,"Utah_weights"]<-(-0.5)
 THourly[Utah_range_min1.0,"Utah_weights"]<-(-1)
 THourly[,"Utah_Model"]<-0
-#      for (nl in normal_lines) {THourly[nl,"Utah_Model"]<-THourly[nl-1,"Utah_Model"]+THourly[nl,"Utah_weights"]}
-seasons<-unique(THourly$Season)
-seasons<-seasons[!is.na(seasons)]
 
 
 #Dynamic Model
@@ -46,8 +43,6 @@ THourly[1,"interE"]<-0
 
 memo<-new.env(hash=TRUE)
 
-
-
 posi<-1
 assign(x=paste(1),value=0,envir=memo)
 E=0
@@ -68,21 +63,6 @@ for (l in 2:nrow(THourly))  {if(E[l-1]<1)
 }
 THourly[,"interE"]<-E
 
-
-
-
-#for (l in 2:nrow(THourly))  {if(E<1)
-#                              {S[l]<-E
-#                              a<-xs[l]-(xs[l]-get(paste(l-1),memo))*exp(-ak1[l])
-#                              assign(x=paste(l),value=a,pos=1,envir=memo)} else
-#                              {S<-E-E*xi[l-1]
-#                              a<-xs[l]-(xs[l]-(get(paste(l-1),memo)*(1-xi[l-1]))*exp(-ak1[l]))
-#                              assign(x=paste(l),value=a,pos=1,envir=memo)}
-#                             }
-#THourly[,"row"]<-row(THourly)[,1]
-#getstuff<-function(r) {return(get(as.character(r),memo))}
-#THourly[,"interE"]<-unlist(lapply(THourly$row,getstuff))
-#options(scipen=0)
 THourly[which(THourly$interE<1),"delt"]<-0
 THourly[which(THourly$interE>=1),"delt"]<-THourly[which(THourly$interE>=1),"interE"]*THourly[which(THourly$interE>=1),"xi"]
 

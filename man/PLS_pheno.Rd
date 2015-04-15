@@ -9,26 +9,28 @@ e.g. fruit tree flowering or leaf emergence, to mean daily temperatures of the p
 statistical correlations between temperature variation during certain phases and the timing of phenological event.}
 
 \usage{
-PLS_pheno(weather_data_frame, bio_data_frame, split_month, PLS_results_path, runn_mean,
-crossvalidate = TRUE, use_Tmean = FALSE)
+PLS_pheno(weather_data, bio_data, split_month=7, runn_mean=11, expl.var=30,
+    ncomp.fix=NULL, use_Tmean=FALSE, return.all=FALSE, crossvalidate="none")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{weather_data_frame}{   a dataframe containing daily minimum and maximum temperature data (in columns called Tmin and Tmax, respectively),
+  \item{weather_data}{   a dataframe containing daily minimum and maximum temperature data (in columns called Tmin and Tmax, respectively),
 and/or mean daily temperature (in a column called Tmean). There also has to be a column for Year and one for JDay (the Julian date, or day of the year).
 Alternatively, the date can also be given in three columns (Years, Month and Day).}
-  \item{bio_data_frame}{   a data frame that contains information on the timing of phenological events by year. It should consist of two columns called Year and pheno.
+  \item{bio_data}{   a data frame that contains information on the timing of phenological events by year. It should consist of two columns called Year and pheno.
 Data in the pheno column should be in Julian date (day of the year).}
   \item{split_month}{   the procedure analyzes data by phenological year, which can start and end in any month during the calendar year (currently only at the beginning of a month).
 This variable indicates the last month (e.g. 5 for May) that should be included in the record for a given phenological year. All subsequent months are
 assigned to the following phenological year.}
-  \item{PLS_results_path}{   The path where analysis outputs should be saved. Should end with '/'}
   \item{runn_mean}{   application of a running mean function to daily mean temperatures before running the PLS procedure substantially enhances the clarity
 of outputs. runn_mean requires an odd integer value specifying how many days should be included in this running mean. runn_mean=11 has usually produced
 good results.}
-  \item{crossvalidate}{   boolean variable indicating whether or not to use cross validation in the PLS procedure. Defaults to TRUE, which should be acceptable in most cases.}
+  \item{expl.var}{   percentage of the variation in the dependent variable that the PLS model should explain. This is used as a threshold in finding the appropriate number of components in the PLS regression procedure.}
+  \item{ncomp.fix}{   fixed number of components for the PLS model. Defaults to NULL, so that the number is automatically determined, but is can also be set by the user.}  
   \item{use_Tmean}{   boolean variable indicating whether or not the column Tmean from the weather_data_frame should be used as input for the PLS
 analysis. If this is set to FALSE, Tmean is calculated as the arithmetic mean of Tmin and Tmax.}
+  \item{return.all}{   boolean variable indicating whether or not the full set of PLS results should be output from the function. If this is set to TRUE, the function output is a list with two elements: PLS_summary and PLS_output; if it is set to FALSE, only the PLS_summary is returned.}
+  \item{crossvalidate}{   character variable indicating what kind of validation should be performed by the PLS procedure. This defaults to "none", but the plsr function (of the pls package) also takes "CV" and "LOO" as inputs. See the documentation for the plsr function for details.}
 }
 \details{PLS regression is useful for exploring the relationship between daily temperature data and biological phenomena that only occur once per year.
 The statistical challenge is that a normally quite small number of observations must be related to variation in a much larger number (365) of daily temperatures,
@@ -45,13 +47,15 @@ phase, trees need heat. There is no easily visible change in tree buds that woul
 of these processes. Where long-term phenology data are available and can be couple with daily temperature records, PLS regression allows detection of the chilling/forcing transition.
 This procedure has not often been applied to biological phenomena at the time of writing this, and there may be constraints to how generally applicable it is.
 Yet is has passed the test of scientific peer review a few times, and it has produced plausible results in a number of settings.
-This package draws heavily from the pls package.}
+This package draws heavily from the pls package.
+It also incorporates very helpful comments from Sabine Guesewell of ETH Zurich (Switzerland), who pointed out some errors in the PLS procedure and made suggestions for improvement.
+}
 
 \value{
- \item{weather_file}{   the weather dataset used for the PLS analysis. This is similar to the weather_data_frame input, except that possible gaps have been
-interpolated. There are also columns that show whether or not this happened for each daily temperature value.}   
- \item{PLS_output}{   a data frame containing all important outputs of the PLS regression. Columns are Date (in MMDD format), JDay (Julian date, or day of the year),
-Coefficient (the PLS model coefficient for each daily temperature variable), and VIP (the Variable Importance in the Projection score).}
+ \item{object_type}{   the character string "PLS_Temp_pheno". This is only needed for choosing the correct method for the plot_PLS function.}
+ \item{PLS_summary}{   a data frame containing all important outputs of the PLS regression. Columns are Date (in MMDD format), JDay (Julian date, or day of the year),
+Coefficient (the PLS model coefficient for each daily temperature variable), and VIP (the Variable Importance in the Projection score). The columns Tmean and Tstdev contain the means and standard deviations of temperature for each day of the year.}   
+ \item{PLS_output}{   this is the complete output of the plsr function of the pls package. See the documentation for that package for further details.}
 }
 
 \references{
@@ -67,26 +71,24 @@ Mevik B-H, Wehrens R, Liland KH (2011) PLS: Partial Least Squares and Principal 
 
 Some applications:
 
-Luedeling E, Kunz A and Blanke M, in press. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology.
+Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology 57,679-689.
 
 Yu H, Luedeling E and Xu J, 2010. Stronger winter than spring warming delays spring phenology on the Tibetan Plateau. Proceedings of the National Academy of Sciences (PNAS) 107 (51), 22151-22156.
 
 Yu H, Xu J, Okuto E and Luedeling E, 2012. Seasonal Response of Grasslands to Climate Change on the Tibetan Plateau. PLoS ONE 7(11), e49230.
 }
-\author{Eike Luedeling}
+\author{Eike Luedeling, with contributions from Sabine Guesewell}
 
 \examples{
-weather<-KA_weather
-weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
-weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
-
-PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
 
 PLS_results<-PLS_pheno(
-  weather_data_frame=KA_weather,
+  weather_data=KA_weather,
   split_month=6,   #last month in same year
-  bio_data_frame=KA_bloom,
-  PLS_results_path=PLS_results_path)
+  bio_data=KA_bloom)
+  
+PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
+  
+plot_PLS(PLS_results,PLS_results_path)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

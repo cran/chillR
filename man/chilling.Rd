@@ -68,17 +68,41 @@ Review on chilling models in a climate change context:
 
 Luedeling E, 2012. Climate change impacts on winter chill for temperate fruit and nut production: a review. Scientia Horticulturae 144, 218-229
 
-The chillR package
 
-Luedeling E, Kunz A and Blanke M, in press. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology.
+The PLS method is described here:
+
+Luedeling E and Gassner A, 2012. Partial Least Squares Regression for analyzing walnut phenology in California. Agricultural and Forest Meteorology 158, 43-52.
+
+Wold S (1995) PLS for multivariate linear modeling. In: van der Waterbeemd H (ed) Chemometric methods in molecular design: methods and principles in medicinal chemistry, vol 2. Chemie, Weinheim, pp 195-218.
+
+Wold S, Sjostrom M, Eriksson L (2001) PLS-regression: a basic tool of chemometrics. Chemometr Intell Lab 58(2), 109-130.
+
+Mevik B-H, Wehrens R, Liland KH (2011) PLS: Partial Least Squares and Principal Component Regression. R package version 2.3-0. http://CRAN.R-project.org/package0pls.
+
+Some applications of the PLS procedure:
+
+Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology 57,679-689.
+
+Yu H, Luedeling E and Xu J, 2010. Stronger winter than spring warming delays spring phenology on the Tibetan Plateau. Proceedings of the National Academy of Sciences (PNAS) 107 (51), 22151-22156.
+
+Yu H, Xu J, Okuto E and Luedeling E, 2012. Seasonal Response of Grasslands to Climate Change on the Tibetan Plateau. PLoS ONE 7(11), e49230.
+
+The exact procedure was used here:
+
+Luedeling E, Guo L, Dai J, Leslie C, Blanke M, 2013. Differential responses of trees to temperature variation during the chilling and forcing phases. Agricultural and Forest Meteorology 181, 33-42.
+
+The chillR package:
+
+Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology 57,679-689.
 }
+
 \author{Eike Luedeling}
 
 \note{After doing extensive model comparisons, and reviewing a lot of relevant literature, I do not recommend using the Chilling Hours or Utah Models,
 especially in warm climates! The Dynamic Model (Chill Portions), though far from perfect, seems much more reliable.}
 
 \examples{
-weather<-KA_weather[which(KA_weather$Year>2006),]
+weather<-make_all_day_table(KA_weather[which(KA_weather$Year>2006),])
 weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
 weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
 

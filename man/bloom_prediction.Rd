@@ -7,14 +7,14 @@
 \description{This is a pretty rudimentary function to predict phenological dates from chilling and forcing requirements and hourly chilling and forcing data.
 Note that there are enormous uncertainties in these predictions, which are hardly ever acknowledged. So please use this function with caution.}
 
-\usage{bloom_prediction(HourChillTable, Chill_model, Chill_req, Heat_req)}
+\usage{bloom_prediction(HourChillTable, Chill_model, Chill_req, Heat_req,Start_JDay)}
 
 \arguments{
-  \item{HourChillTable}{   a fairly particular data frame resulting from the chilling_hourtable function. However, the table should be processed in the way outlined
-in the example. It is also important that the weather data frame was processed by the pheno_PLS function before. This will hopefully get simplified soon.}
+  \item{HourChillTable}{   a data frame resulting from the chilling_hourtable function.}
   \item{Chill_model}{character string describing the chill model to use. Options are "Chilling_Hours", "Chill_Portions" and "Chill_Units".}
-  \item{Chill_req}{Numeric parameter indicating the chilling requirement of the particular growth stage}
-  \item{Heat_req}{Numeric parameter indicating the heat requirement of the particular growth stage}
+  \item{Chill_req}{numeric parameter indicating the chilling requirement of the particular growth stage (in the unit specified by "Chill_model")}
+  \item{Heat_req}{numeric parameter indicating the heat requirement of the particular growth stage (in Growing Degree Hours)}
+  \item{Start_JDay}{numeric parameter indicating the day when chill accumulation is supposed to start}
 }
 \details{This function is a bit preliminary at the moment. It will hopefully be refined later.
 
@@ -69,9 +69,32 @@ Review on chilling models in a climate change context:
 
 Luedeling E, 2012. Climate change impacts on winter chill for temperate fruit and nut production: a review. Scientia Horticulturae 144, 218-229
 
-The chillR package
 
-Luedeling E, Kunz A and Blanke M, in press. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology.
+The PLS method is described here:
+
+Luedeling E and Gassner A, 2012. Partial Least Squares Regression for analyzing walnut phenology in California. Agricultural and Forest Meteorology 158, 43-52.
+
+Wold S (1995) PLS for multivariate linear modeling. In: van der Waterbeemd H (ed) Chemometric methods in molecular design: methods and principles in medicinal chemistry, vol 2. Chemie, Weinheim, pp 195-218.
+
+Wold S, Sjostrom M, Eriksson L (2001) PLS-regression: a basic tool of chemometrics. Chemometr Intell Lab 58(2), 109-130.
+
+Mevik B-H, Wehrens R, Liland KH (2011) PLS: Partial Least Squares and Principal Component Regression. R package version 2.3-0. http://CRAN.R-project.org/package0pls.
+
+Some applications of the PLS procedure:
+
+Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology 57,679-689.
+
+Yu H, Luedeling E and Xu J, 2010. Stronger winter than spring warming delays spring phenology on the Tibetan Plateau. Proceedings of the National Academy of Sciences (PNAS) 107 (51), 22151-22156.
+
+Yu H, Xu J, Okuto E and Luedeling E, 2012. Seasonal Response of Grasslands to Climate Change on the Tibetan Plateau. PLoS ONE 7(11), e49230.
+
+The exact procedure was used here:
+
+Luedeling E, Guo L, Dai J, Leslie C, Blanke M, 2013. Differential responses of trees to temperature variation during the chilling and forcing phases. Agricultural and Forest Meteorology 181, 33-42.
+
+The chillR package:
+
+Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology 57,679-689.
 }
 
 \author{Eike Luedeling}
@@ -81,49 +104,12 @@ especially in warm climates! The Dynamic Model (Chill Portions), though far from
 
 \examples{
 
-require(chillR)
-weather<-KA_weather[which(KA_weather$Year>2004),]
-Tmin_int<-interpolate_gaps(weather[,"Tmin"])
-weather[,"Tmin"]<-Tmin_int$interp
-weather[,"Tmin_interpolated"]<-Tmin_int$missing
-
-Tmax_int<-interpolate_gaps(weather[,"Tmax"])
-weather[,"Tmax"]<-Tmax_int$interp
-weather[,"Tmax_interpolated"]<-Tmax_int$missing
-
-PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
-
-PLS_results<-PLS_pheno(
-  weather_data_frame=weather,
-  split_month=6,   #last month in same year
-  bio_data_frame=KA_bloom,
-  PLS_results_path=PLS_results_path)
-
-weather<-PLS_results$weather_file[which(PLS_results$weather_file$Year>2007),]
-
-THourly<-make_hourly_temps(50.4,weather)
-
+THourly<-make_hourly_temps(50.4,make_all_day_table(KA_weather[which(KA_weather$Year>2008),]))
 stack<-stack_hourly_temps(hour_file=THourly)
 
-Start_JDay=305
-CT<-chilling_hourtable(stack,Start_JDay)
+CT<-chilling_hourtable(stack,Start_JDay=305)
 
-cchh<-CT$Chilling_Hours
-ccpp<-CT$Chill_Portions
-ccuu<-CT$Chill_Units
-sea<-CT$Season
-stdd<-CT$JDay
-for (s in unique(CT$Season))
-{cchh[which(sea==s)]<-cchh[which(sea==s)]-cchh[which(sea==s&stdd==round(Start_JDay))][1]
- ccpp[which(sea==s)]<-ccpp[which(sea==s)]-ccpp[which(sea==s&stdd==round(Start_JDay))][1]
- ccuu[which(sea==s)]<-ccuu[which(sea==s)]-ccuu[which(sea==s&stdd==round(Start_JDay))][1]
- 
-}
-CT$Chilling_Hours<-cchh
-CT$Chill_Portions<-ccpp
-CT$Chill_Units<-ccuu
-
-bloom_prediction(CT,Chill_model="Chill_Portions",Chill_req=60,Heat_req=5000)
+bloom_prediction(CT,Chill_model="Chill_Portions",Chill_req=60,Heat_req=5000,Start_JDay=305)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

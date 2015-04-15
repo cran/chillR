@@ -1,7 +1,6 @@
 make_daily_chill_figures <-
 function(daily_chill,file_path)
 {
-  require(Kendall)
   if(daily_chill[1]=="daily_chill")
     {dc<-daily_chill$daily_chill
       

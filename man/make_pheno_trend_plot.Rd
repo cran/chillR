@@ -9,9 +9,9 @@ illustrate this dependency by plotting phenological dates as colored surface, as
 x and y axes.}
 
 \usage{
-make_pheno_trend_plot(weather_data_frame=KA_weather,
+make_pheno_trend_plot(weather_data_frame,
    split_month=6,   #last month in same year
-   pheno=KA_bloom,use_Tmean=FALSE,Start_JDay_chill,End_JDay_chill,Start_JDay_heat,
+   pheno,use_Tmean=FALSE,Start_JDay_chill,End_JDay_chill,Start_JDay_heat,
    End_JDay_heat,outpath,file_name,plot_title,ylabel=NA,xlabel=NA,legend_label=NA,
    image_type="png",colorscheme="normal")
 }
@@ -44,7 +44,7 @@ image, otherwise the figure will be in color}
 }
 
 \details{The generation of the color surface is based on the Kriging technique, which is typically used for interpolation of spatial data. The use for this particular
-purpose is a bit experimental. The function uses the Krig function from the fields package. It also requires the spam package.}
+purpose is a bit experimental. The function uses the Krig function from the fields package.}
 
 \value{
  \item{pheno}{data frame containing all data needed for reproducing the plot: Year (during which the phenological event occurred - the year in which the
@@ -55,9 +55,11 @@ used in the plot)}
  \item{xlabel}{character string used for labeling the x axis}
 }
 \references{
-Guo L, Dai J, Ranjitkar S, Xu J, Luedeling E. Response of chestnut phenology in China to climate variation and change. under review
+Guo L, Dai J, Wang M, Xu J, Luedeling E, 2015. Responses of spring phenology in temperate zone trees to climate warming: a case study of apricot flowering in China. Agricultural and Forest Meteorology 201, 1-7.
 
-Luedeling E, Guo L, Dai J, Leslie C, Blanke M. Differential responses of trees to temperature variation during the chilling and forcing phases. under review
+Guo L, Dai J, Ranjitkar S, Xu J, Luedeling E, 2013. Response of chestnut phenology in China to climate variation and change. Agricultural and Forest Meteorology 180, 164-172.
+
+Luedeling E, Guo L, Dai J, Leslie C, Blanke M, 2013. Differential responses of trees to temperature variation during the chilling and forcing phases. Agricultural and Forest Meteorology 181, 33-42.
 
 the interpolation was done according to:
 
@@ -65,26 +67,20 @@ Furrer, R., Nychka, D. and Sain, S., 2012. Fields: Tools for spatial data. R pac
 
 Reference to the chillR package:
 
-Luedeling E, Kunz A and Blanke M, in press. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology.
+Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology 57,679-689.
 }
 
 \author{Eike Luedeling}
 
 \examples{
-
-weather<-KA_weather
+weather<-make_all_day_table(KA_weather)
 weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
 weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
-PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
 
-#the PLS function is also included in this example, because it is useful for identifying which
-#phases are likely relevant for plant phase timing.
+#the output of the PLS function (PLS_pheno, plotted with plot_PLS) can be used to select
+#phases that are likely relevant for plant phase timing. See respective examples for running
+#these functions.
 
-PLS_results<-PLS_pheno(
-  weather_data_frame=KA_weather,
-  split_month=6,   #last month in same year
-  bio_data_frame=KA_bloom,
-  PLS_results_path=PLS_results_path)
 
 file_path<-paste(getwd(),"/",sep="")
 

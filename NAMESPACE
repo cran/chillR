@@ -1,1 +1,4 @@
 exportPattern("^[[:alpha:]]+")
+importFrom(pls, plsr,explvar,crossval)
+importFrom(Kendall,Kendall)
+importFrom(fields,Krig,surface,tim.colors)

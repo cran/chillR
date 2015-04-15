@@ -1,7 +1,7 @@
 make_pheno_trend_plot <-
-function(weather_data_frame=KA_weather,
+function(weather_data_frame,
                                 split_month=6,   #last month in same year
-                                pheno=KA_bloom,
+                                pheno,
                                 use_Tmean=FALSE,
                                 Start_JDay_chill,
                                 End_JDay_chill,
@@ -17,8 +17,7 @@ function(weather_data_frame=KA_weather,
                                 colorscheme="normal")
 
 {
-  
-require(fields)
+
   
 weather_file<-weather_data_frame
 weather_file$Tmax<-suppressWarnings(as.numeric(as.character(weather_file$Tmax)))

@@ -26,27 +26,18 @@ decision step (col1 or col2)}
 \value{   a vector of colors, which can be used as col argument when making plots}
 
 \references{
-Luedeling E, Kunz A and Blanke M, in press. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology.
-}
+Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology 57,679-689.}
 
 \author{Eike Luedeling}
 
 \examples{
-weather<-KA_weather[which(KA_weather$Year>2004&!(KA_weather$Year==2005&KA_weather$Month<6)),]
-weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
-weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
-
-THourly<-make_hourly_temps(50.4,weather)
-
-PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
 
 PLS_results<-PLS_pheno(
-  weather_data_frame=KA_weather,
+  weather_data=make_all_day_table(KA_weather),
   split_month=6,   #last month in same year
-  bio_data_frame=KA_bloom,
-  PLS_results_path=PLS_results_path)
+  bio_data=KA_bloom)
 
-colbar<-color_bar_maker(PLS_results$PLS_output$VIP,PLS_results$PLS_output$Coefficient,0.8,
+colbar<-color_bar_maker(PLS_results$PLS_summary$VIP,PLS_results$PLS_summary$Coef,0.8,
        "RED","DARK GREEN","GREY")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

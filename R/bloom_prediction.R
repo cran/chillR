@@ -1,6 +1,21 @@
 bloom_prediction <-
-function (HourChillTable, Chill_model, Chill_req, Heat_req) 
+function (HourChillTable, Chill_model, Chill_req, Heat_req,Start_JDay=305) 
 {
+  
+  cchh<-HourChillTable$Chilling_Hours
+  ccpp<-HourChillTable$Chill_Portions
+  ccuu<-HourChillTable$Chill_Units
+  sea<-HourChillTable$Season
+  stdd<-HourChillTable$JDay
+  for (s in unique(HourChillTable$Season))
+      {cchh[which(sea==s)]<-cchh[which(sea==s)]-cchh[which(sea==s&stdd==round(Start_JDay))][1]
+       ccpp[which(sea==s)]<-ccpp[which(sea==s)]-ccpp[which(sea==s&stdd==round(Start_JDay))][1]
+       ccuu[which(sea==s)]<-ccuu[which(sea==s)]-ccuu[which(sea==s&stdd==round(Start_JDay))][1]
+       }
+  HourChillTable$Chilling_Hours<-cchh
+  HourChillTable$Chill_Portions<-ccpp
+  HourChillTable$Chill_Units<-ccuu
+  
   results <- data.frame()
   HCT <- HourChillTable
   chill <- HCT[, Chill_model]

@@ -1,20 +1,16 @@
 Package: chillR
 Type: Package
-Title: Statistical methods for phenology analysis in temperate fruit
-        trees
-Version: 0.54
-Date: 2013-05-02
+Title: Statistical Methods for Phenology Analysis in Temperate Fruit
+        Trees
+Version: 0.55
+Date: 2015-04-14
 Author: Eike Luedeling
 Maintainer: Eike Luedeling <eike@eikeluedeling.com>
-Description: This package can be used to do a range of analyses on
-        long-term weather records and - more importantly - on long-term
-        observational records of the phenology of temperate vegetation,
-        i.e. vegetation with a chilling and a heat requirement that
-        must be fulfilled in order to initiate spring phenology.
-Depends: pls, Kendall, spam, fields
+Description: The phenology of plants (i.e. the timing of their annual life phases) depends on climatic cues. For temperate trees and many other plants, spring phases, such as leaf emergence and flowering, have been found to result from the effects of both cool (chilling) conditions and heat. Fruit tree scientists (pomologists) have developed some metrics to quantify chilling and heat. 'chillR' contains functions for processing temperature records into chilling (Chilling Hours, Utah Chill Units and Chill Portions) and heat units (Growing Degree Hours). Regarding chilling metrics, Chill Portions are often considered the most promising, but they are difficult to calculate. This package makes it easy. 'chillR' also contains procedures for conducting a PLS analysis relating phenological dates (e.g. bloom dates) to either mean temperatures or mean chill and heat accumulation rates, based on long-term weather and phenology records.
+Depends: pls, Kendall, fields
 License: GPL-3
 LazyData: TRUE
-Packaged: 2013-05-16 18:41:25 UTC; ELuedeling
+Packaged: 2015-04-15 04:39:59 UTC; USER
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2013-05-16 21:50:29
+Date/Publication: 2015-04-15 12:38:26
