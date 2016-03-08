@@ -9,7 +9,8 @@ variation during certain phases and the timing of phenological event, based on a
 PLS_pheno or the PLS_chill_force function.}
 
 \usage{
-plot_PLS(PLS_output, PLS_results_path, VIP_threshold=0.8,colorscheme="color")
+plot_PLS(PLS_output, PLS_results_path, VIP_threshold=0.8,colorscheme="color",
+plot_bloom=TRUE,fonttype="serif",add_chill=c(NA,NA),add_heat=c(NA,NA))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,6 +19,10 @@ plot_PLS(PLS_output, PLS_results_path, VIP_threshold=0.8,colorscheme="color")
   \item{PLS_results_path}{   the path where analysis outputs should be saved. Should include the file name, but without suffix.}
   \item{VIP_threshold}{   the VIP threshold, above which a variable is considered important. Defaults to 0.8.}
   \item{colorscheme}{   color scheme used for plotting. For grayscale image, this should be set to "bw". Otherwise a color plot is produced.}
+  \item{plot_bloom}{   boolean variable specifying whether the range of bloom dates should be shown in the plots. If set to TRUE, this range is shown by a semi-transparent gray rectangle. The median bloom date is shown as a dashed line. This only works if the full range of bloom dates is visible in the plot, and it should be set to FALSE if anything other than Julian dates are used as dependent variables.}
+    \item{fonttype}{   font style to be used for the figure. Can be 'serif' (default) or 'sans'.}
+    \item{add_chill}{   option for indicating the chilling period in the plot. This should be a numeric vector: c(start_chill,end_chill).}
+    \item{add_heat}{   option for indicating the forcing period in the plot. This should be a numeric vector: c(start_heat,end_heat).}
 }
 \details{Ths figure illustrates results from the PLS_pheno function, which uses Partial Least Squares (or Projection to Latent Structures) regression to examine the relationship between mean daily temperatures and the timing of an annual biological event. It produces a plot (as a bmp image) with three panels: the top panel shows the value of the VIP score for each day of the year; the middle panel shows the model coefficients and the bottom panel shows the mean temperature and its standard deviation. In the top plot, all days with VIP scores above VIP_threshold are shown in blue. In the other two panels, values for the same days are shown in red, which high VIP scores coincide with negative model coefficients, and in green for positive coefficients.
 This function does not produce an output, but as side effects it produces a bmp image and a table that summarizes all data used for making the figure in the specified folder.}
@@ -46,18 +51,27 @@ Yu H, Xu J, Okuto E and Luedeling E, 2012. Seasonal Response of Grasslands to Cl
 \author{Eike Luedeling}
 
 \examples{
-weather<-KA_weather
-weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
-weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
+weather<-fix_weather(KA_weather[which(KA_weather$Year>2004),])
+#Plots look much better with weather<-fix_weather(KA_weather)
+#but that takes to long to run for passing CRAN checks
 
 PLS_results<-PLS_pheno(
-  weather_data=KA_weather,
+  weather_data=weather$weather,
   split_month=6,   #last month in same year
   bio_data=KA_bloom)
   
 PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
   
 plot_PLS(PLS_results,PLS_results_path)
+#plot_PLS(PLS_results,PLS_results_path,add_chill=c(307,19),add_heat=c(54,109))
+
+dc<-daily_chill(stack_hourly_temps(weather,50.4), 11)
+plscf<-PLS_chill_force(daily_chill_obj=dc, bio_data_frame=KA_bloom, split_month=6)
+
+plot_PLS(plscf,PLS_results_path)
+#plot_PLS(plscf,PLS_results_path,add_chill=c(307,19),add_heat=c(54,109))
+
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

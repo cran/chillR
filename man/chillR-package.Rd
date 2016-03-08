@@ -10,8 +10,8 @@ The phenology of plants (i.e. the timing of their annual life phases) depends on
 \tabular{ll}{
 Package: \tab chillR\cr
 Type: \tab Package\cr
-Version: \tab 0.55\cr
-Date: \tab 2015-04-14\cr
+Version: \tab 0.60\cr
+Date: \tab 2016-03-08\cr
 License: \tab The "GNU General Public License" version 3\cr
 }
 
@@ -43,11 +43,8 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requ
 \keyword{ package }
 
 \examples{
-
-weather<-KA_weather[which(KA_weather$Year>2004&!(KA_weather$Year==2005&KA_weather$Month<6)),]
-weather<-make_all_day_table(weather)
-weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
-weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
+weather<-fix_weather(KA_weather[which(KA_weather$Year>2004&!(
+   KA_weather$Year==2005&KA_weather$Month<6)),])
 
 PLS_results<-PLS_pheno(
   weather_data=KA_weather,
@@ -58,8 +55,6 @@ PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
   
 plot_PLS(PLS_results,PLS_results_path)
 
-THourly<-make_hourly_temps(50.4,weather)
-
-stack<-stack_hourly_temps(hour_file=THourly)
+stack<-stack_hourly_temps(weather,latitude=50.4)
 cc<-chilling(stack,305,60)
 }

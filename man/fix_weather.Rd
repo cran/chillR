@@ -1,0 +1,45 @@
+\name{fix_weather}
+
+\alias{fix_weather}
+
+\title{Weather data fixer and quality checker}
+
+\description{This function identifies and interpolates gaps in daily weather records}
+
+\usage{fix_weather(weather,start_year=0,end_year=3000,start_date=1,end_date=366,
+columns=c("Tmin","Tmax"))}
+
+\arguments{
+  \item{weather}{a data.frame containing a daily time series dataset. It should have columns c("Year", "Month", "Day") or c("YEAR", "MONTH","DAY")
+  or "YEARMODA".}
+  \item{start_year}{integer marking the first year of interest. If not specified, this is assumed to be year 0, which probably means that the entire record will be considered.}
+  \item{end_year}{integer marking the last year of interest. If not specified, this is assumed to be year 3000, which probably means that the entire record will be considered.}
+  \item{start_date}{start date of the sub-annual period of interest (e.g. the assumed chilling period), defaults to 1 (1st Jan) if not specified}
+  \item{end_date}{end date of the sub-annual period of interest (e.g. the assumed chilling period), defaults to 366 (31st Dec, also in non-leap years) if not specified}
+  \item{columns}{character vector containing the names of columns of the weather file that should be interpolated and quality checked. If not specified, this defaults to "Tmin" and "Tmax". If these columns don't exist, the function generates an error.}
+}
+
+\details{This function produces a complete record containing all dates between the 1st day of the start year and the last day of the end year (unless the first/last day of the record is after/before these dates - in that case the record is not extended). The values for the columns specified by the columns attribute are linearly interpolated. Missing values during the period indicated by start_date and end_date are added up and summarized in a quality control table.}
+
+\value{ list with two elements:
+weather: contains the interpolated weather record
+QC: contains the quality control data.frame, which summarizes missing days, incomplete days (days on which any value is missing), and percentage completeness.}
+
+
+\author{Eike Luedeling}
+
+\examples{
+fix_weather(KA_weather,2000,2010)
+
+#use a subset of the KA_weather dataset and add an additional day after a gap
+KA_weather_gap<-rbind(KA_weather,c(Year=2011,Month=3,Day=3,Tmax=26,Tmin=14)) 
+#fill in the gaps
+fix_weather(KA_weather_gap, 1990,2011,300,100)
+
+#fix_weather(KA_weather)
+
+ }
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{ utility }
+

@@ -9,14 +9,16 @@
 according to the Dynamic Model and Growing Degree Hours.}
 
 \usage{
-chilling(THourly, Start_JDay, End_JDay)
+chilling(hourtemps=NULL, Start_JDay=1, End_JDay=366, THourly=NULL, misstolerance=50)
 }
 
 \arguments{
-  \item{THourly}{   a dataframe of stacked hourly temperatures (e.g. produced by stack_hourly_temps). This data frame must have a column
-for Year, a column for JDay (Julian date, or day of the year), a column for Hour and a column for Temp (hourly temperature).}
+  \item{hourtemps}{   a list of two elements, with element 'hourtemps' being  a dataframe of hourly temperatures (e.g. produced by stack_hourly_temps). This data frame must have a column
+for Year, a column for JDay (Julian date, or day of the year), a column for Hour and a column for Temp (hourly temperature). The second (optional) element is QC, which is a data.frame indicating completeness of the dataset. This is automatically produced by stack_hourly_temps.}
   \item{Start_JDay}{   the start date (in Julian date, or day of the year) of the period, for which chill and heat should be quantified.}
   \item{End_JDay}{    the end date (in Julian date, or day of the year) of the period, for which chill and heat should be quantified.}
+  \item{THourly}{    the same as hourtemps. This argument is only retained for downward compatibility and can be ignored in most cases.}
+  \item{misstolerance}{    maximum percentage of values for a given season that can be missing without the record being removed from the output. Defaults to 50.}
 }
 \details{   Chill metrics are calculated as given in the references below. Chilling Hours are all hours with temperatures between 0 and 7.2 degrees C.
 Units of the Utah Model are calculated as suggested by Richardson et al. (1974) (different weights for different temperature ranges, and negation of
@@ -26,7 +28,9 @@ These were translated into R. References to papers that include the full functio
 Growing Degree Hours are calculated according to Anderson et al. (1986), using the default values they suggest.}
 
 \value{   data frame showing chilling and heat totals for the respective periods for all seasons included in the temperature records. Columns are Season, End_year
-(the year when the period ended), Days (the duration of the period), Chilling_Hours, Utah_Model, Chill_portions and GDH.}
+(the year when the period ended), Days (the duration of the period), Chilling_Hours, Utah_Model, Chill_portions and GDH.
+If the weather input consisted of a list with elements hourtemps and QC, the output also contains columns from QC that indicate the completeness of the weather record that the calculations are based on.
+}
 
 \references{
 Model references:
@@ -102,15 +106,13 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requ
 especially in warm climates! The Dynamic Model (Chill Portions), though far from perfect, seems much more reliable.}
 
 \examples{
-weather<-make_all_day_table(KA_weather[which(KA_weather$Year>2006),])
-weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
-weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
 
-THourly<-make_hourly_temps(50.4,weather)
 
-stack<-stack_hourly_temps(hour_file=THourly)
+#weather<-fix_weather(KA_weather[which(KA_weather$Year>2006),])
+#hourtemps<-stack_hourly_temps(weather,latitude=50.4)
+#chilling(hourtemps,305,60)
 
-chilling(stack,305,60)
+chilling(stack_hourly_temps(fix_weather(KA_weather[which(KA_weather$Year>2006),]),latitude=50.4))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

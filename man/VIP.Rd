@@ -33,7 +33,6 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requ
 \author{Eike Luedeling, but the function was mainly copied from http://mevik.net/work/software/pls.html; the reference given there is listed below}
 
 \examples{
-
 PLS_results<-PLS_pheno(
   weather_data=KA_weather,
   split_month=6,   #last month in same year

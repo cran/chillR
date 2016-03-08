@@ -36,16 +36,11 @@ Almorox J, Hontoria C and Benito M, 2005. Statistical validation of daylength de
 \author{Eike Luedeling}
 
 \examples{
-weather<-make_all_day_table(KA_weather)
-Tmin_int<-interpolate_gaps(KA_weather[,"Tmin"])
-weather[,"Tmin"]<-Tmin_int$interp
-weather[,"Tmin_interpolated"]<-Tmin_int$missing
+weather<-fix_weather(KA_weather)
 
-Tmax_int<-interpolate_gaps(KA_weather[,"Tmax"])
-weather[,"Tmax"]<-Tmax_int$interp
-weather[,"Tmax_interpolated"]<-Tmax_int$missing
+THourly<-make_hourly_temps(50.4,weather$weather)
 
-THourly<-make_hourly_temps(50.4,weather)
+#in most cases, you're probably better served by stack_hour_temperatures
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

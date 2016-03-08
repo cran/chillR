@@ -8,30 +8,26 @@
 It includes the option to include calculation of a running mean, which smoothes accumulation curves. Especially for the Dynamic Model, this may be advisable,
 because it does not accumulate chill smoothly, but rather in steps.}
 
-\usage{daily_chill(THourly, running_mean)}
+\usage{daily_chill(hourtemps=NULL, running_mean=1,models=list(Chilling_Hours=Chilling_Hours,
+       Utah_Chill_Units=Utah_Model,Chill_Portions=Dynamic_Model,GDH=GDH),THourly=NULL)}
 
 \arguments{
-  \item{THourly}{   a dataframe of stacked hourly temperatures (e.g. produced by stack_hourly_temps). This data frame must have a column
+  \item{hourtemps}{   a dataframe of stacked hourly temperatures (e.g. produced by stack_hourly_temps). This data frame must have a column
 for Year, a column for JDay (Julian date, or day of the year), a column for Hour and a column for Temp (hourly temperature).}
-  \item{running_mean}{   what running mean should be applied to smooth the chill and heat accumulation curves? This should be an odd integer. Use 1 for no
-smoothing.}
+  \item{running_mean}{   what running mean should be applied to smooth the chill and heat accumulation curves? This should be an odd integer. Use 1 (default) for no smoothing.}
+  \item{models}{    named list of models that should be applied to the hourly temperature data. These should be functions that take as input a vector of hourly temperatures. This defaults to the set of models provided by the chilling function.}
+  \item{THourly}{    hourtemps was called THourly in an earlier version of this package. So in order to allow function calls written before the 0.57 update to still work, this is included here.}
 }
 
-\details{   Chill metrics are calculated as given in the references below. Chilling Hours are all hours with temperatures between 0 and 7.2 degrees C.
-Units of the Utah Model are calculated as suggested by Richardson et al. (1974) (different weights for different temperature ranges, and negation of
-chilling by warm temperatures. Chill Portions are calculated according to Fishman et al. (1987a,b). More honestly, they are calculated according to an
-Excel sheet produced by Amnon Erez and colleagues, which converts the complex equations in the Fishman papers into relatively simple Excel functions.
-These were translated into R. References to papers that include the full functions are given below.
-Growing Degree Hours are calculated according to Anderson et al. (1986), using the default values they suggest.}
+\details{   Temperature metrics are calculated according to the specified models. They are computed based on hourly temperature records and then summed to produce daily chill accumulation rates.}
 
 \value{a daily chill object consisting of the following elements
  \item{object_type}{a character string "daily_chill" indicating that this is a daily_chill object}
- \item{daily_chill}{data frame consisting of all the columns of the THourly input data frame, plus the following additional columns: Chilling_Hours (per day),
-Chill_Portions (per day), Chill_Units (per day) and GDH (per day).}
+ \item{daily_chill}{data frame consisting of the columns YYMMDD, Year, Month, Day and Tmean, plus one column for each model that is evaluated. The latter columns have the name given to the model in the models list and they contain daily total accumulations of the computed metrics.}
 }
 
 \references{
-Model references:
+Model references for the default models:
 
 Chilling Hours:
 
@@ -104,15 +100,11 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requ
 especially in warm climates! The Dynamic Model (Chill Portions), though far from perfect, seems much more reliable.}
 
 \examples{
-weather<-make_all_day_table(KA_weather[which(KA_weather$Year>2008),])
-weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
-weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
+models<-list(CP=Dynamic_Model,CU=Utah_Model,GDH=GDH)
 
-THourly<-make_hourly_temps(50.4,weather)
+dc<-daily_chill(stack_hourly_temps(fix_weather(KA_weather[which(KA_weather$Year>2009),]),
+ latitude=50.4),11,models)
 
-stack<-stack_hourly_temps(hour_file=THourly)
-
-dc<-daily_chill(stack, 11)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

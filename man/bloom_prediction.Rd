@@ -104,10 +104,9 @@ especially in warm climates! The Dynamic Model (Chill Portions), though far from
 
 \examples{
 
-THourly<-make_hourly_temps(50.4,make_all_day_table(KA_weather[which(KA_weather$Year>2008),]))
-stack<-stack_hourly_temps(hour_file=THourly)
+hourtemps<-stack_hourly_temps(fix_weather(KA_weather[which(KA_weather$Year>2008),]),latitude=50.4)
 
-CT<-chilling_hourtable(stack,Start_JDay=305)
+CT<-chilling_hourtable(hourtemps,Start_JDay=305)
 
 bloom_prediction(CT,Chill_model="Chill_Portions",Chill_req=60,Heat_req=5000,Start_JDay=305)
 

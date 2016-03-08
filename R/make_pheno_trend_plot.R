@@ -14,7 +14,8 @@ function(weather_data_frame,
                                 xlabel=NA,
                                 legend_label=NA,
                                 image_type="png",
-                                colorscheme="normal")
+                                colorscheme="normal",
+                                fonttype="serif")
 
 {
 
@@ -103,6 +104,7 @@ if (is.na(legend_label)) legend_label<-"Flowering date (Julian Day)"
 
 if(image_type=="tiff") tiff(paste(outpath,file_name,".tif",sep=""),width=1000,height=1000) else
 png(paste(outpath,file_name,".png",sep=""),width=1000,height=1000)
+par(family=fonttype)
 par(list(oma=c(0,2,0,2.2),mar=c(5.1,5.1,4.1,2.1)))
 surface( k, type="C",xlab=xlabel,ylab=ylabel,cex.lab=2,cex.axis=1.5,labcex=1.5,asp=1,axis.args=list(cex.axis=2),legend.args=list(text=legend_label,side=4,cex=2,line=4.5))
 

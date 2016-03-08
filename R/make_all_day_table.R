@@ -2,17 +2,17 @@ make_all_day_table<-function(tab) #tab should have columns named Year, Month and
 {
  columns<-colnames(tab)  
   if("YEAR" %in% colnames(tab)) colnames(tab)[which(colnames(tab)=="YEAR")]<-"Year"
-  if("year" %in% colnames(tab)) colnames(tab)[which(colnames(tab)=="YEAR")]<-"Year"
-  if("MONTH" %in% colnames(tab)) colnames(tab)[which(colnames(tab)=="YEAR")]<-"Month"
-  if("month" %in% colnames(tab)) colnames(tab)[which(colnames(tab)=="YEAR")]<-"Month"
-  if("DAY" %in% colnames(tab)) colnames(tab)[which(colnames(tab)=="YEAR")]<-"Day"
-  if("day" %in% colnames(tab)) colnames(tab)[which(colnames(tab)=="YEAR")]<-"Day"
+  if("year" %in% colnames(tab)) colnames(tab)[which(colnames(tab)=="year")]<-"Year"
+  if("MONTH" %in% colnames(tab)) colnames(tab)[which(colnames(tab)=="MONTH")]<-"Month"
+  if("month" %in% colnames(tab)) colnames(tab)[which(colnames(tab)=="month")]<-"Month"
+  if("DAY" %in% colnames(tab)) colnames(tab)[which(colnames(tab)=="DAY")]<-"Day"
+  if("day" %in% colnames(tab)) colnames(tab)[which(colnames(tab)=="day")]<-"Day"
   if("YEARMODA" %in% colnames(tab))
       {tab[,"Year"]<-trunc(tab[,"YEARMODA"]/10000)
        tab[,"Month"]<-trunc((tab[,"YEARMODA"]-tab[,"Year"]*10000)/100)
        tab[,"Day"]<-tab[,"YEARMODA"]-tab[,"Year"]*10000-tab[,"Month"]*100
       }
-tab[,"YEARMODA"]<-tab[,"Year"]*10000+tab[,"Month"]*100+tab[,"Day"] 
+tab[,"YEARMODA"]<-as.numeric(tab[,"Year"])*10000+as.numeric(tab[,"Month"])*100+as.numeric(tab[,"Day"])
 tab[,"DATE"]<-ISOdate(tab[,"Year"], tab[,"Month"], tab[,"Day"])
 datevec<-seq(tab$DATE[1], tab$DATE[nrow(tab)], "day")
 tab2<-tab[,!(names(tab) %in% c("Year","Day","Month","Day","DATE"))]

@@ -13,7 +13,7 @@ make_pheno_trend_plot(weather_data_frame,
    split_month=6,   #last month in same year
    pheno,use_Tmean=FALSE,Start_JDay_chill,End_JDay_chill,Start_JDay_heat,
    End_JDay_heat,outpath,file_name,plot_title,ylabel=NA,xlabel=NA,legend_label=NA,
-   image_type="png",colorscheme="normal")
+   image_type="png",colorscheme="normal",fonttype="serif")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -41,6 +41,7 @@ analysis. If this is set to FALSE, Tmean is calculated as the arithmetic mean of
 added to produce publishable figures that adhere to the requirements of most scientific journals.}
   \item{colorscheme}{   the color scheme for the figure. This currently has only two options: "bw" or anythings else (the default). "bw" produces a grayscale
 image, otherwise the figure will be in color}
+    \item{fonttype}{   font style to be used for the figure. Can be 'serif' (default) or 'sans'.}
 }
 
 \details{The generation of the color surface is based on the Kriging technique, which is typically used for interpolation of spatial data. The use for this particular
@@ -73,18 +74,15 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requ
 \author{Eike Luedeling}
 
 \examples{
-weather<-make_all_day_table(KA_weather)
-weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
-weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
+weather<-fix_weather(KA_weather)
 
 #the output of the PLS function (PLS_pheno, plotted with plot_PLS) can be used to select
 #phases that are likely relevant for plant phase timing. See respective examples for running
 #these functions.
 
-
 file_path<-paste(getwd(),"/",sep="")
 
-mpt<-make_pheno_trend_plot(weather_data_frame = weather, split_month = 6,
+mpt<-make_pheno_trend_plot(weather_data_frame = weather$weather, split_month = 6,
      pheno = KA_bloom, use_Tmean = FALSE, Start_JDay_chill = 260, 
      End_JDay_chill = 64, Start_JDay_heat = 44, End_JDay_heat = 103,
      outpath = file_path, file_name = "pheno_trend_plot",

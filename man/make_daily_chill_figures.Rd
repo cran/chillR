@@ -6,11 +6,14 @@
 
 \description{Function to make figures showing the mean rate of chill and heat accumulation for each day of the year, as well as as the standard deviation.}
 
-\usage{make_daily_chill_figures(daily_chill, file_path)}
+\usage{make_daily_chill_figures(daily_chill, file_path,models=c("Chilling_Hours",
+   "Utah_Chill_Units","Chill_Portions","GDH"),labels=NA)}
 
 \arguments{
   \item{daily_chill}{a daily chill object. This should be generated with the daily_chill function.}
   \item{file_path}{the path where data should be saved. Can either end with '/' or include a prefix for all images that are produced.}
+  \item{models}{column names of the data.frame stored in daily_chill's daily_chill object that contain the metrics to be plotted. Defaults to four standard metrics of interest in fruit tree phenology analysis.}
+  \item{labels}{labels to be used in the plots for the metrics listed under models. This defaults to NA, which means that the character strings given in models are used for the figures. If alternative labels are to be used, these should be given as a vector of length length(models).}
 }
 
 \details{Chill metrics are calculated as given in the references below. Chilling Hours are all hours with temperatures between 0 and 7.2 degrees C.
@@ -99,14 +102,12 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requ
 especially in warm climates! The Dynamic Model (Chill Portions), though far from perfect, seems much more reliable.}
 
 \examples{
+weather<-fix_weather(KA_weather[which(KA_weather$Year>2005),])
 
-weather<-make_all_day_table(KA_weather[which(KA_weather$Year>2005),])
-weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
-weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
+dc<-daily_chill(stack_hourly_temps(weather,50.4), 11,models=list(Chill_Portions=Dynamic_Model))
 
-dc<-daily_chill(stack_hourly_temps(hour_file=make_hourly_temps(50.4,weather)), 11)
-
-md<-make_daily_chill_figures(dc, paste(getwd(),"/daily_chill_",sep=""))
+md<-make_daily_chill_figures(dc, paste(getwd(),"/daily_chill_",sep=""),models="Chill_Portions",
+ labels="Chill Portions")
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

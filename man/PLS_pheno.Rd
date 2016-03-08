@@ -10,7 +10,8 @@ statistical correlations between temperature variation during certain phases and
 
 \usage{
 PLS_pheno(weather_data, bio_data, split_month=7, runn_mean=11, expl.var=30,
-    ncomp.fix=NULL, use_Tmean=FALSE, return.all=FALSE, crossvalidate="none")
+    ncomp.fix=NULL, use_Tmean=FALSE, return.all=FALSE, crossvalidate="none",
+    end_at_pheno_end=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -31,6 +32,7 @@ good results.}
 analysis. If this is set to FALSE, Tmean is calculated as the arithmetic mean of Tmin and Tmax.}
   \item{return.all}{   boolean variable indicating whether or not the full set of PLS results should be output from the function. If this is set to TRUE, the function output is a list with two elements: PLS_summary and PLS_output; if it is set to FALSE, only the PLS_summary is returned.}
   \item{crossvalidate}{   character variable indicating what kind of validation should be performed by the PLS procedure. This defaults to "none", but the plsr function (of the pls package) also takes "CV" and "LOO" as inputs. See the documentation for the plsr function for details.}
+  \item{end_at_pheno_end}{   boolean variable indicating whether the analysis should disregard temperatures after the last date included in the bio_data_frame dataset. If set to TRUE, only temperatures up this date are considered. Phenology data is extracted from the PLS output files. If this parameter is assigned a numeric value, only data up to the Julian date specified by this number are considered.}
 }
 \details{PLS regression is useful for exploring the relationship between daily temperature data and biological phenomena that only occur once per year.
 The statistical challenge is that a normally quite small number of observations must be related to variation in a much larger number (365) of daily temperatures,
@@ -53,6 +55,7 @@ It also incorporates very helpful comments from Sabine Guesewell of ETH Zurich (
 
 \value{
  \item{object_type}{   the character string "PLS_Temp_pheno". This is only needed for choosing the correct method for the plot_PLS function.}
+ \item{pheno}{   a data frame containing the phenology data used for the PLS regression, with columns Year and pheno.}
  \item{PLS_summary}{   a data frame containing all important outputs of the PLS regression. Columns are Date (in MMDD format), JDay (Julian date, or day of the year),
 Coefficient (the PLS model coefficient for each daily temperature variable), and VIP (the Variable Importance in the Projection score). The columns Tmean and Tstdev contain the means and standard deviations of temperature for each day of the year.}   
  \item{PLS_output}{   this is the complete output of the plsr function of the pls package. See the documentation for that package for further details.}
@@ -80,7 +83,6 @@ Yu H, Xu J, Okuto E and Luedeling E, 2012. Seasonal Response of Grasslands to Cl
 \author{Eike Luedeling, with contributions from Sabine Guesewell}
 
 \examples{
-
 PLS_results<-PLS_pheno(
   weather_data=KA_weather,
   split_month=6,   #last month in same year

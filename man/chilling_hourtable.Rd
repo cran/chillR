@@ -8,11 +8,11 @@
 The count is restarted on a specified date each year.}
 
 \usage{
-chilling_hourtable(THourly, Start_JDay)
+chilling_hourtable(hourtemps, Start_JDay)
 }
 
 \arguments{
-  \item{THourly}{   a dataframe of stacked hourly temperatures (e.g. produced by stack_hourly_temps). This data frame must have a column
+  \item{hourtemps}{   a dataframe of stacked hourly temperatures (e.g. produced by stack_hourly_temps). This data frame must have a column
 for Year, a column for JDay (Julian date, or day of the year), a column for Hour and a column for Temp (hourly temperature).}
   \item{Start_JDay}{   the start date (in Julian date, or day of the year) of the calculation for the four metrics. The count is restarted on this date every year.}
 }
@@ -102,16 +102,11 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requ
 especially in warm climates! The Dynamic Model (Chill Portions), though far from perfect, seems much more reliable.}
 
 \examples{
+weather<-fix_weather(KA_weather[which(KA_weather$Year>2008),])
 
-weather<-make_all_day_table(KA_weather[which(KA_weather$Year>2008),])
-weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
-weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
+hourtemps<-stack_hourly_temps(weather,latitude=50.4)
 
-THourly<-make_hourly_temps(50.4,weather)
-
-stack<-stack_hourly_temps(hour_file=THourly)
-
-cht<-chilling_hourtable(stack,20)
+cht<-chilling_hourtable(hourtemps,20)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

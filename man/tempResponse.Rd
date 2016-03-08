@@ -1,0 +1,58 @@
+\name{tempResponse}
+
+\alias{tempResponse}
+
+\title{Calculation of climatic metrics from hourly temperature records}
+
+\description{Extension of the chilling function, which calculated four pre-defined temperature-based metrics. This function has more flexibility, because it allows specifying the models that should be calculated. These can be selected from a small set of models provided with chillR, but they can also be defined by the user. Precondition at the moment is that they require hourly temperature only as inputs.}
+
+\usage{
+tempResponse(hourtemps, Start_JDay=1, End_JDay=366,
+models=list(Chilling_Hours=Chilling_Hours,Utah_Chill_Units=Utah_Model,
+Chill_Portions=Dynamic_Model,GDH=GDH),misstolerance=50)
+}
+
+\arguments{
+  \item{hourtemps}{   a list of two elements, with element 'hourtemps' being  a dataframe of hourly temperatures (e.g. produced by stack_hourly_temps). This data frame must have a column
+for Year, a column for JDay (Julian date, or day of the year), a column for Hour and a column for Temp (hourly temperature). The second (optional) element is QC, which is a data.frame indicating completeness of the dataset. This is automatically produced by stack_hourly_temps.}
+  \item{Start_JDay}{   the start date (in Julian date, or day of the year) of the period, for which chill and heat should be quantified.}
+  \item{End_JDay}{    the end date (in Julian date, or day of the year) of the period, for which chill and heat should be quantified.}
+  \item{models}{    named list of models that should be applied to the hourly temperature data. These should be functions that take as input a vector of hourly temperatures. This defaults to the set of models provided by the chilling function.}
+  \item{misstolerance}{    maximum percentage of values for a given season that can be missing without the record being removed from the output. Defaults to 50.}
+}
+\details{   The function calculates the total of user-specified temperature-based metrics over periods delineated by Start_JDay and End_JDay. Models for calculating these metrics are provided in the models list, whose elements are named functions that convert hourly temperature records into a cumulative record of the climate metric of interest. The metric is then added up cumulatively over the entire temperature record and then summarized by season. Examples of functions that can be used are Chilling_Hours, Utah_Model, Dynamic_Model and GDH. The custom_model function allows customized simply weight-based models, which assign differential weights to temperatures within certain intervals. See custom_model documentation for details.
+}
+
+\value{   data frame showing totals for all specified models for the respective periods for all seasons included in the temperature records. Columns are Season, End_year
+(the year when the period ended) and Days (the duration of the period), as well as one column per model, which receives the same name as the function in the models list.
+If the weather input consisted of a list with elements stack and QC, the output also contains columns from QC that indicate the completeness of the weather record that the calculations are based on.}
+
+\references{
+The chillR package:
+
+Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requirements of cherry trees - a statistical approach. International Journal of Biometeorology 57,679-689.
+}
+
+\author{Eike Luedeling}
+
+\examples{
+
+weather<-fix_weather(KA_weather[which(KA_weather$Year>2006),])
+
+hourtemps<-stack_hourly_temps(weather,latitude=50.4)
+
+df=data.frame(
+  lower=c(-1000,1,2,3,4,5,6),
+  upper=c(1,2,3,4,5,6,1000),
+  weight=c(0,1,2,3,2,1,0))
+
+custom<-function(x) step_model(x,df)
+
+models<-list(Chilling_Hours=Chilling_Hours,Utah_Chill_Units=Utah_Model,Chill_Portions=
+  Dynamic_Model,GDH=GDH,custom=custom)
+
+tempResponse(hourtemps,Start_JDay = 305,End_JDay = 60,models)
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{ chill and heat calculation }

@@ -10,7 +10,9 @@ It produces figures that illustrate statistical correlations between temperature
 
 \usage{
 PLS_chill_force(daily_chill_obj,bio_data_frame,split_month,
-       expl.var=30,ncomp.fix=NULL,return.all=FALSE,crossvalidate="none")
+       expl.var=30,ncomp.fix=NULL,return.all=FALSE,crossvalidate="none",
+       end_at_pheno_end=TRUE,chill_models=c("Chilling_Hours", "Utah_Chill_Units", 
+                "Chill_Portions"),heat_models=c("GDH"))
 }
 
 \arguments{
@@ -24,7 +26,10 @@ assigned to the following phenological year.}
   \item{ncomp.fix}{   fixed number of components for the PLS model. Defaults to NULL, so that the number is automatically determined, but it can also be set by the user.}  
   \item{return.all}{   boolean variable indicating whether or not the full set of PLS results should be returned by the function. If this is set to TRUE, the function output is a list with two elements (besides the object_type string): PLS_summary and PLS_output; if it is set to FALSE, only the PLS_summary is returned.}
   \item{crossvalidate}{   character variable indicating what kind of validation should be performed by the PLS procedure. This defaults to "none", but the plsr function (of the pls package) also takes "CV" and "LOO" as inputs. See the documentation for the plsr function for details.}
-}
+  \item{end_at_pheno_end}{   boolean variable indicating whether the analysis should disregard temperatures after the last date included in the bio_data_frame dataset. If set to TRUE, only temperatures up this date are considered. Phenology data is extracted from the PLS output files. If this parameter is assigned a numeric value, only data up to the Julian date specified by this number are considered.}
+  \item{chill_models}{   Character vector containing names of chill models that should be considered in the PLS regression. These names should correspond to column names of daily_chill. This defaults to c("Chilling_Hours", "Utah_Chill_Units", "Chill_Portions").}
+  \item{heat_models}{   Character vector containing names of heat models that should be considered in the PLS regression. These names should correspond to column names of daily_chill. This defaults to c("GDH").}
+  }
 
 \details{PLS regression is useful for exploring the relationship between daily chill and heat accumulation rates and biological phenomena that only occur once per year.
 The statistical challenge is that a normally quite small number of observations must be related to variation in a much larger number (730) of daily chill and heat values,
@@ -44,23 +49,25 @@ This procedure has not often been applied to biological phenomena at the time of
 Yet is has passed the test of scientific peer review a few times, and it has produced plausible results in a number of settings.
 This package draws heavily from the pls package.
 
-Chill metrics are calculated as given in the references below. Chilling Hours are all hours with temperatures between 0 and 7.2 degrees C.
+Per default, chill metrics used are the ones given in the references below. Chilling Hours are all hours with temperatures between 0 and 7.2 degrees C.
 Units of the Utah Model are calculated as suggested by Richardson et al. (1974) (different weights for different temperature ranges, and negation of
 chilling by warm temperatures). Chill Portions are calculated according to Fishman et al. (1987a,b). More honestly, they are calculated according to an
 Excel sheet produced by Amnon Erez and colleagues, which converts the complex equations in the Fishman papers into relatively simple Excel functions.
 These were translated into R. References to papers that include the full functions are given below.
 Growing Degree Hours are calculated according to Anderson et al. (1986), using the default values they suggest.
+
+It is possible, however, for the user to specify other metrics to be evaluated. These should be indicated by the chill_models and heat_models parameters, which should contain the names of the respective columns of the daily_chill_obj$daily_chill data frame.
+
 }
 
 \value{
  \item{object_type}{   the character string "PLS_chillforce_pheno". This is only needed for choosing the correct method for the plot_PLS function.}
- \item{Chilling_Hours}{   a list with elements PLS_summary and (if(return.all=TRUE) PLS_output. These contain the results of the PLS analysis that used Chilling Hours and Growing Degree Hours as independent variables.}
- \item{Utah_Chill_Units}{   a list with elements PLS_summary and (if(return.all=TRUE) PLS_output. These contain the results of the PLS analysis that used Chill Units of the Utah Model and Growing Degree Hours as independent variables.}
-  \item{Chill_Portions}{   a list with elements PLS_summary and (if(return.all=TRUE) PLS_output. These contain the results of the PLS analysis that used Chill Portions and Growing Degree Hours as independent variables.}
+ \item{pheno}{   a data frame containing the phenology data used for the PLS regression, with columns Year and pheno.}
+ \item{<chill_model>$<heat_model>}{   for each combination of elements from chill_models and heat_models, a list element is generated, which contains a list with elements PLS_summary and (if(return.all=TRUE) PLS_output. These contain the results of the PLS analysis that used the respective chill and heat metrics as independent variables.}
 }
 
 \references{
-Model references:
+Model references, for the default option:
 
 Chilling Hours:
 
@@ -132,17 +139,18 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat requ
 especially in warm climates! The Dynamic Model (Chill Portions), though far from perfect, seems much more reliable.}
 
 \examples{
+weather<-fix_weather(KA_weather[which(KA_weather$Year>2004),])
+#Plots look much better with weather<-fix_weather(KA_weather)
+#but that takes to long to run for passing CRAN checks
 
-weather<-make_all_day_table(KA_weather) 
-weather[,"Tmin"]<-interpolate_gaps(weather[,"Tmin"])$interp
-weather[,"Tmax"]<-interpolate_gaps(weather[,"Tmax"])$interp
+dc<-daily_chill(stack_hourly_temps(weather,50.4), 11)
+plscf<-PLS_chill_force(daily_chill_obj=dc, bio_data_frame=KA_bloom, split_month=6)
 
-dc<-daily_chill(stack_hourly_temps(hour_file=make_hourly_temps(50.4,weather)), 11)
+#PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
+#plot_PLS(plscf,PLS_results_path)
+#plot_PLS(plscf,PLS_results_path,add_chill=c(307,19),add_heat=c(54,109))
 
-plscf<-PLS_chill_force(daily_chill=dc, bio_data_frame=KA_bloom, split_month=6)
 
-PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
-plot_PLS(plscf,PLS_results_path)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
