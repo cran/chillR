@@ -1,3 +1,38 @@
+#' Linear gap interpolation
+#' 
+#' This function linearly interpolates gaps in data series, such as daily
+#' temperature records.
+#' 
+#' The function returns a list with two elements: interp is a new vector, in
+#' which all gaps in x have been linearly interpolated. missing is a second
+#' vector, which contains information on which values were filled in by
+#' interpolation.
+#' 
+#' @param x a numeric vector, or a vector that can be coerced with as.numeric.
+#' Missing values are either NA or non-numeric values.
+#' @return \item{interp}{ numeric vector, in which all gaps in x have been
+#' linearly interpolated} \item{missing}{ boolean vector of the same length as
+#' interp and x, which marks all gaps in x as TRUE}
+#' @author Eike Luedeling
+#' @references Luedeling E, Kunz A and Blanke M, 2013. Identification of
+#' chilling and heat requirements of cherry trees - a statistical approach.
+#' International Journal of Biometeorology 57,679-689.
+#' @keywords utility
+#' @examples
+#' 
+#' weather<-make_all_day_table(KA_weather)
+#' Tmin_int<-interpolate_gaps(KA_weather[,"Tmin"])
+#' weather[,"Tmin"]<-Tmin_int$interp
+#' weather[,"Tmin_interpolated"]<-Tmin_int$missing
+#' 
+#' Tmax_int<-interpolate_gaps(KA_weather[,"Tmax"])
+#' weather[,"Tmax"]<-Tmax_int$interp
+#' weather[,"Tmax_interpolated"]<-Tmax_int$missing
+#' 
+#' #this function is integrated into the fix_weather function, but it can also be run on its own.
+#' 
+#' 
+#' @export interpolate_gaps
 interpolate_gaps <-
 function(x)   #x is the vector to work with
             {

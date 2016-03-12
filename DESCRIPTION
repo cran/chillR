@@ -2,16 +2,29 @@ Package: chillR
 Type: Package
 Title: Statistical Methods for Phenology Analysis in Temperate Fruit
         Trees
-Version: 0.60
-Date: 2016-03-08
+Version: 0.62
+Date: 2016-03-11
 Author: Eike Luedeling
 Maintainer: Eike Luedeling <eike@eikeluedeling.com>
-Description: The phenology of plants (i.e. the timing of their annual life phases) depends on climatic cues. For temperate trees and many other plants, spring phases, such as leaf emergence and flowering, have been found to result from the effects of both cool (chilling) conditions and heat. Fruit tree scientists (pomologists) have developed some metrics to quantify chilling and heat. 'chillR' contains functions for processing temperature records into chilling (Chilling Hours, Utah Chill Units and Chill Portions) and heat units (Growing Degree Hours). Regarding chilling metrics, Chill Portions are often considered the most promising, but they are difficult to calculate. This package makes it easy. 'chillR' also contains procedures for conducting a PLS analysis relating phenological dates (e.g. bloom dates) to either mean temperatures or mean chill and heat accumulation rates, based on long-term weather and phenology records.
+Description: The phenology of plants (i.e. the timing of their annual life
+    phases) depends on climatic cues. For temperate trees and many other plants,
+    spring phases, such as leaf emergence and flowering, have been found to result
+    from the effects of both cool (chilling) conditions and heat. Fruit tree
+    scientists (pomologists) have developed some metrics to quantify chilling
+    and heat. 'chillR' contains functions for processing temperature records into
+    chilling (Chilling Hours, Utah Chill Units and Chill Portions) and heat units
+    (Growing Degree Hours). Regarding chilling metrics, Chill Portions are often
+    considered the most promising, but they are difficult to calculate. This package
+    makes it easy. 'chillR' also contains procedures for conducting a PLS analysis
+    relating phenological dates (e.g. bloom dates) to either mean temperatures or
+    mean chill and heat accumulation rates, based on long-term weather and phenology
+    records.
 Imports: pls, Kendall, fields, sp, readxl, XML, httr, grDevices,
         graphics, stats, utils
 License: GPL-3
 LazyData: TRUE
+RoxygenNote: 5.0.1
 NeedsCompilation: no
-Packaged: 2016-03-07 23:39:06 UTC; USER
+Packaged: 2016-03-11 18:57:37 UTC; USER
 Repository: CRAN
-Date/Publication: 2016-03-08 06:22:40
+Date/Publication: 2016-03-12 09:36:15

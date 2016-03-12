@@ -1,3 +1,46 @@
+#' Convert a weather file downloaded from the Chilean Agromet website to chillR
+#' format
+#' 
+#' Convert downloaded weather data into a data frame that makes running other
+#' chillR functions easy.
+#' 
+#' Processing the data with this function will make the data work well with the
+#' remainder of this package.
+#' 
+#' @param downloaded_weather_file full path of a weather file downloaded from
+#' the Chilean Agromet website (http://agromet.inia.cl/) as an alleged Excel
+#' file (it has some formatting issues).
+#' @param drop_most boolean variable indicating if most columns should be
+#' dropped from the file. If set to TRUE (default), only essential columns for
+#' running chillR functions are retained.
+#' @return a data.frame with weather data, according to the downloaded file
+#' provided as input. If drop_most is FALSE, all columns from the original
+#' dataset are preserved, although some column names are adjusted to chillR's
+#' preferences ("Year","Month","Day","Tmin","Tmax","Tmean","Prec", if these
+#' columns are present). If drop_most is TRUE, only columns likely to be of
+#' interest to chillR users are retained.
+#' @note Many databases have data quality flags, which may sometimes indicate
+#' that data aren't reliable. These are not considered by this function!
+#' @author Eike Luedeling
+#' @references The chillR package:
+#' 
+#' Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat
+#' requirements of cherry trees - a statistical approach. International Journal
+#' of Biometeorology 57,679-689.
+#' @keywords utilities
+#' @examples
+#' 
+#' weather<-fix_weather(KA_weather[which(KA_weather$Year>2005),])  # this line is
+#' #only here to make the example run, even without downloading a file
+#' 
+#' # FOLLOW THE INSTRUCTIONS IN THE LINE BELOW THIS; AND THEN  RUN THE LINE AFTER THAT (without the #)
+#' # download an Excel file from the website and save it to disk (path: {X}) 
+#' #weather<-fix_weather(chile_agromet2chillR({x}))
+#' 
+#' hourtemps<-stack_hourly_temps(weather, latitude=50.4)
+#' chilling(hourtemps,305,60)
+#' 
+#' @export chile_agromet2chillR
 chile_agromet2chillR<-function(downloaded_weather_file,drop_most=TRUE)
 {xml <- htmlParse(downloaded_weather_file)
  ns <- getNodeSet(xml, '//tr')

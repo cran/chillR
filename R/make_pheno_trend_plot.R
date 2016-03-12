@@ -1,3 +1,113 @@
+#' Make image showing phenology response to temperatures during two phases
+#' 
+#' The timing of many developmental stages of temperate plants is understood to
+#' depend on temperatures during two phases. This function seeks to illustrate
+#' this dependency by plotting phenological dates as colored surface, as a
+#' function of mean temperatures during both phases, which are indicated on the
+#' x and y axes.
+#' 
+#' The generation of the color surface is based on the Kriging technique, which
+#' is typically used for interpolation of spatial data. The use for this
+#' particular purpose is a bit experimental. The function uses the Krig
+#' function from the fields package.
+#' 
+#' @param weather_data_frame a dataframe containing daily minimum and maximum
+#' temperature data (in columns called Tmin and Tmax, respectively), and/or
+#' mean daily temperature (in a column called Tmean). There also has to be a
+#' column for Year and one for JDay (the Julian date, or day of the year).
+#' Alternatively, the date can also be given in three columns (Year, Month and
+#' Day).
+#' @param split_month the procedure analyzes data by phenological year, which
+#' can start and end in any month during the calendar year (currently only at
+#' the beginning of a month). This variable indicates the last month (e.g. 5
+#' for May) that should be included in the record for a given phenological
+#' year. All subsequent months are assigned to the following phenological year.
+#' @param pheno a data frame that contains information on the timing of
+#' phenological events by year. It should consist of two columns called Year
+#' and pheno. Data in the pheno column should be in Julian date (day of the
+#' year).
+#' @param use_Tmean boolean variable indicating whether or not the column Tmean
+#' from the weather_data_frame should be used as input for the PLS analysis. If
+#' this is set to FALSE, Tmean is calculated as the arithmetic mean of Tmin and
+#' Tmax.
+#' @param Start_JDay_chill the Julian date, on which the first relevant period
+#' (e.g. the chilling phase) starts
+#' @param End_JDay_chill the Julian date, on which the first relevant period
+#' (e.g. the chilling phase) ends
+#' @param Start_JDay_heat the Julian date, on which the second relevant period
+#' (e.g. the forcing phase) starts
+#' @param End_JDay_heat the Julian date, on which the second relevant period
+#' (e.g. the forcing phase) ends
+#' @param outpath the output path
+#' @param file_name the output file name
+#' @param plot_title the title of the plot
+#' @param ylabel the label for the y-axis. There is a default, but in many
+#' cases, it may be desirable to customize this
+#' @param xlabel the label for the x-axis. There is a default, but in many
+#' cases, it may be desirable to customize this
+#' @param legend_label the label for the legend (color scheme). There is a
+#' default, but in many cases, it may be desirable to customize this
+#' @param image_type the type of image to produce. This currently has only two
+#' options: "tiff" or anything else (the default). If this is not "tiff", a png
+#' image is produced. The "tiff" option was added to produce publishable
+#' figures that adhere to the requirements of most scientific journals.
+#' @param colorscheme the color scheme for the figure. This currently has only
+#' two options: "bw" or anythings else (the default). "bw" produces a grayscale
+#' image, otherwise the figure will be in color
+#' @param fonttype font style to be used for the figure. Can be 'serif'
+#' (default) or 'sans'.
+#' @return \item{pheno}{data frame containing all data needed for reproducing
+#' the plot: Year (during which the phenological event occurred - the year in
+#' which the phenological season indicated by split_month ended), pheno (the
+#' date on which the phenological event occurred), Chill_Tmean (mean
+#' temperature during the first relevant phase), Heat_Tmean (mean temperature
+#' during the second relevant phase) and Year_Tmean (mean annual temperature -
+#' not actually used in the plot)} \item{ylabel}{character string used for
+#' labeling the y axis} \item{xlabel}{character string used for labeling the x
+#' axis}
+#' @author Eike Luedeling
+#' @references Guo L, Dai J, Wang M, Xu J, Luedeling E, 2015. Responses of
+#' spring phenology in temperate zone trees to climate warming: a case study of
+#' apricot flowering in China. Agricultural and Forest Meteorology 201, 1-7.
+#' 
+#' Guo L, Dai J, Ranjitkar S, Xu J, Luedeling E, 2013. Response of chestnut
+#' phenology in China to climate variation and change. Agricultural and Forest
+#' Meteorology 180, 164-172.
+#' 
+#' Luedeling E, Guo L, Dai J, Leslie C, Blanke M, 2013. Differential responses
+#' of trees to temperature variation during the chilling and forcing phases.
+#' Agricultural and Forest Meteorology 181, 33-42.
+#' 
+#' the interpolation was done according to:
+#' 
+#' Furrer, R., Nychka, D. and Sain, S., 2012. Fields: Tools for spatial data. R
+#' package version 6.7.
+#' 
+#' Reference to the chillR package:
+#' 
+#' Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat
+#' requirements of cherry trees - a statistical approach. International Journal
+#' of Biometeorology 57,679-689.
+#' @keywords phenology analysis
+#' @examples
+#' 
+#' weather<-fix_weather(KA_weather)
+#' 
+#' #the output of the PLS function (PLS_pheno, plotted with plot_PLS) can be used to select
+#' #phases that are likely relevant for plant phase timing. See respective examples for running
+#' #these functions.
+#' 
+#' file_path<-paste(getwd(),"/",sep="")
+#' 
+#' mpt<-make_pheno_trend_plot(weather_data_frame = weather$weather, split_month = 6,
+#'      pheno = KA_bloom, use_Tmean = FALSE, Start_JDay_chill = 260, 
+#'      End_JDay_chill = 64, Start_JDay_heat = 44, End_JDay_heat = 103,
+#'      outpath = file_path, file_name = "pheno_trend_plot",
+#'      plot_title = "Impacts of chilling and forcing temperatures on cherry phenology",
+#'      ylabel = NA, xlabel = NA, legend_label = NA, image_type = "png", 
+#'      colorscheme = "normal")
+#' 
+#' @export make_pheno_trend_plot
 make_pheno_trend_plot <-
 function(weather_data_frame,
                                 split_month=6,   #last month in same year
