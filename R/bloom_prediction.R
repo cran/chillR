@@ -23,12 +23,16 @@
 #' 
 #' @param HourChillTable a data frame resulting from the chilling_hourtable
 #' function.
-#' @param Chill_model character string describing the chill model to use.
-#' Options are "Chilling_Hours", "Chill_Portions" and "Chill_Units".
 #' @param Chill_req numeric parameter indicating the chilling requirement of
 #' the particular growth stage (in the unit specified by "Chill_model")
 #' @param Heat_req numeric parameter indicating the heat requirement of the
 #' particular growth stage (in Growing Degree Hours)
+#' @param Chill_model character string specifying the chill model to use. This
+#' has to correspond to the name of the column in HourChillTable that contains
+#' the chill accumulation (e.g "Chilling_Hours", "Chill_Portions" and "Chill_Units").
+#' @param Heat_model character string specifying the heat model to use. This
+#' has to correspond to the name of the column in HourChillTable that contains
+#' the heat accumulation (e.g "GDH").
 #' @param Start_JDay numeric parameter indicating the day when chill
 #' accumulation is supposed to start
 #' @return data frame containing the predicted dates of chilling requirement
@@ -150,13 +154,30 @@
 #' 
 #' CT<-chilling_hourtable(hourtemps,Start_JDay=305)
 #' 
-#' bloom_prediction(CT,Chill_model="Chill_Portions",Chill_req=60,Heat_req=5000,Start_JDay=305)
+#' bloom_prediction(CT,Chill_req=60,Heat_req=5000,Chill_model="Chill_Portions",
+#'                  Heat_model="GDH",Start_JDay=305)
 #' 
 #' 
 #' @export bloom_prediction
 bloom_prediction <-
-function (HourChillTable, Chill_model, Chill_req, Heat_req,Start_JDay=305) 
+function (HourChillTable,Chill_req,Heat_req,Chill_model="Chill_Portions",Heat_model="GDH",Start_JDay=305) 
 {
+  
+  if(is.null(HourChillTable)) stop("no HourChillTable provided.",call. = FALSE)
+  if(!is.data.frame(HourChillTable)) stop("HourChillTable is not a data.frame.",call. = FALSE)
+  if(is.null(Chill_model)) stop("no Chill_model provided.",call. = FALSE)
+  if(!Chill_model %in% colnames(HourChillTable)) stop("HourChillTable doesn't contain a column named ",Chill_model,call. = FALSE)
+  if(!Heat_model %in% colnames(HourChillTable)) stop("HourChillTable doesn't contain a column named ",Heat_model,call. = FALSE)
+  if(!is.numeric(HourChillTable[,Chill_model])) stop("column ",Chill_model," not numeric.",call. = FALSE)
+  if(!is.numeric(HourChillTable[,Heat_model])) stop("column ",Heat_model," not numeric.",call. = FALSE)
+  if(is.null(Chill_req)) stop("no Chill_req provided.",call. = FALSE)
+  if(!is.numeric(Chill_req)) stop("Chill_req not numeric.",call. = FALSE)
+  if(is.null(Heat_req)) stop("no Heat_req provided.",call. = FALSE)
+  if(!is.numeric(Heat_req)) stop("Heat_req not numeric.",call. = FALSE)
+  if(is.null(Start_JDay)) stop("no Start_JDay provided.",call. = FALSE)
+  if(Start_JDay>366) stop("Start_JDay can't be greater than 366",call. = FALSE)
+  if(Start_JDay<1) stop("Start_JDay can't be less than 1",call. = FALSE)
+                                          
   
   cchh<-HourChillTable$Chilling_Hours
   ccpp<-HourChillTable$Chill_Portions
@@ -194,8 +215,8 @@ function (HourChillTable, Chill_model, Chill_req, Heat_req,Start_JDay=305)
       tabend <- results$Creqfull[i + 1]
     else tabend <- nrow(HCT)
     temp <- HCT[results$Creqfull[i]:tabend, ]
-    temp[, "GDH"] <- temp[, "GDH"] - temp[1, "GDH"]
-    GDH <- temp[, "GDH"]
+    temp[, Heat_model] <- temp[, Heat_model] - temp[1, Heat_model]
+    GDH <- temp[, Heat_model]
     GDH2 <- GDH[c(2:length(GDH), 1)]
     Hreqfull <- which((GDH - Heat_req) * (GDH2 - Heat_req) < 
                         0) + 1

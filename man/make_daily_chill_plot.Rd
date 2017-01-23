@@ -7,7 +7,7 @@
 make_daily_chill_plot(daily_chill, metrics = NA, startdate = 1,
   enddate = 366, useyears = NA, metriclabels = NA, focusyears = "none",
   cumulative = FALSE, image_type = NA, outpath = NA, filename = NA,
-  fonttype = "serif")
+  fonttype = "serif", title = NA)
 }
 \arguments{
 \item{daily_chill}{a daily chill object generated with the daily_chill
@@ -56,6 +56,8 @@ be amended by the name of the metric and by the file extension.}
 \item{fonttype}{The type of font to be used for the figures. Can be 'serif'
 (default) for a Times New Roman like font, 'sans' for an Arial type font or
 'mono' for a typewriter type font.}
+
+\item{title}{title of the plot (if unhappy with the default).}
 }
 \value{
 The main purpose of the function is a side effect - plots of daily

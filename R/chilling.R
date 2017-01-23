@@ -196,7 +196,7 @@ function (hourtemps=NULL,Start_JDay=1,End_JDay=366,THourly=NULL,misstolerance=50
       hourtemps[Utah_range_min1.0,"Utah_weights"]<-(-1)
       hourtemps[,"Utah_Model"]<-0
 #      for (nl in normal_lines) {hourtemps[nl,"Utah_Model"]<-hourtemps[nl-1,"Utah_Model"]+hourtemps[nl,"Utah_weights"]}
-     seasons<-unique(hourtemps$sea)
+     seasons<-as.numeric(unique(hourtemps$sea))
      seasons<-seasons[!is.na(seasons)]
 
 

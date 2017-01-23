@@ -46,6 +46,7 @@
 #' @param fonttype The type of font to be used for the figures. Can be 'serif'
 #' (default) for a Times New Roman like font, 'sans' for an Arial type font or
 #' 'mono' for a typewriter type font.
+#' @param title title of the plot (if unhappy with the default).
 #' @return The main purpose of the function is a side effect - plots of daily
 #' climate metric accumulation. However, all the data used for making the plots
 #' is returned as a list containing an element for each metric, which consists
@@ -62,7 +63,8 @@
 #'  
 #' @export make_daily_chill_plot
 make_daily_chill_plot <-function(daily_chill,metrics=NA,startdate=1,enddate=366,useyears=NA,metriclabels=NA,
-                                 focusyears="none",cumulative=FALSE,image_type=NA,outpath=NA,filename=NA,fonttype='serif')
+                                 focusyears="none",cumulative=FALSE,image_type=NA,outpath=NA,filename=NA,fonttype='serif',
+                                 title=NA)
 {
 
  make_plot<-function(plottable,name,ylabel,focusyears,imageout,fonttype="default")
@@ -92,8 +94,9 @@ make_daily_chill_plot <-function(daily_chill,metrics=NA,startdate=1,enddate=366,
        ymax<-max(means+sds,na.rm=TRUE)})
     ymin<-ymin-(ymax-ymin)/20
     ymax<-ymax+(ymax-ymin)/20
+    if(is.na(title)) main<-paste(name,"accumulation") else main<-title
     if(length(which(is.na(means)))==0)
-      plot(JDay,means,main=paste(name,"accumulation"),cex.main=cex.main,ylab=NA,xlab=NA,xaxs="i",yaxs="i",xaxt="n",yaxt="n",type="l",col="BLACK",ylim=c(ymin,ymax)) else
+      plot(JDay,means,main=main,cex.main=cex.main,ylab=NA,xlab=NA,xaxs="i",yaxs="i",xaxt="n",yaxt="n",type="l",col="BLACK",ylim=c(ymin,ymax)) else
     plot(JDay,rep(NA,length(JDay)),main=paste(name,"accumulation"),cex.main=cex.main,ylab=NA,xlab=NA,xaxs="i",yaxs="i",xaxt="n",yaxt="n",type="l",col="BLACK",ylim=c(0,10))
     if(length(which(is.na(means)))==0)  arrows(JDay,means+sds,JDay,means-sds, angle=90, code=3,lwd=linelwd,length=0,col="GRAY")
     if(length(which(is.na(means)))==0)  lines(JDay,means,lwd=linelwd)
@@ -153,6 +156,7 @@ make_daily_chill_plot <-function(daily_chill,metrics=NA,startdate=1,enddate=366,
 
 dc<-daily_chill$daily_chill
 dc[,"JDay"]<-strptime(paste(dc$Month,"/",dc$Day,"/",dc$Year,sep=""),"%m/%d/%Y")$yday+1
+if("no_Tmin" %in% colnames(dc) & "no_Tmax" %in% colnames(dc))
 dc<-dc[1:max(which(!(dc$no_Tmin|dc$no_Tmax))),]
 if(enddate>startdate) relevant_days<-c(startdate:enddate) else relevant_days<-c(startdate:366,1:enddate)
 relevant_days<-relevant_days[which(relevant_days %in% unique(dc$JDay))]

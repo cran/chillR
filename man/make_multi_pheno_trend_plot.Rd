@@ -6,7 +6,7 @@
 \usage{
 make_multi_pheno_trend_plot(pheno_list, fixed_weather, split_month = 6,
   outpath = NA, file_name = NA, image_type = "png", fonttype = "serif",
-  percol = 5)
+  percol = 5, xlabel = NA, ylabel = NA, height_factor = 0.8)
 }
 \arguments{
 \item{pheno_list}{a data.frame with the following columns: varieties
@@ -37,9 +37,16 @@ other values, as well as the default NA lead to output as an R plot only.}
 'mono' for a typewriter type font.}
 
 \item{percol}{number of plots to be placed in a column.}
+
+\item{xlabel}{label for the x-axis (if unhappy with the default).}
+
+\item{ylabel}{label for the y-axis (if unhappy with the default).}
+
+\item{height_factor}{height of the resulting png figure (if this is a png)
+relative to the width of the plot (e.g. 1 or 0.7, defaults to 0.8).}
 }
 \value{
-One a side effect is produced: either a .png file or an R graphic
+Only a side effect is produced: either a .png file or an R graphic
 showing the multi-panel contour figure.
 }
 \description{
@@ -52,7 +59,7 @@ figure. Plots can be produced in R or directly exported as .png files.
 This function is only useful, if you want to plot several surface plots in
 the same figure. These must relate to the same weather dataset. Arguably,
 this function isn't quite ready to be released, but it performs some useful
-functions that you may be interested...
+functions that you may be interested in...
 }
 \examples{
 

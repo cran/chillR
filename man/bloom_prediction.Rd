@@ -5,21 +5,26 @@
 \title{Bloom prediction from chilling and forcing requirements, assumed to be
 fulfilled strictly in sequence}
 \usage{
-bloom_prediction(HourChillTable, Chill_model, Chill_req, Heat_req,
-  Start_JDay = 305)
+bloom_prediction(HourChillTable, Chill_req, Heat_req,
+  Chill_model = "Chill_Portions", Heat_model = "GDH", Start_JDay = 305)
 }
 \arguments{
 \item{HourChillTable}{a data frame resulting from the chilling_hourtable
 function.}
-
-\item{Chill_model}{character string describing the chill model to use.
-Options are "Chilling_Hours", "Chill_Portions" and "Chill_Units".}
 
 \item{Chill_req}{numeric parameter indicating the chilling requirement of
 the particular growth stage (in the unit specified by "Chill_model")}
 
 \item{Heat_req}{numeric parameter indicating the heat requirement of the
 particular growth stage (in Growing Degree Hours)}
+
+\item{Chill_model}{character string specifying the chill model to use. This
+has to correspond to the name of the column in HourChillTable that contains
+the chill accumulation (e.g "Chilling_Hours", "Chill_Portions" and "Chill_Units").}
+
+\item{Heat_model}{character string specifying the heat model to use. This
+has to correspond to the name of the column in HourChillTable that contains
+the heat accumulation (e.g "GDH").}
 
 \item{Start_JDay}{numeric parameter indicating the day when chill
 accumulation is supposed to start}
@@ -68,7 +73,8 @@ hourtemps<-stack_hourly_temps(fix_weather(KA_weather[which(KA_weather$Year>2008)
 
 CT<-chilling_hourtable(hourtemps,Start_JDay=305)
 
-bloom_prediction(CT,Chill_model="Chill_Portions",Chill_req=60,Heat_req=5000,Start_JDay=305)
+bloom_prediction(CT,Chill_req=60,Heat_req=5000,Chill_model="Chill_Portions",
+                 Heat_model="GDH",Start_JDay=305)
 
 
 }

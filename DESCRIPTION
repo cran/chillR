@@ -2,8 +2,8 @@ Package: chillR
 Type: Package
 Title: Statistical Methods for Phenology Analysis in Temperate Fruit
         Trees
-Version: 0.62
-Date: 2016-03-11
+Version: 0.65
+Date: 2017-01-23
 Author: Eike Luedeling
 Maintainer: Eike Luedeling <eike@eikeluedeling.com>
 Description: The phenology of plants (i.e. the timing of their annual life
@@ -18,13 +18,17 @@ Description: The phenology of plants (i.e. the timing of their annual life
     makes it easy. 'chillR' also contains procedures for conducting a PLS analysis
     relating phenological dates (e.g. bloom dates) to either mean temperatures or
     mean chill and heat accumulation rates, based on long-term weather and phenology
-    records.
+    records. As of version 0.65, it also includes functions for generating weather
+    scenarios with a weather generator, for conducting climate change analyses
+    for temperature-based climatic metrics and for plotting results from such
+    analyses.
+Depends: R (>= 3.2.0)
 Imports: pls, Kendall, fields, sp, readxl, XML, httr, grDevices,
-        graphics, stats, utils
+        graphics, stats, utils, RMAWGEN, raster
 License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
 NeedsCompilation: no
-Packaged: 2016-03-11 18:57:37 UTC; USER
+Packaged: 2017-01-23 10:47:50 UTC; USER
 Repository: CRAN
-Date/Publication: 2016-03-12 09:36:15
+Date/Publication: 2017-01-23 13:49:56

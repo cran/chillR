@@ -95,6 +95,7 @@
 #' @export get_weather
 get_weather<-function(location,time_interval=NA,database="UCIPM",station_list=NULL,stations_to_choose_from=25,end_at_present=TRUE)
 {
+  options(stringsAsFactors = FALSE)
   if(length(location)==2|length(location==3)) #determine whether location is specified by coordinates. If so move to station selection function
     if(is.numeric(location[1])&is.numeric(location[2]))
     {

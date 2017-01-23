@@ -8,7 +8,7 @@
 #' This function is only useful, if you want to plot several surface plots in
 #' the same figure. These must relate to the same weather dataset. Arguably,
 #' this function isn't quite ready to be released, but it performs some useful
-#' functions that you may be interested...
+#' functions that you may be interested in...
 #' 
 #' @param pheno_list a data.frame with the following columns: varieties
 #' (contains a character string), Start_chill (the start of the chill period,
@@ -31,7 +31,11 @@
 #' (default) for a Times New Roman like font, 'sans' for an Arial type font or
 #' 'mono' for a typewriter type font.
 #' @param percol number of plots to be placed in a column.
-#' @return One a side effect is produced: either a .png file or an R graphic
+#' @param xlabel label for the x-axis (if unhappy with the default).
+#' @param ylabel label for the y-axis (if unhappy with the default).
+#' @param height_factor height of the resulting png figure (if this is a png)
+#' relative to the width of the plot (e.g. 1 or 0.7, defaults to 0.8).
+#' @return Only a side effect is produced: either a .png file or an R graphic
 #' showing the multi-panel contour figure.
 #' @author Eike Luedeling
 #' @keywords utility
@@ -64,7 +68,8 @@ make_multi_pheno_trend_plot <-
            outpath=NA,
            file_name=NA,
            image_type="png",
-           fonttype="serif",percol=5)
+           fonttype="serif",percol=5,xlabel=NA,ylabel=NA,
+           height_factor=0.8)
     
   {
     read_pheno_flex<-function(phfile)
@@ -138,11 +143,11 @@ make_multi_pheno_trend_plot <-
       phenomin<-min(c(phenomin,pheno$pheno),na.rm=TRUE)
     }
     
-     xlabel<-paste("Mean temperature during the chilling phase (deg. C)",sep="")
-     ylabel<-paste("Mean temperature during the forcing phase (deg. C)",sep="")
+    if(is.na(xlabel)) xlabel<-paste("Mean temperature during the chilling phase (deg. C)",sep="")
+    if(is.na(ylabel)) ylabel<-paste("Mean temperature during the forcing phase (deg. C)",sep="")
     
     if(image_type=="png")
-    {png(paste(outpath,file_name,".png",sep=""),width=1200,height=1000)
+    {png(paste(outpath,file_name,".png",sep=""),width=1200,height=1200*height_factor)
       lwds<-2;cexs<-3} else {lwds<-1;cexs<-1}
     
     par(family=fonttype)
@@ -153,25 +158,47 @@ make_multi_pheno_trend_plot <-
     for(i in 1:length(k))
     {par(mar=c(0,0,0,0))
       image(predictSurface(k[[i]]),xlim=c(chillmin,chillmax),ylim=c(heatmin-(heatmax-heatmin)/6,heatmax),zlim=c(phenomin,phenomax),
-            xaxs="i",axes=FALSE,col = tim.colors())
+            xaxs="i",axes=FALSE,col = tim.colors(),asp=1)
       if(image_type=="png") contour(predictSurface(k[[i]]),add=TRUE,nlevels=5,labcex=1.5) else
         contour(predictSurface(k[[i]]),add=TRUE,nlevels=5)
       box("plot",lwd=lwds)
       if(image_type=="png") mtext(pheno_list$varieties[i],line=-2,side=1,cex=1.6) else
         mtext(pheno_list$varieties[i],line=-1.2,side=1,cex=0.8)
-      if(image_type=="png")
-      {if (divable(i,percol)&divable(i/percol)) axis(1,tck=-0.03,lwd=lwds,cex.axis=cexs,padj=1)
-        if ((i<=percol)&!divable(i)) axis(2,tck=-0.03,lwd=lwds,cex.axis=cexs)  
-        if (round((i/percol-floor(i/percol))*percol,7)==1&divable(floor(i/percol)))
+      if(!divable(length(k),percol)) #if last column isn't complete
+      {if(divable(ceiling(length(k)/percol))) # if number of columns is even
+      { #label x-axis such that the last column has the label on top
+        if (divable(i-1,percol)&!divable(floor(i/percol))) # 
           axis(3,tck=-0.03,lwd=lwds,cex.axis=cexs)
-        if ((i>length(k)-percol)&divable(i)) axis(4,tck=-0.03,lwd=lwds,cex.axis=cexs,padj=1)
+        if (divable(i,percol)&!divable(floor(i/percol)))
+          axis(1,tck=-0.03,lwd=lwds,cex.axis=cexs,padj=1)
       } else
-      {if (divable(i,percol)&divable(i/percol)) axis(1,tck=-0.03,lwd=lwds,cex.axis=cexs)
+      { #label x-axis such that the last column has the label on top
+        if (divable(i,percol)&divable(floor(i/percol))) # 
+          axis(1,tck=-0.03,lwd=lwds,cex.axis=cexs,padj=1)
+        if (divable(i-1,percol)&divable(floor(i/percol)))
+          axis(3,tck=-0.03,lwd=lwds,cex.axis=cexs)           }
+        
+        perrow<-ceiling(length(k)/percol)
+        if(divable(percol*perrow-length(k)))
+        {if(divable(percol)) if ((i<=percol)&!divable(i)) axis(2,tck=-0.03,lwd=lwds,cex.axis=cexs)
+          if(!divable(percol)) if ((i<=percol)&divable(i)) axis(2,tck=-0.03,lwd=lwds,cex.axis=cexs)
+          if(divable(percol)) if ((i>length(k)-percol)&divable(i)) axis(4,tck=-0.03,lwd=lwds,cex.axis=cexs,padj=1)
+          if(!divable(percol)) if ((i>length(k)-percol)&!divable(i-floor((i-1)/percol)*percol)) axis(4,tck=-0.03,lwd=lwds,cex.axis=cexs,padj=1)
+        } else
+        {if(divable(percol)) if ((i<=percol)&divable(i)) axis(2,tck=-0.03,lwd=lwds,cex.axis=cexs)  
+          if(!divable(percol)) if ((i<=percol)&!divable(i)) axis(2,tck=-0.03,lwd=lwds,cex.axis=cexs)  
+          if(divable(percol)) if ((i>length(k)-percol)&!divable(i)) axis(4,tck=-0.03,lwd=lwds,cex.axis=cexs,padj=1)
+          if(!divable(percol)) if ((i>length(k)-percol)&divable(i-floor((i-1)/percol)*percol)) axis(4,tck=-0.03,lwd=lwds,cex.axis=cexs,padj=1)}
+        
+        
+      } else
+      { #label x-axis such that the first column has the label at the bottom
+        if (divable(i,percol)&!divable(i/percol)) axis(1,tck=-0.03,lwd=lwds,cex.axis=cexs,padj=1)
+        if (divable(i-1,percol)&!divable((i-1)/percol)) axis(3,tck=-0.03,lwd=lwds,cex.axis=cexs)
         if ((i<=percol)&!divable(i)) axis(2,tck=-0.03,lwd=lwds,cex.axis=cexs)  
-        if (round((i/percol-floor(i/percol))*percol,7)==1&divable(floor(i/percol)))
-          axis(3,tck=-0.03,lwd=lwds,cex.axis=cexs)
-        if ((i>length(k)-percol)&divable(i)) axis(4,tck=-0.03,lwd=lwds,cex.axis=cexs)
-      }
+        if ((i>length(k)-percol)&divable(i-floor((i-1)/percol)*percol)) axis(4,tck=-0.03,lwd=lwds,cex.axis=cexs,padj=1)
+      }             
+      
       axis(1,labels=FALSE,tck=0.02,lwd=lwds)
       axis(2,labels=FALSE,tck=0.03,lwd=lwds)
       axis(3,labels=FALSE,tck=0.03,lwd=lwds)

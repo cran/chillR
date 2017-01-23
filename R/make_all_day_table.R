@@ -52,7 +52,7 @@ output[,"Month"]<-as.numeric(format(output[,"DATE"], "%m"))
 output[,"Day"]<-as.numeric(format(output[,"DATE"], "%d"))
 output[,"YEARMODA"]<-output[,"Year"]*10000+output[,"Month"]*100+output[,"Day"]
 
-output<-merge(output,tab2,by="YEARMODA",all.x=TRUE)
+if(!is.null(names(tab2))) output <- merge(output, tab2, by = "YEARMODA", all.x = TRUE)
 #output<-output[,c(2,3,4,5,11,12)]
 #colnames(output)<-c("DATE","Year","Month","Day","Tmin","Tmax")
 return(output)

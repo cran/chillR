@@ -45,7 +45,7 @@ chile_agromet2chillR<-function(downloaded_weather_file,drop_most=TRUE)
 {xml <- htmlParse(downloaded_weather_file)
  ns <- getNodeSet(xml, '//tr')
  ns<-ns[-c(1:5)]
- days<-lapply(ns, function(x) {event <- t(xmlToDataFrame(downloaded_weather_file))})
+ days<-lapply(ns, function(x) {event <- t(xmlToDataFrame(x))})
  caption<-days[[1]]
  caption<-caption[which(!is.na(caption))]
  days<-days[which(sapply(days,length)==as.numeric(names(sort(table(sapply(days,length)),decreasing=TRUE)[1])))]
