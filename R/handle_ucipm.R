@@ -135,9 +135,9 @@ handle_ucipm<-function(action,location=NA,time_interval=NA,station_list=californ
 
       for(l in 1:nrow(res))
         {if(res$Code[l] %in% station_list$Code)
-        {res[l,"Latitude"]<-station_list[which(station_list$Code==res$Code[l]),"Lat"]
-        res[l,"Longitude"]<-station_list[which(station_list$Code==res$Code[l]),"Long"]
-        res[l,"Elevation"]<-station_list[which(station_list$Code==res$Code[l]),"Elev"]
+        {res[l,"Latitude"]<-station_list[which(station_list$Code==as.character(res$Code[l])),"Lat"]
+        res[l,"Longitude"]<-station_list[which(station_list$Code==as.character(res$Code[l])),"Long"]
+        res[l,"Elevation"]<-station_list[which(station_list$Code==as.character(res$Code[l])),"Elev"]
         } else
         {docu<-htmlParse(paste("http://ipm.ucdavis.edu/calludt.cgi/WXSTATIONDATA?STN=",res$Code[l],sep=""))
         els = getNodeSet(docu, "//table")[[2]]
@@ -218,7 +218,7 @@ if(is.character(action)) if(action=="download_weather")
                   "DT_WIND=1&WIND_BACKUP1=.&WIND_BACKUP2=.&WIND_BACKUPAVG=.&DT_RH=1&RH_BACKUP1=.&RH_BACKUP2=.&RH_BACKUPAVG=.&DT_ET=1&ET_BACKUP1=.&",
                   "ET_BACKUP2=.&ET_BACKUPAVG=.&DT_SOLAR=1&SOLAR_BACKUP1=.&SOLAR_BACKUP2=.&SOLAR_BACKUPAVG=.&UNITS=M&FFMT=T&ACTION=RETRIEVE+DATA",sep="")
 
-    dat<-POST(url="http://169.237.140.1/calludt.cgi/WXDATAREPORT",body=string)
+    dat<-POST(url="http://ipm.ucanr.edu/calludt.cgi/WXDATAREPORT",body=string)
     weather<-content(dat,"text",encoding="latin1")
     if(!is.na(weather)) record<-read.csv(textConnection(weather),allowEscapes = FALSE,skip=66,stringsAsFactors =FALSE) else
       record<- data.frame(Station=location,Date=c(paste(time_interval[1],"0101",sep=""),paste(time_interval[2],"1231",sep="")),Time=NA,Precip=NA,type=NA,Air.max=NA,min=NA,obs=NA,Wx=NA,Wind.dir=NA,

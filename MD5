@@ -1,4 +1,4 @@
-a8f73ada187a51e8aee78b355295fcae *DESCRIPTION
+68a237bb401e6e160689ddfb7e889896 *DESCRIPTION
 96cb9044c7a264c88c27f8abe0b69a41 *NAMESPACE
 b5c73823ba26eb782576a775217f7624 *R/PLS_chill_force.R
 d6b9dfb71855bf39db929d87e2da39f2 *R/PLS_pheno.R
@@ -21,7 +21,7 @@ b569a581c8a8bd34331ec9a429956fc2 *R/extract_temperatures_from_grids.R
 d64a0e114c543554d63976b9b4e65527 *R/handle_chile_agromet.R
 f117e46fc9b8e353d5f767a4694d7eda *R/handle_cimis.R
 e0dcea7d855f26afe1e65ce733ccfa73 *R/handle_gsod.R
-c22ab0200e37ff91d032474ef1158337 *R/handle_ucipm.R
+b3da89f18b8d3582890f2b154c231973 *R/handle_ucipm.R
 2134b8c78d47980514c02ec8e0ca079d *R/handle_wunderground.R
 0b3c267a80549ee4d494ae6c667fc5a0 *R/identify_common_string.R
 ad747f4cff628395e600681ef58e49c1 *R/interpolate_gaps.R
