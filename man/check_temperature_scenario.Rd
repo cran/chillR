@@ -81,4 +81,3 @@ checked_temperature_scenario<-check_temperature_scenario(temperature_scenario,n_
 Eike Luedeling
 }
 \keyword{utility}
-

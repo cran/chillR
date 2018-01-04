@@ -4,13 +4,23 @@
 \alias{runn_mean}
 \title{Running mean of a vector}
 \usage{
-runn_mean(vec, runn_mean)
+runn_mean(vec, runn_mean, na.rm = FALSE, exclude_central_value = FALSE,
+  FUN = mean)
 }
 \arguments{
 \item{vec}{numeric vector}
 
 \item{runn_mean}{number of vector elements to use for calculating the
 running mean}
+
+\item{na.rm}{ignore NA values when calculating means. Defaults to FALSE.}
+
+\item{exclude_central_value}{exclude central value in calculating means.
+Defaults to FALSE.}
+
+\item{FUN}{function to be applied. For a running mean, this is usually mean (the
+default), but other functions can also be specified here (the na.rm parameter
+won't work then, and the function has to be dependent on one numeric variable only.}
 }
 \value{
 numeric vector containing the running mean
@@ -29,4 +39,3 @@ Eike Luedeling
 }
 \keyword{~kwd1}
 \keyword{~kwd2}
-

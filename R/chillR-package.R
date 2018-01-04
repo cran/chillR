@@ -179,3 +179,32 @@ NULL
 
 
 
+#' Hourly temperature data sample
+#' 
+#' Hourly temperature data recorded in a walnut orchard near the city of Winters,
+#' California, USA for 3rd March to 11th November 2008. The dataset contains the
+#' full record of recorded temperatures, as well as an additional dataset, in
+#' which 500 data gaps of different length were introduced.
+#' 
+#' 
+#' @name Winters_hours_gaps
+#' @docType data
+#' @format A data frame with observations on the following 5 variables.
+#' \describe{ \item{Year}{a numeric vector - the observation year}
+#' \item{Month}{a numeric vector - the observation month}
+#' \item{Day}{a numeric vector - the observation day}
+#' \item{Hour}{a numeric vector - the observation day}
+#' \item{Temp_gaps}{a numeric vector - daily maximum temperature}
+#' \item{Temp}{a numeric vector - daily minimum temperature} }
+#' @source data were collected by Eike Luedeling, at that time at the 
+#' University of California Davis (now University of Bonn) in a walnut orchard
+#' near Winters, California
+#' @keywords datasets
+#' @examples
+#' 
+#' data(Winters_hours_gaps)
+#' 
+NULL
+
+
+

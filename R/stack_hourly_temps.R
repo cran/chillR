@@ -17,7 +17,10 @@
 #' Year+Month+Day) and 24 columns called Hour_1 ... Hour_24 that contain hourly
 #' temperatures. This is no longer required, since weather can be specified by
 #' the weather argument. This parameter is only for compatibility with earlier
-#' versions of chillR
+#' versions of chillR.
+#' @param keep_sunrise_sunset boolean variable indicating whether information
+#' on sunrise, sunset and daylength, which is calculated for producing hourly
+#' temperature records, should be preserved in the output. Defaults to FALSE.
 #' @return list containing two elements: hourtemps: data frame containing all
 #' the columns of the input data frame, except the hourly temperatures.
 #' Instead, two columns are added: Hour is the hour of the day, and Temp is the
@@ -40,31 +43,41 @@
 #' 
 #' @export stack_hourly_temps
 stack_hourly_temps <-
-function(weather=NULL,latitude=50,hour_file=NULL)
-   {if(is.null(weather)&(!is.null(hour_file))) weather<-hour_file
-     #this part is for the case where users specify and named variable 'hour_file'
+function(weather=NULL,latitude=50,hour_file=NULL,keep_sunrise_sunset=FALSE)
+   {
+  if(length(latitude)>1) stop("'latitude' has more than one element")
+  if(!is.numeric(latitude)) stop("'latitude' is not numeric")
+  if(latitude>90|latitude<(-90)) warning("'latitude' is usually between -90 and 90")
+  
+  if(is.null(weather)&(!is.null(hour_file))) weather<-hour_file
+     #this part is for the case where users specify a named variable 'hour_file'
      #This is necessary for backward compatibility
     if((length(names(weather))==2) & ("weather" %in% names(weather)) & ("QC" %in% names(weather))) 
-      {THourly<-make_hourly_temps(latitude,weather$weather)
+      {if (!keep_sunrise_sunset) THourly<-make_hourly_temps(latitude,weather$weather)
+       if (keep_sunrise_sunset) THourly<-make_hourly_temps(latitude,weather$weather,
+                                                           keep_sunrise_sunset=TRUE)
       QC<-weather$QC}
     if((length(names(weather))>24) & ("Hour_23" %in% names(weather)))
       {THourly<-weather
       QC<-NA}
    if((length(names(weather))>2) & ("Tmax" %in% names(weather)))
-      {THourly<-make_hourly_temps(latitude,weather)
+      {if (!keep_sunrise_sunset)
+        THourly<-make_hourly_temps(latitude,weather)
+       if (keep_sunrise_sunset)
+         THourly<-make_hourly_temps(latitude,weather,keep_sunrise_sunset=TRUE)
       QC<-NA}   
     
     if(is.null(weather)&is.null(hour_file)) {tt=NA;QC=NA} else
       {preserve_columns<-colnames(THourly)[1:(ncol(THourly)-24)]
       THourly[,"index"]<-row(THourly)[,1]
-      ss<-stack(THourly,select=c(paste("Hour_",1:24,sep="")))
+      ss<-stack(THourly,select=c(paste("Hour_",0:23,sep="")))
       colnames(ss)<-c("Temp","Hour")
       ss$Hour<-as.numeric(sapply(strsplit(as.character(ss$Hour),"_"),"[",2))
       for (pc in preserve_columns)
       {ss[,pc]<-rep(THourly[,pc],24)}
-      tt<-ss[with(ss, order(Year, JDay,Hour)), ]  
-      tt<-tt[c(preserve_columns,"Hour","Temp")]}
-    
+      tt<-ss[with(ss, order(Year, JDay,Hour)), ]
+         tt<-tt[c(preserve_columns,"Hour","Temp")]
+      }
     return(list(hourtemps=tt,QC=QC))  
   }
           

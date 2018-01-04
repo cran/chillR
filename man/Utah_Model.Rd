@@ -41,9 +41,6 @@ stack<-stack_hourly_temps(weather,latitude=50.4)
 Utah_Model(stack$hourtemps$Temp)
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 Utah Model reference:
 
@@ -51,8 +48,10 @@ Richardson EA, Seeley SD, Walker DR (1974) A model for estimating the
 completion of rest for Redhaven and Elberta peach trees. HortScience 9(4),
 331-332
 }
+\author{
+Eike Luedeling
+}
 \keyword{and}
 \keyword{calculation}
 \keyword{chill}
 \keyword{heat}
-

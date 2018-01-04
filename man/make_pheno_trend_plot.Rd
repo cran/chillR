@@ -116,9 +116,6 @@ mpt<-make_pheno_trend_plot(weather_data_frame = weather$weather, split_month = 6
      colorscheme = "normal")
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 Guo L, Dai J, Wang M, Xu J, Luedeling E, 2015. Responses of
 spring phenology in temperate zone trees to climate warming: a case study of
@@ -143,6 +140,8 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat
 requirements of cherry trees - a statistical approach. International Journal
 of Biometeorology 57,679-689.
 }
+\author{
+Eike Luedeling
+}
 \keyword{analysis}
 \keyword{phenology}
-

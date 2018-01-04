@@ -91,4 +91,3 @@ day_chill<-make_daily_chill_plot(daily_chill(stack_hourly_temps(fix_weather(
 Eike Luedeling
 }
 \keyword{utility}
-

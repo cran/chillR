@@ -53,4 +53,3 @@ plot_climate_scenarios for plotting.
 Eike Luedeling
 }
 \keyword{utility}
-

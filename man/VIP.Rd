@@ -37,11 +37,6 @@ VIP(PLS_results$PLS_output)
   
  
 }
-\author{
-Eike Luedeling, but the function was mainly copied from
-http://mevik.net/work/software/pls.html; the reference given there is listed
-below
-}
 \references{
 the function is mostly identical to the one provided on
 http://mevik.net/work/software/pls.html.
@@ -58,5 +53,9 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat
 requirements of cherry trees - a statistical approach. International Journal
 of Biometeorology 57,679-689.
 }
+\author{
+Eike Luedeling, but the function was mainly copied from
+http://mevik.net/work/software/pls.html; the reference given there is listed
+below
+}
 \keyword{utility}
-

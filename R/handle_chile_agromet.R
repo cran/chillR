@@ -204,6 +204,8 @@ handle_chile_agromet<-function(action,location=NA,time_interval=NA,station_list=
       dw[,"Month"]<-sapply(dw[,"Date"],function(x) strsplit(as.character(x),"-")[[1]][2])
       dw[,"Day"]<-sapply(dw[,"Date"],function(x) strsplit(as.character(x),"-")[[1]][3])
       if(drop_most) dw<-dw[,c("Year","Month","Day","Tmin","Tmax","Tmean","Prec")]
+      for (cc in c("Year","Month","Day","Tmin","Tmax","Tmean","Prec"))
+        dw[,cc]<-as.numeric(dw[,cc])
       return(list(database="GSOD",weather=dw))}
       if(is.data.frame(action)) # then we assume that this is a downloaded file to be cleaned
       {dw<-action
@@ -215,6 +217,8 @@ handle_chile_agromet<-function(action,location=NA,time_interval=NA,station_list=
       dw[,"Month"]<-sapply(dw[,"Date"],function(x) strsplit(as.character(x),"-")[[1]][2])
       dw[,"Day"]<-sapply(dw[,"Date"],function(x) strsplit(as.character(x),"-")[[1]][3])
       if(drop_most) dw<-dw[,c("Year","Month","Day","Tmin","Tmax","Tmean","Prec")]
+      for (cc in c("Year","Month","Day","Tmin","Tmax","Tmean","Prec"))
+        dw[,cc]<-as.numeric(dw[,cc])
       return(dw)}
 
 }

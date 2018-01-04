@@ -159,14 +159,14 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
     par(mar = c(6.1, 9.4, 6.1, 2.1))
     par(mgp = c(4, 1.5, 0))
     if (colorscheme == "bw") 
-      color_bars <- color_bar_maker(VIPs[1:lc], VIPs[1:lc], 
+      color_bars_VIP <- color_bar_maker(VIPs[1:lc], VIPs[1:lc], 
                                     threshold = VIP_threshold, col1 = "BLACK", col2 = "BLACK", 
-                                    col3 = "GREY")  else color_bars <- color_bar_maker(VIPs[1:lc], VIPs[1:lc], 
+                                    col3 = "GREY")  else color_bars_VIP <- color_bar_maker(VIPs[1:lc], VIPs[1:lc], 
                                        threshold = VIP_threshold, col1 = "DARK BLUE", col2 = "DARK BLUE", 
                                        col3 = "DARK GREY")
     plot(leg, VIPs[1:lc], main = "VIP", xlab = NA, ylab = NA, 
          xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
-         cex.axis = 4, cex.main = 5, type = "h", col = color_bars, 
+         cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
          lwd = 6)
     tick_marks <- grconvertX(tick_marks, from = "user", to = "user")
     X_coords <- grconvertX(leg, from = "user", to = "user")
@@ -190,7 +190,7 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
                                        col3 = "DARK GREY")
     if(!is.na(add_chill[1])&!is.na(add_chill[2]))
       rect(get_leg(add_chill[1],leg),-10000,get_leg(add_chill[2],leg),10000,col = rgb(204/255,229/255,1,1/2),border=NA)
-    if(!is.na(add_heat[1])&!is.na(add_chill[1]))
+    if(!is.na(add_heat[1])&!is.na(add_heat[2]))
       rect(get_leg(add_heat[1],leg),-10000,get_leg(add_heat[2],leg),10000,col = rgb(1,204/255,204/255,1/2),border=NA)
     
     if(plot_bloom) {
@@ -200,7 +200,7 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
     par(new=TRUE)    
     plot(leg, VIPs[1:lc], main = "VIP", xlab = NA, ylab = NA, 
          xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
-         cex.axis = 4, cex.main = 5, type = "h", col = color_bars, 
+         cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
          lwd = 6)
 
     plot(leg, Coefs[1:lc], main = "Model coefficients", ylab = NA, 
@@ -322,14 +322,14 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
               dev_climg <- PLS_obj[-(1:lc), "MetricStdev"]
             }
             if (colorscheme == "bw") 
-              color_bars <- color_bar_maker(VIPs, VIPs, threshold = VIP_threshold, 
+              color_bars_VIP <- color_bar_maker(VIPs, VIPs, threshold = VIP_threshold, 
                                             col1 = "BLACK", col2 = "BLACK", col3 = "GREY") else
-                                              color_bars <- color_bar_maker(VIPs, VIPs, 
+                                              color_bars_VIP <- color_bar_maker(VIPs, VIPs, 
                                                                             threshold = VIP_threshold, col1 = "DARK BLUE", 
                                                                             col2 = "DARK BLUE", col3 = "DARK GREY")
                                             plot(leg, VIPs, main = "VIP", xlab = NA, ylab = NA, 
                                                  xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
-                                                 cex.axis = 4, cex.main = 5, type = "h", col = color_bars, 
+                                                 cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
                                                  lwd = 6)
                                             tick_marks <- grconvertX(tick_marks, from = "user", 
                                                                      to = "user")
@@ -365,7 +365,7 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
                                             par(new=TRUE)   
                                             plot(leg, VIPs, main = "VIP", xlab = NA, ylab = NA, 
                                                  xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
-                                                 cex.axis = 4, cex.main = 5, type = "h", col = color_bars, 
+                                                 cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
                                                  lwd = 6)
                                             
                                             plot(leg, Coefs, main = "Model coefficients", 

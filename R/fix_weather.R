@@ -108,7 +108,7 @@ fix_weather<-function(weather,start_year=0,end_year=3000,start_date=1,end_date=3
   
     if((length(names(weather))==2) & ("weather" %in% names(weather))) weather<-weather$weather
     
- fixedweather<-make_all_day_table(weather[which((weather$Year>=start_year)&(weather$Year<=end_year)),])
+ fixedweather<-make_all_day_table(weather[which((weather$Year>=start_year)&(weather$Year<=end_year)),],add.DATE=TRUE)
  if(end_at_present) fixedweather<-fixedweather[which(fixedweather$DATE<Sys.time()),]
  for(ccc in columns)
  {interp<-interpolate_gaps(fixedweather[,ccc])

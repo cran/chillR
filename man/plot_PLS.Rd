@@ -95,9 +95,6 @@ plot_PLS(plscf,PLS_results_path)
 
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 The method is described here:
 
@@ -133,6 +130,8 @@ of Sciences (PNAS) 107 (51), 22151-22156.
 Yu H, Xu J, Okuto E and Luedeling E, 2012. Seasonal Response of Grasslands
 to Climate Change on the Tibetan Plateau. PLoS ONE 7(11), e49230.
 }
+\author{
+Eike Luedeling
+}
 \keyword{analysis}
 \keyword{phenology}
-

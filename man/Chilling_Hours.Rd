@@ -42,9 +42,6 @@ hourtemps<-stack_hourly_temps(weather,latitude=50.4)
 Chilling_Hours(hourtemps$hourtemps$Temp)
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 Chilling Hours references:
 
@@ -53,8 +50,10 @@ Hortic Sci 56, 122-128
 
 Bennett JP (1949) Temperature and bud rest period. Calif Agric 3 (11), 9+12
 }
+\author{
+Eike Luedeling
+}
 \keyword{and}
 \keyword{calculation}
 \keyword{chill}
 \keyword{heat}
-

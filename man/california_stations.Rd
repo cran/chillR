@@ -27,4 +27,3 @@ data(california_stations)
 
 }
 \keyword{datasets}
-

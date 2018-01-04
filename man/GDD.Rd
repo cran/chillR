@@ -48,16 +48,15 @@ hourtemps<-stack_hourly_temps(weather,latitude=50.4)
 GDD(hourtemps$hourtemps$Temp)
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 Growing Degree Days reference:
 
 http://agron-www.agron.iastate.edu/Courses/agron212/Calculations/GDD.htm
 }
+\author{
+Eike Luedeling
+}
 \keyword{and}
 \keyword{calculation}
 \keyword{chill}
 \keyword{heat}
-

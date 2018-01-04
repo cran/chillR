@@ -4,7 +4,8 @@
 \alias{stack_hourly_temps}
 \title{Stacking of hourly temperatures}
 \usage{
-stack_hourly_temps(weather = NULL, latitude = 50, hour_file = NULL)
+stack_hourly_temps(weather = NULL, latitude = 50, hour_file = NULL,
+  keep_sunrise_sunset = FALSE)
 }
 \arguments{
 \item{weather}{weather data frame containing either daily minimum ("Tmin")
@@ -20,7 +21,11 @@ by make_hourly_temps. It has columns describing the date (Year+JDay or
 Year+Month+Day) and 24 columns called Hour_1 ... Hour_24 that contain hourly
 temperatures. This is no longer required, since weather can be specified by
 the weather argument. This parameter is only for compatibility with earlier
-versions of chillR}
+versions of chillR.}
+
+\item{keep_sunrise_sunset}{boolean variable indicating whether information
+on sunrise, sunset and daylength, which is calculated for producing hourly
+temperature records, should be preserved in the output. Defaults to FALSE.}
 }
 \value{
 list containing two elements: hourtemps: data frame containing all
@@ -46,13 +51,12 @@ hourtemps<-stack_hourly_temps(weather, latitude=50.4)
 
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 Luedeling E, Kunz A and Blanke M, 2013. Identification of
 chilling and heat requirements of cherry trees - a statistical approach.
 International Journal of Biometeorology 57,679-689.
 }
+\author{
+Eike Luedeling
+}
 \keyword{utility}
-

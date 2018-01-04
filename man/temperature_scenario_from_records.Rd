@@ -50,4 +50,3 @@ temperature_scenario_from_records(weather=KA_weather,year=2001,weather_start=200
 Eike Luedeling
 }
 \keyword{utility}
-

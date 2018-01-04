@@ -73,4 +73,3 @@ make_chill_plot(tempResponse(stack_hourly_temps(fix_weather(KA_weather[KA_weathe
 Eike Luedeling
 }
 \keyword{utility}
-

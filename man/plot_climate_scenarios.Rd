@@ -116,4 +116,3 @@ side by side.
 Eike Luedeling
 }
 \keyword{utility}
-

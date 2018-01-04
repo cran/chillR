@@ -103,4 +103,3 @@ relative_temperature_scenario<-temperature_scenario_baseline_adjustment(
 Eike Luedeling
 }
 \keyword{utility}
-

@@ -30,4 +30,3 @@ that end in a particular way, e.g. on a common file extension.
 Eike Luedeling
 }
 \keyword{utility}
-

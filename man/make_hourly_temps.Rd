@@ -4,7 +4,7 @@
 \alias{make_hourly_temps}
 \title{Make hourly temperature record from daily data}
 \usage{
-make_hourly_temps(latitude, year_file)
+make_hourly_temps(latitude, year_file, keep_sunrise_sunset = FALSE)
 }
 \arguments{
 \item{latitude}{the geographic latitude (in decimal degrees) of the location
@@ -17,6 +17,10 @@ JDay, which contain the Year and Julian date (day of the year), or as three
 columns called Year, Month and Day. year_file cannot have any missing
 values, so it may be a good idea to process the relevant columns with
 make_all_day_table and interpolate_gaps before.}
+
+\item{keep_sunrise_sunset}{boolean variable indicating whether information
+on sunrise, sunset and daylength, which is calculated for producing hourly
+temperature records, should be preserved in the output. Defaults to FALSE.}
 }
 \value{
 data frame containing all the columns of year_file, plus 24 columns
@@ -42,9 +46,6 @@ THourly<-make_hourly_temps(50.4,weather$weather)
 #in most cases, you're probably better served by stack_hour_temperatures
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 Luedeling E, Kunz A and Blanke M, 2013. Identification of
 chilling and heat requirements of cherry trees - a statistical approach.
@@ -68,5 +69,7 @@ Almorox J, Hontoria C and Benito M, 2005. Statistical validation of
 daylength definitions for estimation of global solar radiation in Toledo,
 Spain. Energy Conversion and Management 46(9-10), 1465-1471)
 }
+\author{
+Eike Luedeling
+}
 \keyword{utility}
-

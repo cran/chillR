@@ -28,4 +28,3 @@ chilling and heat requirements of cherry trees - a statistical approach.
 International Journal of Biometeorology 57,679-689.
 }
 \keyword{datasets}
-

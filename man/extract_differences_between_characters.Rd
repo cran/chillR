@@ -27,4 +27,3 @@ e.g. for a vector such as c("XXX01YYY",XXX02YYY") extract the numbers.
 Eike Luedeling
 }
 \keyword{utility}
-

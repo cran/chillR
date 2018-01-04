@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Eike Luedeling, University of Bonn, Germany" />
+
+<meta name="date" content="2018-01-04" />
+
+<title>Producing hourly temperature records for agroclimatic analysis</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Producing hourly temperature records for agroclimatic analysis</h1>
+<h4 class="author"><em>Eike Luedeling, University of Bonn, Germany</em></h4>
+<h4 class="date"><em>2018-01-04</em></h4>
+
+
+
+<section id="the-need-for-hourly-records" class="level2">
+<h2>The need for hourly records</h2>
+<p>Many agroclimatic models operate on an hourly basis. For tracking the transition of temperate-zone fruit trees through the dormancy season, all major chill and heat models <span class="citation" data-cites="Bennett1949 Richardsonetal1974 Erezetal1990 Andersonetal1986">(Anderson et al., 1986; Bennett, 1949; Erez et al., 1990; Richardson et al., 1974)</span> require such high-resolution information. There are some models that operate on daily data <span class="citation" data-cites="CrossaRaynaud1955">(Crossa-Raynaud, 1955)</span>, but these are often just mechanisms that use proxy relationships to translate daily temperatures into what hourly-scale models would produce, if temperature data at such resolution were available. This is useful in many situations, but clearly sub-optimal, since the relationship between chill/heat and average daily temperatures (or daily extreme temperatures) varies substantially between locations. Some relationships of this nature are given in <span class="citation" data-cites="LuedelingBrown2011">Luedeling and Brown (2011)</span> (though these are for the ratios between chill metrics). As a consequence, computations based on hourly data are always more reliable.</p>
+<p>Unfortunately, hourly temperature data are often not recorded in places, for which we would like to compute chill or heat accumulation. Even where records have been collected, they are often incomplete, which makes them difficult to deal with. <code>chillR</code> contains some functions that help in such situations. In this tutorial, we use the <code>KA_weather</code> and <code>Winters_hours_gaps</code> datasets included in <code>chillR</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">require</span>(chillR)</a></code></pre></div>
+<p>All computations should also work for different datasets, as long as they are formatted as required by <code>chillR</code>, i.e. with columns Year, Month, Day, Tmax, Tmin for daily data, or Year, Month, Day, Hour, Temp_gaps, Temp for hourly records.</p>
+</section>
+<section id="hourly-data-from-daily-temperature-extremes" class="level2">
+<h2>Hourly data from daily temperature extremes</h2>
+<p>Hourly temperatures typically follow a daily temperature cycle, which can be described mathematically. This can be done in various ways that differ in accuracy and mathematical complexity. <code>chillR</code> implements equations provided by <span class="citation" data-cites="Linvill1990">Linvill (1990)</span>, which are based on a sine curve for daytime temperatures, with nighttime cooling represented by a logarithmic decay function. Differences in daylength between locations are accounted for by computing sunrise and sunset times based on geographic latitude, using equations given by <span class="citation" data-cites="Spencer1971">Spencer (1971)</span> and <span class="citation" data-cites="Almoroxetal2005">Almorox et al. (2005)</span>. The results of the latter equations can be directly accessed via the <code>daylength</code> function, which requires only the latitude and the Julian date (day of the year) as inputs.</p>
+<p>For example, daylength, sunrise and sunset for January 15th, for a location at latitude 50.4, can be computed by the following code:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">daylength</span>(<span class="dt">latitude=</span><span class="fl">50.4</span>,<span class="dt">JDay=</span><span class="dv">15</span>)</a></code></pre></div>
+<pre><code>## $Sunrise
+## [1] 7.771022
+## 
+## $Sunset
+## [1] 16.22898
+## 
+## $Daylength
+## [1] 8.457956</code></pre>
+<p>Or for the whole year:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">all_daylengths&lt;-<span class="kw">cbind</span>(<span class="dt">JDay=</span><span class="dv">1</span><span class="op">:</span><span class="dv">365</span>,<span class="kw">sapply</span>(<span class="kw">daylength</span>(<span class="dt">latitude=</span><span class="fl">50.5</span>,<span class="dt">JDay=</span><span class="dv">1</span><span class="op">:</span><span class="dv">365</span>),cbind))</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">head</span>(all_daylengths))</a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">JDay</th>
+<th style="text-align: right;">Sunrise</th>
+<th style="text-align: right;">Sunset</th>
+<th style="text-align: right;">Daylength</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7.962814</td>
+<td style="text-align: right;">16.03719</td>
+<td style="text-align: right;">8.074373</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">7.954307</td>
+<td style="text-align: right;">16.04569</td>
+<td style="text-align: right;">8.091387</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">7.945031</td>
+<td style="text-align: right;">16.05497</td>
+<td style="text-align: right;">8.109938</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">7.934996</td>
+<td style="text-align: right;">16.06500</td>
+<td style="text-align: right;">8.130007</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">7.924213</td>
+<td style="text-align: right;">16.07579</td>
+<td style="text-align: right;">8.151573</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">7.912693</td>
+<td style="text-align: right;">16.08731</td>
+<td style="text-align: right;">8.174613</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>stack_hourly_temps</code> applies these function, as well as those proposed by <span class="citation" data-cites="Linvill1990">Linvill (1990)</span> to a record of daily minimum and maximum temperatures. Before doing this, it is a good idea to apply the <code>make_all_day_table</code> function to ensure that no days are missing from the record (sometimes, missing data isn’t marked as <code>NA</code>, but represented by missing rows in a data.frame). The <code>stack_hourly_temps</code> requires information on the latitude:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">weather&lt;-<span class="kw">make_all_day_table</span>(KA_weather)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">hourtemps&lt;-<span class="kw">stack_hourly_temps</span>(weather, <span class="dt">latitude=</span><span class="fl">50.4</span>)<span class="op">$</span>hourtemps</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">hourtemps<span class="op">$</span>DATE&lt;-<span class="kw">ISOdate</span>(hourtemps<span class="op">$</span>Year,hourtemps<span class="op">$</span>Month,hourtemps<span class="op">$</span>Day,hourtemps<span class="op">$</span>Hour)</a></code></pre></div>
+<p>This is what the resulting table looks like:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">DATE</th>
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">Month</th>
+<th style="text-align: right;">Day</th>
+<th style="text-align: right;">Tmax</th>
+<th style="text-align: right;">Tmin</th>
+<th style="text-align: right;">JDay</th>
+<th style="text-align: right;">Hour</th>
+<th style="text-align: right;">Temp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1998-01-01 19:00:00</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8.2</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">6.424226</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1998-01-01 20:00:00</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8.2</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">6.203186</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1998-01-01 21:00:00</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8.2</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">6.022921</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1998-01-01 22:00:00</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8.2</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">5.870706</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1998-01-01 23:00:00</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8.2</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">5.738974</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1998-01-02 00:00:00</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">9.1</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5.574995</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1998-01-02 01:00:00</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">9.1</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5.468986</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1998-01-02 02:00:00</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">9.1</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">5.373134</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1998-01-02 03:00:00</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">9.1</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5.285660</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1998-01-02 04:00:00</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">9.1</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5.205217</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1998-01-02 05:00:00</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">9.1</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5.130758</td>
+</tr>
+</tbody>
+</table>
+<p>And here is a plot of part of the data:</p>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>This plot shows a smooth temperature curve, which can now be used for computing metrics that require such data (see below).</p>
+</section>
+<section id="patching-holes-in-daily-temperature-records" class="level2">
+<h2>Patching holes in daily temperature records</h2>
+<p>Quite often, the procedure outlined above isn’t sufficent for producing a continuous record, because some daily data are missing. Let’s make such a dataset from the KA_weather data as an example:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">KA_weather_gaps&lt;-KA_weather[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>,]</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">KA_weather_gaps[,<span class="st">&quot;Tmin_original&quot;</span>]&lt;-KA_weather_gaps[,<span class="st">&quot;Tmin&quot;</span>]</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">KA_weather_gaps[,<span class="st">&quot;Tmax_original&quot;</span>]&lt;-KA_weather_gaps[,<span class="st">&quot;Tmax&quot;</span>]</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">KA_weather_gaps<span class="op">$</span>Tmin[<span class="kw">c</span>(<span class="dv">4</span><span class="op">:</span><span class="dv">15</span>,<span class="dv">20</span><span class="op">:</span><span class="dv">30</span>,<span class="dv">35</span><span class="op">:</span><span class="dv">40</span>,<span class="dv">44</span><span class="op">:</span><span class="dv">45</span>,<span class="dv">48</span>,<span class="dv">50</span><span class="op">:</span><span class="dv">60</span>)]&lt;-<span class="ot">NA</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">KA_weather_gaps<span class="op">$</span>Tmax[<span class="kw">c</span>(<span class="dv">3</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">12</span><span class="op">:</span><span class="dv">15</span>,<span class="dv">17</span><span class="op">:</span><span class="dv">20</span>,<span class="dv">30</span><span class="op">:</span><span class="dv">35</span>,<span class="dv">42</span><span class="op">:</span><span class="dv">60</span>,<span class="dv">65</span><span class="op">:</span><span class="dv">70</span>)]&lt;-<span class="ot">NA</span></a></code></pre></div>
+<p>In such cases, we have two options for fixing this situation:</p>
+<ul>
+<li>we can interpolate the gaps</li>
+<li>we can use data from another weather station to fill the gaps</li>
+</ul>
+<p>The first option - interpolation - is implemented in the <code>fix_weather</code> function:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">fixed&lt;-<span class="kw">fix_weather</span>(KA_weather_gaps)</a></code></pre></div>
+<p>This operation resulted in a continuous record of daily minimum and maximum temperatures, but the linearly interpolated values were not very accurate. This is shown in the figure below, where the thick blue and red lines are the actual Tmin and Tmax values and the black lines represent the interpolated values.</p>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>For small gaps, such linear interpolation often produces accurate values, but when gaps are longer, deviation from actual values can be quite substantial.</p>
+<p>Gaps in the record can also be patched with proxy data from other weather station in the area. In this, it is critical to ensure that the proxy station is situated in a location with reasonably similar weather. Filling in gaps with records from somewhere else can easily introduce a bias - a systematic difference between stations - that could lead to large errors. These issues are addressed by the <code>patch_daily_temperatures</code> function, which uses one or more daily temperature datasets to fill holes in patch records.</p>
+<p><code>chillR</code> contains a function that can look through the ‘Global Summary of the Day’ database and identify stations based on their coordinates. <code>handle_gsod</code> can do most of this work. When supplied with the <code>action</code> parameter ‘list_stations’, its output is a list of weather stations in the database that are close to the specified coordinates (in <code>c(longitude,latitude)</code> format).</p>
+<p>To run the code below, remove the comment marks (#). Retrieving these records can sometimes take a bit of time (especially when loading many years). It also depends on internet connectivity, and on the host website still operating and using the same protocols as when the function was written.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># stations&lt;-handle_gsod(action=&quot;list_stations&quot;,location=c(6.99,50.62),</span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#                      time_interval = c(1998,1998))</span></a></code></pre></div>
+<p>This list contains a column <code>chillR_code</code> which can be passed to the same function, when specifying the <code>action</code> ‘download_weather’. Applying the same function to the resulting file then returns a dataset that <code>chillR</code> functions can easily use. Note that many records in this particular database have lots of gaps themselves, so it is quite common that the closest station listed there isn’t the most useful one.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">chillR_code</th>
+<th style="text-align: left;">STATION.NAME</th>
+<th style="text-align: right;">Lat</th>
+<th style="text-align: right;">Long</th>
+<th style="text-align: right;">distance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">105180_99999</td>
+<td style="text-align: left;">BONN-HARDTHOEHE</td>
+<td style="text-align: right;">50.700</td>
+<td style="text-align: right;">7.033</td>
+<td style="text-align: right;">9.40</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">105170_99999</td>
+<td style="text-align: left;">BONN/FRIESDORF(AUT)</td>
+<td style="text-align: right;">50.700</td>
+<td style="text-align: right;">7.150</td>
+<td style="text-align: right;">14.39</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">105190_99999</td>
+<td style="text-align: left;">BONN-ROLEBER</td>
+<td style="text-align: right;">50.733</td>
+<td style="text-align: right;">7.200</td>
+<td style="text-align: right;">19.45</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">105130_99999</td>
+<td style="text-align: left;">KOLN BONN</td>
+<td style="text-align: right;">50.866</td>
+<td style="text-align: right;">7.143</td>
+<td style="text-align: right;">29.42</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">105060_99999</td>
+<td style="text-align: left;">NUERBURG-BARWEILER</td>
+<td style="text-align: right;">50.367</td>
+<td style="text-align: right;">6.867</td>
+<td style="text-align: right;">29.47</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">105080_99999</td>
+<td style="text-align: left;">BLANKENHEIM</td>
+<td style="text-align: right;">50.450</td>
+<td style="text-align: right;">6.650</td>
+<td style="text-align: right;">30.64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">105100_99999</td>
+<td style="text-align: left;">NUERBURG</td>
+<td style="text-align: right;">50.333</td>
+<td style="text-align: right;">6.950</td>
+<td style="text-align: right;">32.05</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">105020_99999</td>
+<td style="text-align: left;">NORVENICH</td>
+<td style="text-align: right;">50.831</td>
+<td style="text-align: right;">6.658</td>
+<td style="text-align: right;">33.17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">105140_99999</td>
+<td style="text-align: left;">MENDIG</td>
+<td style="text-align: right;">50.366</td>
+<td style="text-align: right;">7.315</td>
+<td style="text-align: right;">36.47</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">105090_99999</td>
+<td style="text-align: left;">BUTZWEILERHOF(BAFB)</td>
+<td style="text-align: right;">50.983</td>
+<td style="text-align: right;">6.900</td>
+<td style="text-align: right;">40.88</td>
+</tr>
+</tbody>
+</table>
+<p>In this present example, which is set in Klein-Altendorf, the experimental station of the University of Bonn, Germany, only the forth-closest record (Cologne/Bonn Airport, about 30 km from the site) contained adequate data for the period of the weather record of interest. The following code accesses and processes the data for this station for the analysis. Again, uncomment the code below to actually run the functions.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co"># patch_weather&lt;-handle_gsod(action=&quot;download_weather&quot;,stations$chillR_code[4],</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co">#                      time_interval = c(1998,1998))</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co"># patch_weather&lt;-handle_gsod(patch_weather)$weather</span></a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">Month</th>
+<th style="text-align: right;">Day</th>
+<th style="text-align: right;">Tmin</th>
+<th style="text-align: right;">Tmax</th>
+<th style="text-align: right;">Tmean</th>
+<th style="text-align: right;">Prec</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4.222222</td>
+<td style="text-align: right;">8.722222</td>
+<td style="text-align: right;">6.055556</td>
+<td style="text-align: right;">4.572</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4.222222</td>
+<td style="text-align: right;">9.888889</td>
+<td style="text-align: right;">7.777778</td>
+<td style="text-align: right;">0.254</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4.277778</td>
+<td style="text-align: right;">10.888889</td>
+<td style="text-align: right;">7.888889</td>
+<td style="text-align: right;">3.048</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4.388889</td>
+<td style="text-align: right;">9.277778</td>
+<td style="text-align: right;">7.333333</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">4.722222</td>
+<td style="text-align: right;">8.777778</td>
+<td style="text-align: right;">6.388889</td>
+<td style="text-align: right;">0.254</td>
+</tr>
+</tbody>
+</table>
+<p>Patching the gaps can then easily be done with the <code>patch_daily_temperatures</code>function.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">patched_weather&lt;-<span class="kw">patch_daily_temperatures</span>(KA_weather_gaps,patch_weather)</a></code></pre></div>
+<p>The resulting list contains two elements. Let’s first look at the second one, which is called <code>statistics</code>:</p>
+<table class="kable_wrapper">
+<tbody>
+<tr>
+<td>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: right;">mean_bias</th>
+<th style="text-align: right;">stdev_bias</th>
+<th style="text-align: right;">filled</th>
+<th style="text-align: right;">gaps_remain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Tmin</td>
+<td style="text-align: right;">0.317</td>
+<td style="text-align: right;">1.232</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>Tmax</td>
+<td style="text-align: right;">-1.001</td>
+<td style="text-align: right;">0.928</td>
+<td style="text-align: right;">47</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This table contains information on the stations used for patching (only one in this case), the mean bias for Tmin and Tmax, and the bias in the standard deviation of both metrics between stations. The function automatically corrects for the mean bias, but not for the standard deviation one. The table also describes how many gaps were filled with this data, for Tmin and Tmax, respectively, and how many gaps remained. In this gaps, no gaps remained, but in other cases, it is possible to close remaining holes by adding more prpoxy stations or by using linear interpolation.</p>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>Even though the original dataset of 100 days was missing 43 minimum and 47 maximum temperatures, the gaps are now barely visible, with the patched datasets corresponding quite closely to actual temperatures. These can now be translated into hourly temperatures with the <code>stack_hourly_temps</code> function, as described above.</p>
+</section>
+<section id="interpolating-hourly-temperatures" class="level2">
+<h2>Interpolating hourly temperatures</h2>
+<p>Sometimes we have actual records of hourly temperatures. While this is preferable, in principle, it may cause problems when the record isn’t complete. An example of such a record is the <code>Winters_hours_gaps</code> dataset contained in <code>chillR</code>. This is quite often the case, because temperature loggers can temporarily fail for many reasons. Gaps in such records are even harder to fill, because in this case, linear interpolation is usually not an option for gaps that span more than a couple of hours. Here’s an illustration of the error that may arise from this:</p>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>In this interpolation, some daytime or nighttime cycles were missed entirely, which can lead to substantial errors when calculating agroclimatic metrics, such as chill or heat stress that are of particular concern during the warmest and coolest parts of the day.</p>
+<p><code>chillR</code>’s <code>interpolate_gaps_hourly</code> function provides an algorithm that can produce credible and continuous hourly records from such a patchy dataset. It combines several of the elements described above, but also adds functionality to derive daily temperature extremes from hourly data that were recorded. Without going into too much detail, here is the rough mode of operation:</p>
+<ol type="1">
+<li>Express temperatures for each hour as a function of daily temperature extremes using the functions of <span class="citation" data-cites="Linvill1990">Linvill (1990)</span>. According to this idealized curve, all hourly temperatures can be expressed as a function of Tmin and Tmax on the previous, same or next day of the temperature record (depending on which hour is of interest). For a day with a complete record, 24 equations can be set up.</li>
+<li>For each daily temperature extreme, empirically solve the system of all equations that contain the respective Tmin or Tmax variable (this is only attempted, when a minimum of 5 equations are available, to avoid spurious results).</li>
+<li>Close gaps in the resulting dataset of daily Tmin and Tmax using data from proxy stations or, as a last resort, linear interpolation.</li>
+<li>Compute idealized temperature curves from the now continuous record of daily Tmin and Tmax values.</li>
+<li>Calculate the difference between recorded temperatures and this idealized curve.</li>
+<li>Linearly interpolate this difference and add this to the idealized temperature curve.</li>
+</ol>
+<p>The following code calls this function for the Winters dataset, using daily data from a nearby station of the California Irrigation Management Information System (CIMIS) as a proxy. This is retrieved with the <code>handle_cimis</code> function, which works similarly to the <code>handle_gsod</code> function described above. As before, uncomment the code to run the function (The CIMIS database seems to have occasional connectivity problems, and they’ve at least once made changes to their data storage system that required changes to the <code>handle_cimis</code> function. So it’s possible that the process times out or returns an error).</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co">#stations&lt;-handle_cimis(&quot;list_stations&quot;,location=c(-122,38.5))</span></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co">#downloaded_winters&lt;-handle_cimis(&quot;download_weather&quot;,stations$chillR_code[2],</span></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="co">#               time_interval = c(2008,2008))</span></a>
+<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="co">#winters_daily&lt;-handle_cimis(downloaded_winters)$weather</span></a></code></pre></div>
+<p>Here’s what the dataset looks like:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Year</th>
+<th style="text-align: left;">Month</th>
+<th style="text-align: left;">Day</th>
+<th style="text-align: left;">Tmin</th>
+<th style="text-align: left;">Tmax</th>
+<th style="text-align: left;">Tmean</th>
+<th style="text-align: center;">Prec</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">-1.7</td>
+<td style="text-align: left;">13.6</td>
+<td style="text-align: left;">5.0</td>
+<td style="text-align: center;">0.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">1.5</td>
+<td style="text-align: left;">12.2</td>
+<td style="text-align: left;">6.9</td>
+<td style="text-align: center;">12.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">8.0</td>
+<td style="text-align: left;">11.0</td>
+<td style="text-align: left;">9.2</td>
+<td style="text-align: center;">132.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5.3</td>
+<td style="text-align: left;">9.5</td>
+<td style="text-align: left;">7.2</td>
+<td style="text-align: center;">10.3</td>
+</tr>
+</tbody>
+</table>
+<p>And here is the call of the <code>interpolate_gaps_hourly</code> function:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">to_interp&lt;-Winters_hours_gaps</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">to_interp[,<span class="st">&quot;Temp_recorded&quot;</span>]&lt;-to_interp[,<span class="st">&quot;Temp&quot;</span>]</a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">to_interp[,<span class="st">&quot;Temp&quot;</span>]&lt;-to_interp[,<span class="st">&quot;Temp_gaps&quot;</span>]</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4">interp&lt;-<span class="kw">interpolate_gaps_hourly</span>(<span class="dt">hourtemps=</span>to_interp,<span class="dt">latitude=</span><span class="fl">38.5</span>,</a>
+<a class="sourceLine" id="cb12-5" data-line-number="5">                                <span class="dt">daily_temps=</span><span class="kw">list</span>(<span class="dt">Winters=</span>winters_daily))</a></code></pre></div>
+<p>The resulting dataset has two elements: <code>$weather</code> and <code>daily_patch_report</code>. Let’s first look at the <code>daily_patch_report</code> element:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Var</th>
+<th style="text-align: right;">Proxy m</th>
+<th>ean_bias s</th>
+<th>tdev_bias f</th>
+<th>illed g</th>
+<th style="text-align: left;">aps_remain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Tmin</td>
+<td style="text-align: right;">solved</td>
+<td>NA</td>
+<td>NA</td>
+<td>193</td>
+<td style="text-align: left;">61</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tmin</td>
+<td style="text-align: right;">Winters</td>
+<td>0.269</td>
+<td>1.918</td>
+<td>61</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Tmin</td>
+<td style="text-align: right;">interpolated</td>
+<td>NA</td>
+<td>NA</td>
+<td>0</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tmax</td>
+<td style="text-align: right;">solved</td>
+<td>NA</td>
+<td>NA</td>
+<td>204</td>
+<td style="text-align: left;">50</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Tmax</td>
+<td style="text-align: right;">Winters</td>
+<td>-1.836</td>
+<td>2.395</td>
+<td>50</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tmax</td>
+<td style="text-align: right;">interpolated</td>
+<td>NA</td>
+<td>NA</td>
+<td>0</td>
+<td style="text-align: left;">0</td>
+</tr>
+</tbody>
+</table>
+<p>This table contains information on how many gaps in the daily record were filled by solving the system of hourly equations (‘solved’), how many Tmin and Tmax values were derived from proxy stations (listed by name, if names were provided in the call to <code>interpolate_gaps_hourly</code>; otherwise as station_x), and how many were filled by linear interpolation (this option can be turned off using the <code>interpolate_remaining</code> parameter). For proxy stations, it also provides the bias in mean Tmin and Tmax, which has been corrected, as well as the bias in the standard deviation of Tmin and Tmax (which was <em>not</em> corrected).</p>
+<p>The <code>$weather</code> element of the interpolation result contains the table of interpolated temperatures.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Year</th>
+<th style="text-align: left;">Month</th>
+<th style="text-align: left;">Day</th>
+<th style="text-align: left;">Hour</th>
+<th style="text-align: left;">Temp_gaps</th>
+<th style="text-align: center;">Temp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">21.867</td>
+<td style="text-align: center;">21.867000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">16</td>
+<td style="text-align: left;">21.604</td>
+<td style="text-align: center;">21.604000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">20.079</td>
+<td style="text-align: center;">20.079000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">17.344</td>
+<td style="text-align: center;">17.344000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">19</td>
+<td style="text-align: left;">13.930</td>
+<td style="text-align: center;">13.930000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">20</td>
+<td style="text-align: left;">11.929</td>
+<td style="text-align: center;">11.929000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">21</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: center;">11.124323</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">22</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: center;">10.544023</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">23</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: center;">10.109842</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: center;">9.532453</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: center;">9.262784</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: center;">9.053616</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: center;">8.892551</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: center;">8.770649</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: center;">8.681254</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2008</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: center;">8.619271</td>
+</tr>
+</tbody>
+</table>
+<p>Here’s a plot of part of the data:</p>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>This illustration shows that the <code>interpolate_gaps_hourly</code> function produced a pretty good approximation (red lines) to the actual temperatures (gray line).</p>
+</section>
+<section id="accuracy-assessment" class="level2">
+<h2>Accuracy assessment</h2>
+<p>Since the actual hourly temperatures are known, we can evaluate the accuracy of the predictions produced by the various interpolation methods. A common measure for validating predictions is the Root Mean Square Error of the Prediction (RMSEP):</p>
+<p><span class="math display">\[RMSEP=\sqrt{\frac{\sum_{i=1}^n(\hat{y}_i-y_i)^2}{n}}\]</span>, with <span class="math inline">\(\hat{y}_i\)</span> being the observed values and <span class="math inline">\(y_i\)</span> the predicted values.</p>
+<p>The RMSEP provides an indication of how far each predicted value deviates, on average, from the actual values. It is, however, quite difficult to interpret RMSEP values alone, because whether they indicate a good or poor model fit depends on how variable the actual values are. For instance, an RMSEP of 5 days for a phenology model (which is close to, but not quite the same as a mean error of 5 days), could indicate a very good model, if observed dates vary by several weeks or months (e.g. for bloom dates of deciduous trees), but a terrible model, if the phenological stage of interest occurs on the same day every year (e.g. the ‘phenological’ event of candles lighting up on ‘festive indoor conifers’).</p>
+<p>This is why it makes sense to include in such accuracy assessment the variation in observed values. This can be achieved by dividing the standard deviation of the observed data by the RMSEP to calculate the Residual Prediction Deviation (RPD):</p>
+<p><span class="math display">\[RPD=\frac{sd_y}{RMSEP}\]</span> <span class="math inline">\(\hat{y}_i\)</span> are the observed values, <span class="math inline">\(y_i\)</span> the predicted values, and</p>
+<p><span class="math display">\[sd_y=\sqrt{\frac{\sum_{i=1}^n(y_i-\bar{y})^2}{n-1}}\]</span></p>
+<p>is the standard deviation, with <span class="math inline">\(\bar{y}\)</span> being the mean over all observations.</p>
+<p>The RPD is more useful than the RMSEP, but its use of the standard deviation can be a problem, when actual values of <span class="math inline">\(y\)</span> aren’t normally distributed (then the standard deviation can be a poor measure of variation). A more robust approach is use the interquartile range instead of the standard deviation. This metric is called the Ratio of Performance to InterQuartile distance (RPIQ):</p>
+<p><span class="math display">\[RPIQ=\frac{IQ}{RMSEP}\]</span></p>
+<p>IQ is calculated by subtracting the 75<sup>th</sup> percentile of the distribution of all <span class="math inline">\(y\)</span> from the 25<sup>th</sup> percentile.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">require</span>(stats)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">y&lt;-<span class="kw">rnorm</span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">IQ&lt;-<span class="kw">quantile</span>(y)[<span class="dv">4</span>]<span class="op">-</span><span class="kw">quantile</span>(<span class="dv">2</span>)[<span class="dv">2</span>]</a></code></pre></div>
+<p>The RPIQ score is a bit harder to evaluate than the RMSEP, with different quality thresholds in use and a very high context dependency. Quite commonly, values above 2 are considered ‘good’ or even ‘excellent’, though some studies use substantially higher thresholds (up to 8 for excellence).</p>
+<p>Since the RPIQ makes no assumption about the distribution of <span class="math inline">\(y\)</span>, let’s use this for assessing the accuracy of the various interpolation methods. We have a total of four methods to evaluate:</p>
+<ul>
+<li><strong>idealized</strong> temperature curves from <strong>daily</strong> records of Tmin and Tmax, based on records from a nearby weather station</li>
+<li><strong>idealized</strong> temperature curves from <strong>daily</strong> records of Tmin and Tmax, based on records from <strong>the same location</strong><br />
+</li>
+<li><strong>linear</strong> interpolation of <strong>hourly</strong> temperatures</li>
+<li>interpolation of <strong>hourly</strong> temperatures with <strong>interpolate_gaps_hourly</strong></li>
+</ul>
+<p>For option 2, we first have to generate a dataset of daily minimum and maximum temperatures from the hourly records. We can do this with the <code>make_all_day_table</code> function (see documentation for this function for details).</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">orchard_extremes&lt;-<span class="kw">make_all_day_table</span>(inter,<span class="dt">timestep=</span><span class="st">&quot;day&quot;</span>,</a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">                                     <span class="dt">input_timestep =</span> <span class="st">&quot;hour&quot;</span>)</a></code></pre></div>
+<p>Let’s first look at the performance of the four methods for the periods that were missing in the hourly temperature record:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">winters_hours&lt;-<span class="kw">stack_hourly_temps</span>(<span class="kw">fix_weather</span>(winters_daily),<span class="dt">latitude=</span><span class="dv">38</span>)<span class="op">$</span>hourtemps</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">start_hour_winters&lt;-<span class="kw">which</span>(winters_hours<span class="op">$</span>Year<span class="op">==</span>inter<span class="op">$</span>Year[<span class="dv">1</span>]<span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="st">                    </span>winters_hours<span class="op">$</span>Month<span class="op">==</span>inter<span class="op">$</span>Month[<span class="dv">1</span>]<span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="st">                    </span>winters_hours<span class="op">$</span>Day<span class="op">==</span>inter<span class="op">$</span>Day[<span class="dv">1</span>]<span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb15-5" data-line-number="5"><span class="st">                    </span>winters_hours<span class="op">$</span>Hour<span class="op">==</span>inter<span class="op">$</span>Hour[<span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">end_hour_winters&lt;-<span class="kw">which</span>(winters_hours<span class="op">$</span>Year<span class="op">==</span>inter<span class="op">$</span>Year[<span class="kw">nrow</span>(inter)]<span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb15-7" data-line-number="7"><span class="st">                    </span>winters_hours<span class="op">$</span>Month<span class="op">==</span>inter<span class="op">$</span>Month[<span class="kw">nrow</span>(inter)]<span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb15-8" data-line-number="8"><span class="st">                    </span>winters_hours<span class="op">$</span>Day<span class="op">==</span>inter<span class="op">$</span>Day[<span class="kw">nrow</span>(inter)]<span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb15-9" data-line-number="9"><span class="st">                    </span>winters_hours<span class="op">$</span>Hour<span class="op">==</span>inter<span class="op">$</span>Hour[<span class="kw">nrow</span>(inter)])</a>
+<a class="sourceLine" id="cb15-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb15-11" data-line-number="11">orchard_hours&lt;-<span class="kw">stack_hourly_temps</span>(orchard_extremes,<span class="dt">latitude=</span><span class="dv">38</span>)<span class="op">$</span>hourtemps</a>
+<a class="sourceLine" id="cb15-12" data-line-number="12">start_hour_orchard&lt;-<span class="kw">which</span>(orchard_hours<span class="op">$</span>Year<span class="op">==</span>inter<span class="op">$</span>Year[<span class="dv">1</span>]<span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb15-13" data-line-number="13"><span class="st">                    </span>orchard_hours<span class="op">$</span>Month<span class="op">==</span>inter<span class="op">$</span>Month[<span class="dv">1</span>]<span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb15-14" data-line-number="14"><span class="st">                    </span>orchard_hours<span class="op">$</span>Day<span class="op">==</span>inter<span class="op">$</span>Day[<span class="dv">1</span>]<span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb15-15" data-line-number="15"><span class="st">                    </span>orchard_hours<span class="op">$</span>Hour<span class="op">==</span>inter<span class="op">$</span>Hour[<span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb15-16" data-line-number="16">end_hour_orchard&lt;-<span class="kw">which</span>(orchard_hours<span class="op">$</span>Year<span class="op">==</span>inter<span class="op">$</span>Year[<span class="kw">nrow</span>(inter)]<span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb15-17" data-line-number="17"><span class="st">                    </span>orchard_hours<span class="op">$</span>Month<span class="op">==</span>inter<span class="op">$</span>Month[<span class="kw">nrow</span>(inter)]<span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb15-18" data-line-number="18"><span class="st">                    </span>orchard_hours<span class="op">$</span>Day<span class="op">==</span>inter<span class="op">$</span>Day[<span class="kw">nrow</span>(inter)]<span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb15-19" data-line-number="19"><span class="st">                    </span>orchard_hours<span class="op">$</span>Hour<span class="op">==</span>inter<span class="op">$</span>Hour[<span class="kw">nrow</span>(inter)])</a>
+<a class="sourceLine" id="cb15-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb15-21" data-line-number="21">observed&lt;-inter<span class="op">$</span>Temp_recorded</a>
+<a class="sourceLine" id="cb15-22" data-line-number="22">option1&lt;-winters_hours<span class="op">$</span>Temp[start_hour_winters<span class="op">:</span>end_hour_winters]</a>
+<a class="sourceLine" id="cb15-23" data-line-number="23">option2&lt;-orchard_hours<span class="op">$</span>Temp[start_hour_orchard<span class="op">:</span>end_hour_orchard]</a>
+<a class="sourceLine" id="cb15-24" data-line-number="24">option3&lt;-<span class="kw">interpolate_gaps</span>(inter<span class="op">$</span>Temp_gaps)<span class="op">$</span>interp</a>
+<a class="sourceLine" id="cb15-25" data-line-number="25">option4&lt;-inter<span class="op">$</span>Temp</a>
+<a class="sourceLine" id="cb15-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb15-27" data-line-number="27">eval_table&lt;-eval_table_gaps&lt;-<span class="kw">data.frame</span>(<span class="dt">Option=</span><span class="dv">1</span><span class="op">:</span><span class="dv">4</span>,</a>
+<a class="sourceLine" id="cb15-28" data-line-number="28">                <span class="dt">Input_data=</span><span class="kw">c</span>(<span class="st">&quot;daily&quot;</span>,<span class="st">&quot;daily&quot;</span>,<span class="st">&quot;hourly&quot;</span>,<span class="st">&quot;hourly&quot;</span>),</a>
+<a class="sourceLine" id="cb15-29" data-line-number="29">                <span class="dt">Interpolation_method=</span><span class="kw">c</span>(<span class="st">&quot;from proxy&quot;</span>,<span class="st">&quot;local extremes&quot;</span>,</a>
+<a class="sourceLine" id="cb15-30" data-line-number="30">                                <span class="st">&quot;linear&quot;</span>,<span class="st">&quot;hourly interpolation&quot;</span>),</a>
+<a class="sourceLine" id="cb15-31" data-line-number="31">                <span class="dt">RMSEP=</span><span class="ot">NA</span>,<span class="dt">RPIQ=</span><span class="ot">NA</span>)</a>
+<a class="sourceLine" id="cb15-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb15-33" data-line-number="33">observed_gaps&lt;-observed[<span class="kw">which</span>(<span class="kw">is.na</span>(inter<span class="op">$</span>Temp_gaps))]</a>
+<a class="sourceLine" id="cb15-34" data-line-number="34">option1_gaps&lt;-option1[<span class="kw">which</span>(<span class="kw">is.na</span>(inter<span class="op">$</span>Temp_gaps))]</a>
+<a class="sourceLine" id="cb15-35" data-line-number="35">option2_gaps&lt;-option2[<span class="kw">which</span>(<span class="kw">is.na</span>(inter<span class="op">$</span>Temp_gaps))]</a>
+<a class="sourceLine" id="cb15-36" data-line-number="36">option3_gaps&lt;-option3[<span class="kw">which</span>(<span class="kw">is.na</span>(inter<span class="op">$</span>Temp_gaps))]</a>
+<a class="sourceLine" id="cb15-37" data-line-number="37">option4_gaps&lt;-option4[<span class="kw">which</span>(<span class="kw">is.na</span>(inter<span class="op">$</span>Temp_gaps))]</a>
+<a class="sourceLine" id="cb15-38" data-line-number="38"></a>
+<a class="sourceLine" id="cb15-39" data-line-number="39">eval_table_gaps[,<span class="st">&quot;RMSEP&quot;</span>]&lt;-<span class="kw">round</span>(<span class="kw">c</span>(<span class="kw">RMSEP</span>(option1_gaps,observed_gaps),</a>
+<a class="sourceLine" id="cb15-40" data-line-number="40">                             <span class="kw">RMSEP</span>(option2_gaps,observed_gaps),</a>
+<a class="sourceLine" id="cb15-41" data-line-number="41">                             <span class="kw">RMSEP</span>(option3_gaps,observed_gaps),</a>
+<a class="sourceLine" id="cb15-42" data-line-number="42">                             <span class="kw">RMSEP</span>(option4_gaps,observed_gaps)),<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb15-43" data-line-number="43"></a>
+<a class="sourceLine" id="cb15-44" data-line-number="44">eval_table_gaps[,<span class="st">&quot;RPIQ&quot;</span>]&lt;-<span class="kw">round</span>(<span class="kw">c</span>(<span class="kw">RPIQ</span>(option1_gaps,observed_gaps),</a>
+<a class="sourceLine" id="cb15-45" data-line-number="45">                            <span class="kw">RPIQ</span>(option2_gaps,observed_gaps),</a>
+<a class="sourceLine" id="cb15-46" data-line-number="46">                            <span class="kw">RPIQ</span>(option3_gaps,observed_gaps),</a>
+<a class="sourceLine" id="cb15-47" data-line-number="47">                            <span class="kw">RPIQ</span>(option4_gaps,observed_gaps)),<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb15-48" data-line-number="48"></a>
+<a class="sourceLine" id="cb15-49" data-line-number="49">knitr<span class="op">::</span><span class="kw">kable</span>(eval_table_gaps,<span class="dt">row.names =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th>Option I</th>
+<th>nput_data I</th>
+<th style="text-align: left;">nterpolation_method</th>
+<th style="text-align: left;">RMSEP</th>
+<th style="text-align: left;">RPIQ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>daily</td>
+<td style="text-align: left;">from proxy</td>
+<td style="text-align: left;">2.6</td>
+<td style="text-align: left;">4.1</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>daily</td>
+<td style="text-align: left;">local extremes</td>
+<td style="text-align: left;">2.1</td>
+<td style="text-align: left;">5.0</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>hourly</td>
+<td style="text-align: left;">linear</td>
+<td style="text-align: left;">5.3</td>
+<td style="text-align: left;">2.0</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>hourly</td>
+<td style="text-align: left;">hourly interpolation</td>
+<td style="text-align: left;">2.0</td>
+<td style="text-align: left;">5.4</td>
+</tr>
+</tbody>
+</table>
+<p>This table shows that the <code>interpolate_gaps_hourly</code> function produced the best results, with an RMSEP of 2 and an RPIQ of 5.4. It’s interesting to note that option 3, where hourly records collected in the orchard were interpolated linearly, produced the worst fit. This highlights that, at least in this case, using an idealized temperature curve to close gaps in daily temperatures from the orchard (option 2) and even from the proxy station (option 1) produced more accurate results. Naturally, the quality of the latter approach will depend on the similarity between weather at the proxy station and in the orchard (in this case, this should be quite similar).</p>
+<p>Restricting the comparison to only the gaps in the record is a bit unfair, because of course option 3 (linear interpolation of hourly records from the orchard) are completely accurate for hours, when temperatures were recorded. So let’s also compare the relative performance of the four methods across all hours of the record.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">eval_table&lt;-<span class="kw">data.frame</span>(<span class="dt">Option=</span><span class="dv">1</span><span class="op">:</span><span class="dv">4</span>,</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">                  <span class="dt">Input_data=</span><span class="kw">c</span>(<span class="st">&quot;daily&quot;</span>,<span class="st">&quot;daily&quot;</span>,<span class="st">&quot;hourly&quot;</span>,<span class="st">&quot;hourly&quot;</span>),</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">                  <span class="dt">Interpolation_method=</span><span class="kw">c</span>(<span class="st">&quot;from proxy&quot;</span>,<span class="st">&quot;local extremes&quot;</span>,</a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">                                    <span class="st">&quot;linear&quot;</span>,<span class="st">&quot;hourly interpolation&quot;</span>),</a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">                  <span class="dt">RMSEP=</span><span class="ot">NA</span>,<span class="dt">RPIQ=</span><span class="ot">NA</span>)</a>
+<a class="sourceLine" id="cb16-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb16-7" data-line-number="7">eval_table[,<span class="st">&quot;RMSEP&quot;</span>]&lt;-<span class="kw">round</span>(<span class="kw">c</span>(<span class="kw">RMSEP</span>(option1,observed),<span class="kw">RMSEP</span>(option2,observed),</a>
+<a class="sourceLine" id="cb16-8" data-line-number="8">                       <span class="kw">RMSEP</span>(option3,observed),<span class="kw">RMSEP</span>(option4,observed)),<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb16-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb16-10" data-line-number="10">eval_table[,<span class="st">&quot;RPIQ&quot;</span>]&lt;-<span class="kw">round</span>(<span class="kw">c</span>(<span class="kw">RPIQ</span>(option1,observed),<span class="kw">RPIQ</span>(option2,observed),</a>
+<a class="sourceLine" id="cb16-11" data-line-number="11">                       <span class="kw">RPIQ</span>(option3,observed),<span class="kw">RPIQ</span>(option4,observed)),<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb16-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb16-13" data-line-number="13">knitr<span class="op">::</span><span class="kw">kable</span>(eval_table,<span class="dt">row.names =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th>Option I</th>
+<th>nput_data I</th>
+<th style="text-align: left;">nterpolation_method</th>
+<th style="text-align: left;">RMSEP</th>
+<th style="text-align: left;">RPIQ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>daily</td>
+<td style="text-align: left;">from proxy</td>
+<td style="text-align: left;">2.5</td>
+<td style="text-align: left;">4.2</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>daily</td>
+<td style="text-align: left;">local extremes</td>
+<td style="text-align: left;">1.9</td>
+<td style="text-align: left;">5.7</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>hourly</td>
+<td style="text-align: left;">linear</td>
+<td style="text-align: left;">3.9</td>
+<td style="text-align: left;">2.7</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>hourly</td>
+<td style="text-align: left;">hourly interpolation</td>
+<td style="text-align: left;">1.5</td>
+<td style="text-align: left;">7.2</td>
+</tr>
+</tbody>
+</table>
+<p>The relative performance of the methods on the whole dataset is quite similar to the previous assessment. The quality of the proxy-based idealized temperature curves went down slightly, while all other approaches saw improvements in quality (lower RMSEP and higher RPIQ). The RPIQ values for the two interpolations that were based on local data (options 2 and 4) are very high, especially for option 4, which used the <code>interpolate_gaps_hourly</code> function. The RPIQ score for this option almost exceeds the ‘excellence’ threshold for the most conservative RPIQ evaluation scheme that I’ve come across (8). I find this quite remarkable, given the variable nature of daily temperature fluctuations and the fact that about half of the actually recorded values were removed before running the interpolation.</p>
+<p><strong><em>In conclusion, the <code>interpolate_gaps_hourly</code> function provided a very good approximation of hourly temperatures for times, when no values were recorded.</em></strong></p>
+</section>
+<section id="computing-agroclimatic-metrics" class="level2">
+<h2>Computing agroclimatic metrics</h2>
+<p>Finally, let’s look at the implication of the choice of interpolation method on chill and heat estimates. If we’re interested in using the Dynamic Model for winter chill or the Growing Degree Hours model for heat, we can simply calculate this using the <code>Dynamic_Model</code> and <code>GDH</code> functions in <code>chillR</code>. For more functionality, see the <code>chilling</code> and particularly the <code>tempResponse</code> functions.</p>
+<p>Let’s first look at the implications of method choice on chill accumulation:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">option1_chill&lt;-<span class="kw">Dynamic_Model</span>(option1)</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">option2_chill&lt;-<span class="kw">Dynamic_Model</span>(option2)</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">option3_chill&lt;-<span class="kw">Dynamic_Model</span>(option3)</a>
+<a class="sourceLine" id="cb17-4" data-line-number="4">option4_chill&lt;-<span class="kw">Dynamic_Model</span>(option4)</a>
+<a class="sourceLine" id="cb17-5" data-line-number="5">observed_chill&lt;-<span class="kw">Dynamic_Model</span>(observed)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>This figure shows that the chill accumulation differed substantially between the options. Both the use of proxy data and the use of linear interpolation of hourly temperatures led to substantial overestimation of chill accumulation.</p>
+<p>Here is the same assessment for heat:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">option1_heat&lt;-<span class="kw">GDH</span>(option1)</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">option2_heat&lt;-<span class="kw">GDH</span>(option2)</a>
+<a class="sourceLine" id="cb18-3" data-line-number="3">option3_heat&lt;-<span class="kw">GDH</span>(option3)</a>
+<a class="sourceLine" id="cb18-4" data-line-number="4">option4_heat&lt;-<span class="kw">GDH</span>(option4)</a>
+<a class="sourceLine" id="cb18-5" data-line-number="5">observed_heat&lt;-<span class="kw">GDH</span>(observed)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>This comparison doesn’t look quite as bad as for chill accumulation, but also here, option 4 clearly provided the most accurate estimate (it almost coincides with the black line, making the difference hard to see).</p>
+<p>This dataset didn’t cover the winter season, so the chill numbers aren’t too meaningful, but it is nevertheless instructive to compare the total accumulation of chill and heat over the whole temperature record:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Option I</th>
+<th>nput_data I</th>
+<th style="text-align: left;">nterpolation_method</th>
+<th style="text-align: left;">Chill Portions</th>
+<th style="text-align: left;">Growing Degree Hours</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>observed</td>
+<td style="text-align: left;">none</td>
+<td style="text-align: left;">12.2</td>
+<td style="text-align: left;">72925</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>daily</td>
+<td style="text-align: left;">from proxy</td>
+<td style="text-align: left;">20.1</td>
+<td style="text-align: left;">64774</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>daily</td>
+<td style="text-align: left;">local extremes</td>
+<td style="text-align: left;">13.8</td>
+<td style="text-align: left;">70935</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>hourly</td>
+<td style="text-align: left;">linear</td>
+<td style="text-align: left;">23.1</td>
+<td style="text-align: left;">78256</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>hourly</td>
+<td style="text-align: left;">hourly interpolation</td>
+<td style="text-align: left;">13.6</td>
+<td style="text-align: left;">72581</td>
+</tr>
+</tbody>
+</table>
+<p>This comparison shows that the choice of interpolation method can have substantial impact on our impression of accumulated chill and heat. The <code>interpolate_gaps_hourly</code> function in <code>chillR</code> outperformed all other methods evaluated here.</p>
+<section id="references" class="level4 unnumbered">
+<h4>References</h4>
+<div id="refs" class="references">
+<div id="ref-Almoroxetal2005">
+<p>Almorox, J., Hontoria, C., Benito, M., 2005. Statistical validation of daylength definitions for estimation of global solar radiation in Toledo, Spain. Energy Conversion and Management 46, 1465–1471. <a href="http://www.sciencedirect.com/science/article/pii/S0196890404001992" class="uri">http://www.sciencedirect.com/science/article/pii/S0196890404001992</a></p>
+</div>
+<div id="ref-Andersonetal1986">
+<p>Anderson, J.L., Richardson, E.A., Kesner, C.D., 1986. Validation of chill unit and flower bud phenology models for ’Montmorency’ sour cherry. Acta Horticulturae (ISHS) 184, 71–78. <a href="http://www.actahort.org/books/184/184_7.htm" class="uri">http://www.actahort.org/books/184/184_7.htm</a></p>
+</div>
+<div id="ref-Bennett1949">
+<p>Bennett, J.P., 1949. Temperature and bud rest period. California Agriculture 3, 9, 12. <a href="http://calag.ucanr.edu/download_pdf.cfm?article=ca.v003n11p9" class="uri">http://calag.ucanr.edu/download_pdf.cfm?article=ca.v003n11p9</a></p>
+</div>
+<div id="ref-CrossaRaynaud1955">
+<p>Crossa-Raynaud, P., 1955. Effets des hivers doux sur le comportement des arbres fruitiers à feuilles caduques: Observations faites en Tunisie à la suite de l’hiver 1954-1955. Impr. La Rapide.</p>
+</div>
+<div id="ref-Erezetal1990">
+<p>Erez, A., Fishman, S., Linsley-Noakes, G.C., Allan, P., 1990. The dynamic model for rest completion in peach buds. Acta Horticulturae 276, 165–174. <a href="http://www.actahort.org/books/276/276_18.htm" class="uri">http://www.actahort.org/books/276/276_18.htm</a></p>
+</div>
+<div id="ref-Linvill1990">
+<p>Linvill, D.E., 1990. Calculating chilling hours and chill units from daily maximum and minimum temperature observations. HortScience 25, 14–16. <a href="http://hortsci.ashspublications.org/content/25/1/14.full.pdf" class="uri">http://hortsci.ashspublications.org/content/25/1/14.full.pdf</a></p>
+</div>
+<div id="ref-LuedelingBrown2011">
+<p>Luedeling, E., Brown, P.H., 2011. A global analysis of the comparability of winter chill models for fruit and nut trees. International Journal of Biometeorology 55, 411–421. <a href="https://link.springer.com/article/10.1007%2Fs00484-010-0352-y">https://link.springer.com/article/10.1007%2Fs00484-010-0352-y</a></p>
+</div>
+<div id="ref-Richardsonetal1974">
+<p>Richardson, E.A., Seeley, S.D., Walker, D.R., 1974. A model for estimating the completion of rest for Redhaven and Elberta peach trees. HortScience 9, 331–332.</p>
+</div>
+<div id="ref-Spencer1971">
+<p>Spencer, J.W., 1971. Fourier series representation of the position of the Sun. Search 2, 172.</p>
+</div>
+</div>
+</section>
+</section>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

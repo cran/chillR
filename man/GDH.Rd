@@ -34,9 +34,6 @@ hourtemps<-stack_hourly_temps(weather,latitude=50.4)
 GDH(hourtemps$hourtemps$Temp)
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 Growing Degree Hours reference:
 
@@ -44,8 +41,10 @@ Anderson JL, Richardson EA, Kesner CD (1986) Validation of chill unit and
 flower bud phenology models for 'Montmorency' sour cherry. Acta Hortic 184,
 71-78
 }
+\author{
+Eike Luedeling
+}
 \keyword{and}
 \keyword{calculation}
 \keyword{chill}
 \keyword{heat}
-

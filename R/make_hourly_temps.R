@@ -18,6 +18,9 @@
 #' columns called Year, Month and Day. year_file cannot have any missing
 #' values, so it may be a good idea to process the relevant columns with
 #' make_all_day_table and interpolate_gaps before.
+#' @param keep_sunrise_sunset boolean variable indicating whether information
+#' on sunrise, sunset and daylength, which is calculated for producing hourly
+#' temperature records, should be preserved in the output. Defaults to FALSE.
 #' @return data frame containing all the columns of year_file, plus 24 columns
 #' for hourly temperatures (called Hour_1 ... Hour_24).
 #' @author Eike Luedeling
@@ -53,27 +56,36 @@
 #' 
 #' @export make_hourly_temps
 make_hourly_temps <-
-function (latitude,year_file)
+function (latitude,year_file,keep_sunrise_sunset=FALSE)
 
  {
+  
+  if(missing(latitude)) stop("'latitude' not specified")
+  if(length(latitude)>1) stop("'latitude' has more than one element")
+  if(!is.numeric(latitude)) stop("'latitude' is not numeric")
+  if(latitude>90|latitude<(-90)) warning("'latitude' is usually between -90 and 90")
+  
+  
          year_file<-year_file[which(!is.na(year_file$Tmin)&!is.na(year_file$Tmax)),]
   
          if(!"JDay" %in% colnames(year_file))
          year_file[,"JDay"]<-strptime(paste(year_file$Month,"/",year_file$Day,"/",year_file$Year,sep=""),"%m/%d/%Y")$yday+1
   
          preserve_columns<-colnames(year_file)
-         year_file$Gamma<-2*pi/365*((year_file$JDay)-1)
-         year_file$Delta<-180/pi*(0.006918-0.399912*cos(year_file$Gamma)+0.070257*sin(year_file$Gamma)-0.006758*cos(year_file$Gamma)+0.000907*sin(year_file$Gamma)-0.002697*cos(3*(year_file$Gamma))+0.00148*sin(3*(year_file$Gamma)))
-         year_file$CosWo<-(sin(-0.8333/360*2*pi)-sin(latitude/360*2*pi)*sin(year_file$Delta/360*2*pi))/(cos(latitude/360*2*pi)*cos(year_file$Delta/360*2*pi))
-         year_file$Sunrise[which(year_file$CosWo>=-1&year_file$CosWo<=1)]<-12-acos(year_file$CosWo)/(15/360*2*pi)
-         if(length(which(year_file$CosWo<(-1)||year_file$CosWo>1))>0) {year_file$Sunrise[which(year_file$CosWo<-1||year_file$CosWo>1)]<--99}
-         year_file$Sunset[which(year_file$CosWo>=-1&year_file$CosWo<=1)]<-12+acos(year_file$CosWo)/(15/360*2*pi)
-         if(length(which(year_file$CosWo<(-1)||year_file$CosWo>1))>0) {year_file$Sunset[which(year_file$CosWo<-1||year_file$CosWo>1)]<--99}
-         year_file$Daylength[which(year_file$CosWo>=-1&year_file$CosWo<=1)]<-2*acos(year_file$CosWo)/(15/360*2*pi)
-         if(length(which(year_file$CosWo<(-1)||year_file$CosWo>1))>0) {year_file$Daylength[which(year_file$CosWo<-1||year_file$CosWo>1)]<--99}
-         year_file$prev_max<-year_file$Tmax[c(nrow(year_file),1:(nrow(year_file)-1))]
-         year_file$next_min<-year_file$Tmin[c(2:nrow(year_file),1)]
-         year_file$prev_min<-year_file$Tmin[c(nrow(year_file),1:(nrow(year_file)-1))]
+         
+         Day_times<-daylength(latitude=latitude,
+                              JDay=c(year_file$JDay[1]-1,
+                                     year_file$JDay,
+                                     year_file$JDay[nrow(year_file)]+1))
+         year_file$Sunrise<-Day_times$Sunrise[2:(length(Day_times$Sunrise)-1)]
+         year_file$Sunset<-Day_times$Sunset[2:(length(Day_times$Sunset)-1)]
+         year_file$Daylength<-Day_times$Daylength[2:(length(Day_times$Daylength)-1)]
+         year_file$prev_Sunset<-Day_times$Sunset[1:(length(Day_times$Sunset)-2)]
+         year_file$next_Sunrise<-Day_times$Sunrise[3:length(Day_times$Sunrise)]
+               
+         year_file$prev_max<-year_file$Tmax[c(NA,1:(nrow(year_file)-1))]
+         year_file$next_min<-year_file$Tmin[c(2:nrow(year_file),NA)]
+         year_file$prev_min<-year_file$Tmin[c(NA,1:(nrow(year_file)-1))]
          year_file$Tsunset<-year_file$Tmin+(year_file$Tmax-year_file$Tmin)*
                             sin((pi*(year_file$Sunset-year_file$Sunrise)/(year_file$Daylength+4)))
          year_file$prev_Tsunset<-year_file$prev_min+(year_file$prev_max-year_file$prev_min)*
@@ -82,41 +94,47 @@ function (latitude,year_file)
 
          hourcol<-c(colnum:(colnum+23))
 
-     for (hourcount in 0:23)
-             {
+     for (hour in 0:23)
+      {
+       hourcount<-hour+1
 
-              if(length(which(year_file$Daylength==-99))>0) {year_file[which(year_file$Daylength==-99),colnum+hourcount]<-(year_file$Tmax+year_file$Tmin)/2}
+       #if(length(which(year_file$Daylength==-99))>0)
+       #{
+         year_file[which(year_file$Daylength==-99),colnum+hour]<-(year_file$Tmax+year_file$Tmin)/2
+         #}
 
-              c_morn<-which(hourcount<=year_file$Sunrise)
-              c_day<-which(hourcount>year_file$Sunrise&hourcount<year_file$Sunset+1)
-              c_eve<-which(hourcount>=year_file$Sunset+1)
-              nn<-colnum+hourcount
+         c_morn<-which(hour<=year_file$Sunrise)
+         c_day<-which(hour>year_file$Sunrise&hour<=year_file$Sunset)
+         c_eve<-which(hour>year_file$Sunset)
+         
+         if(length(which(year_file$Daylength>(-99)))>0)
+           {if(length(c_morn)>0)     #before sunrise
+             {year_file[c_morn,colnum+hour]<-
+                 year_file$prev_Tsunset[c_morn]-  #prev temp at sunset
+                      ((year_file$prev_Tsunset[c_morn]-year_file$Tmin[c_morn])/
+                         log(24-(year_file$prev_Sunset[c_morn]-year_file$Sunrise[c_morn]))*
+                             log(hour+24-year_file$prev_Sunset[c_morn]+1))}
 
-              if(length(which(year_file$Daylength>(-99)))>0)
-                   {if(length(c_morn)>0)     #before sunrise
-                          {year_file[c_morn,nn]<-
-                                year_file$prev_Tsunset[c_morn]-  #prev temp at sunset
-                               ((year_file$prev_Tsunset[c_morn]-year_file$Tmin[c_morn])/
-                                  log(24-year_file$Daylength[c_morn])*
-                                  log(hourcount+24-year_file$Sunset[c_morn]))}
+         if(length(c_day)>0)     #between sunrise and an hour after sunset
+           {year_file[c_day,colnum+hour]<-
+               year_file$Tmin[c_day]+
+                 (year_file$Tmax[c_day]-year_file$Tmin[c_day])*
+                    sin((pi*(hour-year_file$Sunrise[c_day])/
+                      (year_file$Daylength[c_day]+4)))}
 
-                    if(length(c_day)>0)     #between sunrise and an hour after sunset
-                          {year_file[c_day,colnum+hourcount]<-
-                            year_file$Tmin[c_day]+
-                            (year_file$Tmax[c_day]-year_file$Tmin[c_day])*
-                            sin((pi*(hourcount-year_file$Sunrise[c_day])/
-                                  (year_file$Daylength[c_day]+4)))}
-
-                    if(length(c_eve)>0)                   #after sunset
-                           {year_file[c_eve,colnum+hourcount]<-
-                               year_file$Tsunset[c_eve]- #temp at sunset
-                               ((year_file$Tsunset[c_eve]-year_file$next_min[c_eve])/
-                                  log(24-year_file$Daylength[c_eve])*
-                                  log(hourcount-year_file$Sunset[c_eve]))}
+         if(length(c_eve)>0)                   #at least one hour after sunset
+           {year_file[c_eve,colnum+hour]<-
+               year_file$Tsunset[c_eve]- #temp at sunset
+                 ((year_file$Tsunset[c_eve]-year_file$next_min[c_eve])/
+                    log(24-(year_file$Sunset[c_eve]-year_file$next_Sunrise[c_eve])+1)*
+                        log(hour-year_file$Sunset[c_eve]+1))}
 
                  }}
-                 colnames(year_file)[(ncol(year_file)-23):(ncol(year_file))]<-c(paste("Hour_",1:24,sep=""))
-                 year_file<-year_file[,c(preserve_columns,paste("Hour_",1:24,sep=""))]
+                 colnames(year_file)[(ncol(year_file)-23):(ncol(year_file))]<-c(paste("Hour_",0:23,sep=""))
+                 if (!keep_sunrise_sunset)
+                   year_file<-year_file[,c(preserve_columns,paste("Hour_",0:23,sep=""))]
+                 if (keep_sunrise_sunset)
+                   year_file<-year_file[,c(preserve_columns,"Sunrise","Sunset","Daylength",paste("Hour_",0:23,sep=""))]
                  year_file[1,(ncol(year_file)-23):(ncol(year_file))][which(is.na(year_file[1,(ncol(year_file)-23):(ncol(year_file))]))]<-year_file[1,"Tmin"]
                  year_file[nrow(year_file),(ncol(year_file)-23):(ncol(year_file))][which(is.na(year_file[nrow(year_file),(ncol(year_file)-23):(ncol(year_file))]))]<-year_file[nrow(year_file),"Tmin"]
          

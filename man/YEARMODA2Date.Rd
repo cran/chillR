@@ -30,4 +30,3 @@ YEARMODA2Date(19901003)
 Eike Luedeling
 }
 \keyword{utility}
-

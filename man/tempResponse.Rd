@@ -6,7 +6,8 @@
 \usage{
 tempResponse(hourtemps, Start_JDay = 1, End_JDay = 366,
   models = list(Chilling_Hours = Chilling_Hours, Utah_Chill_Units =
-  Utah_Model, Chill_Portions = Dynamic_Model, GDH = GDH), misstolerance = 50)
+  Utah_Model, Chill_Portions = Dynamic_Model, GDH = GDH), misstolerance = 50,
+  whole_record = FALSE)
 }
 \arguments{
 \item{hourtemps}{a list of two elements, with element 'hourtemps' being a
@@ -31,6 +32,12 @@ chilling function.}
 \item{misstolerance}{maximum percentage of values for a given season that
 can be missing without the record being removed from the output. Defaults to
 50.}
+
+\item{whole_record}{boolean parameter indicating whether the metrics should
+be summed over the entire temperature record. If set to TRUE (default is
+FALSE), then the function ignores the specified start and end dates and
+simply returns the totals of each metric that accumulated over the entire
+temperature record.}
 }
 \value{
 data frame showing totals for all specified models for the
@@ -83,9 +90,6 @@ models<-list(Chilling_Hours=Chilling_Hours,Utah_Chill_Units=Utah_Model,Chill_Por
 tempResponse(hourtemps,Start_JDay = 305,End_JDay = 60,models)
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 The chillR package:
 
@@ -93,8 +97,10 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat
 requirements of cherry trees - a statistical approach. International Journal
 of Biometeorology 57,679-689.
 }
+\author{
+Eike Luedeling
+}
 \keyword{and}
 \keyword{calculation}
 \keyword{chill}
 \keyword{heat}
-

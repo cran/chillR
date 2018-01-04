@@ -75,9 +75,6 @@ though far from perfect, seems much more reliable.
 chilling(stack_hourly_temps(fix_weather(KA_weather[which(KA_weather$Year>2006),]),latitude=50.4))
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 Model references:
 
@@ -179,8 +176,10 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat
 requirements of cherry trees - a statistical approach. International Journal
 of Biometeorology 57,679-689.
 }
+\author{
+Eike Luedeling
+}
 \keyword{and}
 \keyword{calculation}
 \keyword{chill}
 \keyword{heat}
-

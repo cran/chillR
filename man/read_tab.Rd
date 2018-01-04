@@ -46,4 +46,3 @@ file.remove("filesemicolon.csv")
 Eike Luedeling
 }
 \keyword{utility}
-

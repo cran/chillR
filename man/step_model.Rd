@@ -61,4 +61,3 @@ Eike Luedeling
 \keyword{calculation}
 \keyword{chill}
 \keyword{heat}
-

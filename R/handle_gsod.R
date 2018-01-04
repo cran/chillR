@@ -212,12 +212,10 @@ handle_gsod<-function(action,location=NA,time_interval=NA,station_list=NULL,stat
      ff<-suppressWarnings(try(download.file(URL, dest),silent = TRUE))
      if(ff==0)
      {gz <- gzfile(dest, open = "rt")
-     close(gz)
-     out<-suppressWarnings(read.fwf(gzfile(dest, open = "rt"), c(6,1,5,2,4,2,2,2,6,1,2,2,6,1,2,2,6,1,2,2,6,1,2,2,5,1,2,2,5,1,2,2,5,2,5,2,6,1,1,6,1,1,5,1,1,5,2,6), header = FALSE, sep = "\t",skip=1))
-     closeAllConnections()
-     file.remove("chillRtempdirectory/weather.op.gz")
-     # unlink(dest)
-     colnames(out)<-c("STN---","space1","WBAN","space2","YEAR","MONTH","DAY","space3","TEMP","space4","Count1","space5","DEWP","space6","Count2",
+      out<-suppressWarnings(read.fwf(gz, c(6,1,5,2,4,2,2,2,6,1,2,2,6,1,2,2,6,1,2,2,6,1,2,2,5,1,2,2,5,1,2,2,5,2,5,2,6,1,1,6,1,1,5,1,1,5,2,6), header = FALSE, sep = "\t",skip=1))
+      close(gz)
+      file.remove("chillRtempdirectory/weather.op.gz")
+      colnames(out)<-c("STN---","space1","WBAN","space2","YEAR","MONTH","DAY","space3","TEMP","space4","Count1","space5","DEWP","space6","Count2",
                       "space7","SLP","space8","Count3","space9","STP","space10","Count4","space11","VISIB","space12","Count5","space13",
                       "WDSP","space14","Count6","space15","MXSPD","space16","GUST","space17","MAX","MaxFlag","space18",
                       "MIN","MinFlag","space19","PRCP","PrcpFlag","space20","SNDP","space21","FRSHTT")
@@ -242,7 +240,8 @@ handle_gsod<-function(action,location=NA,time_interval=NA,station_list=NULL,stat
      startlisting<-FALSE}
    }
    if(startlisting) {record<-NA
-   warning("No weather data found for the time interval of interest.")}
+   warning("No weather data found for the time interval of interest.")
+   return(record)}
    first_line<-record[1,]
    if(!((as.numeric(first_line["YEAR"])*10000+as.numeric(first_line["MONTH"])*100+as.numeric(first_line["DAY"]))==time_interval[1]*10000+101))
    {first_line[,]<-NA
@@ -254,7 +253,11 @@ handle_gsod<-function(action,location=NA,time_interval=NA,station_list=NULL,stat
    {last_line[,]<-NA
    last_line[,c("STN---","WBAN","YEAR","MONTH","DAY")]<-c(STN,WBAN,time_interval[2],12,31)
    record<-rbind(record,last_line)}
-   record<-make_all_day_table(record)
+   record[,"Year"]<-as.numeric(record[,"YEAR"])
+   record[,"Month"]<-as.numeric(record[,"MONTH"])
+   record[,"Day"]<-as.numeric(record[,"DAY"])
+   
+   record<-make_all_day_table(record,no_variable_check=TRUE)
    return(list(database="GSOD",weather=record))} else warning("location does not match a record in the database. No records retrieved.")
  }
 
@@ -268,6 +271,8 @@ handle_gsod<-function(action,location=NA,time_interval=NA,station_list=NULL,stat
       colnames(dw)[which(colnames(dw)=="MONTH")]<-"Month"
       colnames(dw)[which(colnames(dw)=="DAY")]<-"Day"
       if(drop_most) dw<-dw[,c("Year","Month","Day","Tmin","Tmax","Tmean","Prec")]
+      for (cc in c("Year","Month","Day","Tmin","Tmax","Tmean","Prec"))
+           dw[,cc]<-as.numeric(dw[,cc])
       return(list(database="GSOD",weather=dw))}
       if(is.data.frame(action)) # then we assume that this is a downloaded file to be cleaned
       {dw<-action
@@ -279,6 +284,8 @@ handle_gsod<-function(action,location=NA,time_interval=NA,station_list=NULL,stat
       colnames(dw)[which(colnames(dw)=="MONTH")]<-"Month"
       colnames(dw)[which(colnames(dw)=="DAY")]<-"Day"
       if(drop_most) dw<-dw[,c("Year","Month","Day","Tmin","Tmax","Tmean","Prec")]
+      for (cc in c("Year","Month","Day","Tmin","Tmax","Tmean","Prec"))
+        dw[,cc]<-as.numeric(dw[,cc])
       return(dw)}
 
 }

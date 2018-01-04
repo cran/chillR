@@ -118,7 +118,8 @@ temperature_generation<-function(weather,years,sim_years,temperature_scenario=da
   rownames(min_mean)<-c(1,2,3,4,5,6,7,8,9,10,11,12)
   
   #should check if full record is available for the calibration period
-  alldays<-make_all_day_table(tab=data.frame(Year=c(year_min,year_max),Month=c(1,12),Day=c(1,31)))
+  alldays<-make_all_day_table(tab=data.frame(Year=c(year_min,year_max),Month=c(1,12),Day=c(1,31)),no_variable_check=TRUE)
+  alldays[,"YEARMODA"]<-alldays$Year*10000+alldays$Month*100+alldays$Day
   Tn<-TEMP_MIN
   Tn[,"YEARMODA"]<-Tn$year*10000+Tn$month*100+Tn$day
   allTmins <- merge(alldays, Tn, by = "YEARMODA", all.x = TRUE)
@@ -173,7 +174,7 @@ temperature_generation<-function(weather,years,sim_years,temperature_scenario=da
 
   sim<-cbind(generation00$output$Tn_gen,generation00$output$Tx_gen)
   colnames(sim)<-c("Tmin","Tmax")
-  dates<-make_all_day_table(data.frame(Year=c(year_min_sim,year_max_sim),Month=c(1,12),Day=c(1,31),nodata=c(1,2)))
+  dates<-make_all_day_table(data.frame(Year=c(year_min_sim,year_max_sim),Month=c(1,12),Day=c(1,31),nodata=c(1,2)),no_variable_check=TRUE)
   dates<-dates[,-6]
   sim<-cbind(dates,sim)
   

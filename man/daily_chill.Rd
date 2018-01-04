@@ -64,9 +64,6 @@ dc<-daily_chill(stack_hourly_temps(fix_weather(KA_weather[which(KA_weather$Year>
 
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 Model references for the default models:
 
@@ -168,8 +165,10 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat
 requirements of cherry trees - a statistical approach. International Journal
 of Biometeorology 57,679-689.
 }
+\author{
+Eike Luedeling
+}
 \keyword{and}
 \keyword{calculation}
 \keyword{chill}
 \keyword{heat}
-

@@ -78,9 +78,6 @@ bloom_prediction(CT,Chill_req=60,Heat_req=5000,Chill_model="Chill_Portions",
 
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 Model references:
 
@@ -182,6 +179,8 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat
 requirements of cherry trees - a statistical approach. International Journal
 of Biometeorology 57,679-689.
 }
+\author{
+Eike Luedeling
+}
 \keyword{bloom}
 \keyword{prediction}
-

@@ -26,11 +26,10 @@ make_JDay(dates)
 
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 The chillR package:
 }
+\author{
+Eike Luedeling
+}
 \keyword{utilities}
-

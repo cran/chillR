@@ -156,9 +156,6 @@ plscf<-PLS_chill_force(daily_chill_obj=dc, bio_data_frame=KA_bloom, split_month=
 
 
 }
-\author{
-Eike Luedeling, with contributions from Sabine Guesewell
-}
 \references{
 Model references, for the default option:
 
@@ -260,10 +257,12 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat
 requirements of cherry trees - a statistical approach. International Journal
 of Biometeorology 57,679-689.
 }
+\author{
+Eike Luedeling, with contributions from Sabine Guesewell
+}
 \keyword{analysis}
 \keyword{and}
 \keyword{calculation}
 \keyword{chill}
 \keyword{heat}
 \keyword{phenology}
-

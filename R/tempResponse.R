@@ -37,6 +37,11 @@
 #' @param misstolerance maximum percentage of values for a given season that
 #' can be missing without the record being removed from the output. Defaults to
 #' 50.
+#' @param whole_record boolean parameter indicating whether the metrics should
+#' be summed over the entire temperature record. If set to TRUE (default is
+#' FALSE), then the function ignores the specified start and end dates and
+#' simply returns the totals of each metric that accumulated over the entire
+#' temperature record.
 #' @return data frame showing totals for all specified models for the
 #' respective periods for all seasons included in the temperature records.
 #' Columns are Season, End_year (the year when the period ended) and Days (the
@@ -73,7 +78,8 @@
 #' 
 #' @export tempResponse
 tempResponse <-
-function (hourtemps,Start_JDay=1,End_JDay=366,models=list(Chilling_Hours=Chilling_Hours,Utah_Chill_Units=Utah_Model,Chill_Portions=Dynamic_Model,GDH=GDH),misstolerance=50)             #hourtemps is a data frame with columns Year, JDay, Hour and Temp
+function (hourtemps,Start_JDay=1,End_JDay=366,models=list(Chilling_Hours=Chilling_Hours,Utah_Chill_Units=Utah_Model,Chill_Portions=Dynamic_Model,GDH=GDH),
+          misstolerance=50,whole_record=FALSE)             #hourtemps is a data frame with columns Year, JDay, Hour and Temp
      {
   if((length(names(hourtemps))==2) & ("hourtemps" %in% names(hourtemps))) {QC<-hourtemps$QC; hourtemps<-hourtemps$hourtemps} else QC<-NULL
   if(Start_JDay<End_JDay) {hourtemps[which(hourtemps$JDay>=Start_JDay&hourtemps$JDay<=End_JDay),"sea"]<-
@@ -94,6 +100,8 @@ function (hourtemps,Start_JDay=1,End_JDay=366,models=list(Chilling_Hours=Chillin
       for(m in 1:length(models))
         hourtemps[,names(models)[m]]<-do.call(models[[m]], list(hourtemps[,"Temp"]), quote = FALSE, envir = parent.frame())
 
+      if(whole_record) return(hourtemps[nrow(hourtemps),names(models)])
+      
       seasons<-as.numeric(unique(hourtemps$sea))
       seasons<-seasons[!is.na(seasons)]
 

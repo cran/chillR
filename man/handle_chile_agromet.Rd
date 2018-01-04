@@ -109,9 +109,6 @@ manually.
 #weather<-handle_chile_agromet(filename)
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 The chillR package:
 
@@ -119,5 +116,7 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat
 requirements of cherry trees - a statistical approach. International Journal
 of Biometeorology 57,679-689.
 }
+\author{
+Eike Luedeling
+}
 \keyword{utilities}
-

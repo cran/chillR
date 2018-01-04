@@ -33,9 +33,6 @@ hourtemps<-stack_hourly_temps(weather,latitude=50.4)
 Dynamic_Model(hourtemps$hourtemps$Temp)
 
 }
-\author{
-Eike Luedeling
-}
 \references{
 Dynamic Model references:
 
@@ -50,8 +47,10 @@ Fishman S, Erez A, Couvillon GA (1987b) The temperature dependence of
 dormancy breaking in plants - mathematical analysis of a two-step model
 involving a cooperative transition. J Theor Biol 124(4), 473-483
 }
+\author{
+Eike Luedeling
+}
 \keyword{and}
 \keyword{calculation}
 \keyword{chill}
 \keyword{heat}
-

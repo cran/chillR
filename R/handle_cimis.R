@@ -83,6 +83,10 @@
 #' station of interest. This means that downloads take a lot longer than one
 #' might expect, and the downloaded data volume is a multiple of what is really
 #' of interest.
+#' 
+#' @importFrom readxl read_excel
+#' @importFrom RCurl getURL
+#' @importFrom sp spDistsN1
 #' @author Eike Luedeling
 #' @references The chillR package:
 #' 
@@ -115,6 +119,61 @@ handle_cimis<-function(action,location=NA,time_interval=NA,station_list=NULL,sta
   {tab[which(tab[,column]==missing),column]<-NA
   return(tab)}
 
+  get_station_list<-function(long=NA,lat=NA,time_interval=NA,
+                             stations_to_choose_from=25)
+    {suppressWarnings(dir.create("chillRtempdirectory"))
+    dir<-as.character(unlist(sapply(unlist(strsplit(getURL("ftp://ftpcimis.water.ca.gov/pub2/",
+                                                           ftp.use.epsv = FALSE,
+                                                           dirlistonly = TRUE),"\n")),function(x)strsplit(x,"\r"))))
+    summary_file<-dir[grep("CIMIS Stations List",dir)]
+    download.file(paste("ftp://ftpcimis.water.ca.gov/pub2/",summary_file,sep=""), "chillRtempdirectory/a.xlsx", mode="wb")
+    cimis<-suppressWarnings(read_excel("chillRtempdirectory/a.xlsx"))
+    closeAllConnections()
+    file.remove("chillRtempdirectory/a.xlsx")
+    unlink("chillRtempdirectory",recursive=TRUE)
+    
+    cimis<-as.data.frame(cimis[which(!is.na(cimis[,1])),])
+    cimis[,"end"]<-NA
+    cimis[which((!cimis$Disconnect=="Active")),"end"]<-as.numeric(cimis[which((!cimis$Disconnect=="Active")),"Disconnect"])
+    
+    cimis$end<-as.Date(cimis$end,origin="1899/12/30")
+    cimis$end[which(is.na(cimis$end))]<-Sys.time()
+    cimis<-cimis[,c("Station Number","Name", "County", "Latitude",
+                    "Longitude", "ELEV","Connect","end")]
+    colnames(cimis)<-c("Stat_num","Name","County","Latitude","Longitude","Elevation","Start_date","End_date")
+    cimis$Elevation<-cimis$Elevation*0.3048
+    
+    if(is.na(long)) return(cimis)
+    myPoint<-c(long,lat)
+    cimis[,"distance"]<-round(spDistsN1(as.matrix(cimis[,c("Longitude","Latitude")]), myPoint, longlat=TRUE),2)
+    sorted_list<-cimis[order(cimis$distance),]
+    if(!is.na(elev)) sorted_list[,"elevation_diff"]<-elev-sorted_list$Elevation
+    sorted_list[,"chillR_code"]<-as.character(sorted_list$Stat_num)
+    if(!is.na(time_interval[1]))
+    {interval_end<-YEARMODA2Date(time_interval[2]*10000+1231)
+    if(end_at_present) interval_end<-min(interval_end,ISOdate(format(Sys.Date(),"%Y"),format(Sys.Date(),"%m"),
+                                                              format(Sys.Date(),"%d")))
+    interval_start<-YEARMODA2Date(time_interval[1]*10000+0101)
+    sorted_list<-sorted_list[1:min(nrow(sorted_list),max(stations_to_choose_from,500)),]
+    overlap_days<-apply(sorted_list,1,function (x) (as.numeric(difftime(
+      sort(c(x["End_date"],format(interval_end,"%Y-%m-%d")))[1],
+      sort(c(x["Start_date"],format(interval_start,"%Y-%m-%d")))[2])+1)))
+    sorted_list[,"Overlap_years"]<-round(
+      apply(sorted_list,1,function (x) (as.numeric(difftime(
+        sort(c(x["End_date"],format(interval_end,"%Y-%m-%d")))[1],
+        sort(c(x["Start_date"],format(interval_start,"%Y-%m-%d")))[2])+1)/(365+length(which(sapply(time_interval[1]:time_interval[2],leap_year)))/(time_interval[2]-time_interval[1]+1)))),2)
+    sorted_list[which(sorted_list[,"Overlap_years"]<0),"Overlap_years"]<-0
+    sorted_list[,"Perc_interval_covered"]<-round(overlap_days/as.numeric(interval_end-interval_start+1)*100,2)
+    if(!is.na(elev))  sorted_list<-sorted_list[,c("chillR_code","Name","County","Latitude","Longitude","Elevation","Start_date","End_date",
+                                                  "distance","elevation_diff","Overlap_years","Perc_interval_covered")] else
+                                                    sorted_list<-sorted_list[,c("chillR_code","Name","County","Latitude","Longitude","Start_date","End_date",
+                                                                                "distance","Overlap_years","Perc_interval_covered")]} else
+                                                                                  if(!is.na(elev))  sorted_list<-sorted_list[,c("chillR_code","Name","County","Latitude","Longitude","Elevation","Start_date","End_date",
+                                                                                                                                "distance","elevation_diff")] else
+                                                                                                                                  sorted_list<-sorted_list[,c("chillR_code","Name","County","Latitude","Longitude","Start_date","End_date",
+                                                                                                                                                              "distance")]
+    return(sorted_list[1:stations_to_choose_from,])}
+  
 
   if(is.character(action))  if(action=="list_stations")
         {
@@ -130,50 +189,9 @@ handle_cimis<-function(action,location=NA,time_interval=NA,station_list=NULL,sta
         lat<-location[2]
         if(length(location)==3) elev<-location[3] else elev<-NA}
 
-        suppressWarnings(dir.create("chillRtempdirectory"))
-        download.file("ftp://ftpcimis.water.ca.gov/pub2/CIMIS Stations List (May 2015).xlsx", "chillRtempdirectory/a.xlsx", mode="wb")
-        cimis<-suppressWarnings(read_excel("chillRtempdirectory/a.xlsx"))
-        closeAllConnections()
-        file.remove("chillRtempdirectory/a.xlsx")
-        unlink("chillRtempdirectory",recursive=TRUE)
-
-        cimis<-cimis[which(!is.na(cimis[,1])),]
-        cimis[which((!cimis$STN_DISCONNECT_DATE=="Active")),"end"]<-as.numeric(cimis[which((!cimis$STN_DISCONNECT_DATE=="Active")),"STN_DISCONNECT_DATE"])
-
-        cimis$end<-as.Date(cimis$end,origin="1899/12/30")
-        cimis$end[which(is.na(cimis$end))]<-Sys.time()
-        cimis<-cimis[,c(1:6,8,10)]
-        colnames(cimis)<-c("Stat_num","Name","County","Latitude","Longitude","Elevation","Start_date","End_date")
-        cimis$Elevation<-cimis$Elevation*0.3048
-        myPoint<-c(long,lat)
-        cimis[,"distance"]<-round(spDistsN1(as.matrix(cimis[,c("Longitude","Latitude")]), myPoint, longlat=TRUE),2)
-        sorted_list<-cimis[order(cimis$distance),]
-        if(!is.na(elev)) sorted_list[,"elevation_diff"]<-elev-sorted_list$Elevation
-        sorted_list[,"chillR_code"]<-as.character(sorted_list$Stat_num)
-        if(!is.na(time_interval[1]))
-            {interval_end<-YEARMODA2Date(time_interval[2]*10000+1231)
-            if(end_at_present) interval_end<-min(interval_end,ISOdate(format(Sys.Date(),"%Y"),format(Sys.Date(),"%m"),
-                                                                      format(Sys.Date(),"%d")))
-            interval_start<-YEARMODA2Date(time_interval[1]*10000+0101)
-            sorted_list<-sorted_list[1:min(nrow(sorted_list),max(stations_to_choose_from,500)),]
-            overlap_days<-apply(sorted_list,1,function (x) (as.numeric(difftime(
-              sort(c(x["End_date"],format(interval_end,"%Y-%m-%d")))[1],
-              sort(c(x["Start_date"],format(interval_start,"%Y-%m-%d")))[2])+1)))
-            sorted_list[,"Overlap_years"]<-round(
-              apply(sorted_list,1,function (x) (as.numeric(difftime(
-                sort(c(x["End_date"],format(interval_end,"%Y-%m-%d")))[1],
-                sort(c(x["Start_date"],format(interval_start,"%Y-%m-%d")))[2])+1)/(365+length(which(sapply(time_interval[1]:time_interval[2],leap_year)))/(time_interval[2]-time_interval[1]+1)))),2)
-            sorted_list[which(sorted_list[,"Overlap_years"]<0),"Overlap_years"]<-0
-            sorted_list[,"Perc_interval_covered"]<-round(overlap_days/as.numeric(interval_end-interval_start+1)*100,2)
-            if(!is.na(elev))  sorted_list<-sorted_list[,c("chillR_code","Name","County","Latitude","Longitude","Elevation","Start_date","End_date",
-                                                          "distance","elevation_diff","Overlap_years","Perc_interval_covered")] else
-                                                            sorted_list<-sorted_list[,c("chillR_code","Name","County","Latitude","Longitude","Start_date","End_date",
-                                                                                        "distance","Overlap_years","Perc_interval_covered")]} else
-            if(!is.na(elev))  sorted_list<-sorted_list[,c("chillR_code","Name","County","Latitude","Longitude","Elevation","Start_date","End_date",
-                                                      "distance","elevation_diff")] else
-                                           sorted_list<-sorted_list[,c("chillR_code","Name","County","Latitude","Longitude","Start_date","End_date",
-                                                                      "distance")]
-        return(sorted_list[1:stations_to_choose_from,])}
+    return(get_station_list(long,lat,time_interval,stations_to_choose_from))
+    
+        }
 
 
   #weather download section
@@ -235,18 +253,11 @@ if(is.character(action)) if(action=="download_weather")
   } # end of function definition, now on to processing
 
 
-   if(is.null(station_list))
-          {suppressWarnings(dir.create("chillRtempdirectory"))
-          download.file("ftp://ftpcimis.water.ca.gov/pub2/CIMIS Stations List (May 2015).xlsx", "chillRtempdirectory/a.xlsx", mode="wb")
-          station_list<-suppressWarnings(read_excel("chillRtempdirectory/a.xlsx"))
-          closeAllConnections()
-          file.remove("chillRtempdirectory/a.xlsx")
-          unlink("chillRtempdirectory",recursive=TRUE)
-   }
+   if(is.null(station_list)) station_list<-get_station_list()
 
    station_list<-station_list[which(!is.na(station_list[,1])),]
    #station_list[,"chillR_code"]<-as.character(station_list$"Station Number")
-   station_list[,"chillR_code"]<-as.character(station_list[,grep("Station",colnames(station_list))])
+   station_list[,"chillR_code"]<-as.character(station_list[,grep("Stat",colnames(station_list))])
    if(location %in% station_list$chillR_code)
       { num<-as.numeric(location)
         if(num>99) numm<-as.character(num) else
@@ -306,8 +317,11 @@ if(is.character(action)) if(action=="download_weather")
         {last_line[,]<-NA
         last_line[,c("Station Id","Year","Month","Day")]<-c(numm,time_interval[2],12,31)
         record<-rbind(record,last_line)}
+      record$Year<-as.numeric(record$Year)
+      record$Month<-as.numeric(record$Month)
+      record$Day<-as.numeric(record$Day)
 
-      record<-make_all_day_table(record)}
+      record<-make_all_day_table(record,no_variable_check=TRUE)}
 
  return(list(database="CIMIS",weather=record))}
 
@@ -320,6 +334,8 @@ if(is.character(action)) if(action=="download_weather")
         colnames(dw)[which(colnames(dw)=="Maximum Air Temperature")]<-"Tmax"
         colnames(dw)[which(colnames(dw)=="Precipitation")]<-"Prec"
         if(drop_most) dw<-dw[,c("Year","Month","Day","Tmin","Tmax","Tmean","Prec")]
+        for (cc in c("Year","Month","Day","Tmin","Tmax","Tmean","Prec"))
+          dw[,cc]<-as.numeric(dw[,cc])
         return(list(database="CIMIS",weather=dw))}
   if(is.data.frame(action)) # then we assume that this is a downloaded file to be cleaned
         {dw<-action
@@ -328,6 +344,8 @@ if(is.character(action)) if(action=="download_weather")
         colnames(dw)[which(colnames(dw)=="Maximum Air Temperature")]<-"Tmax"
         colnames(dw)[which(colnames(dw)=="Precipitation")]<-"Prec"
         if(drop_most) dw<-dw[,c("Year","Month","Day","Tmin","Tmax","Tmean","Prec")]
+        for (cc in c("Year","Month","Day","Tmin","Tmax","Tmean","Prec"))
+          dw[,cc]<-as.numeric(dw[,cc])
         return(dw)}
 
 }

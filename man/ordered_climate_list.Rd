@@ -37,4 +37,3 @@ numbers.
 Eike Luedeling
 }
 \keyword{utility}
-

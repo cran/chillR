@@ -230,7 +230,7 @@ if(is.character(action)) if(action=="download_weather")
      {record[,"Year"]<-as.numeric(sapply(as.character(record$Date),function(x) substr(x,1,4)))
       record[,"Month"]<-as.numeric(sapply(as.character(record$Date),function(x) substr(x,5,6)))
       record[,"Day"]<-as.numeric(sapply(as.character(record$Date),function(x) substr(x,7,8)))
-      record<-make_all_day_table(record)}}
+      record<-make_all_day_table(record,no_variable_check=TRUE)}}
 
  return(list(database="UCIPM",weather=record))}
 
@@ -242,6 +242,8 @@ if(is.character(action)) if(action=="download_weather")
         colnames(dw)[which(colnames(dw)=="Air.max")]<-"Tmax"
         colnames(dw)[which(colnames(dw)=="Precip")]<-"Prec"
         if(drop_most) dw<-dw[,c("Year","Month","Day","Tmin","Tmax","Prec")]
+        for (cc in c("Year","Month","Day","Tmin","Tmax","Prec"))
+          dw[,cc]<-as.numeric(dw[,cc])
         return(list(database="UCIPM",weather=dw))}
   if(is.data.frame(action)) # then we assume that this is a downloaded file to be cleaned
         {dw<-action
@@ -249,6 +251,8 @@ if(is.character(action)) if(action=="download_weather")
         colnames(dw)[which(colnames(dw)=="Air.max")]<-"Tmax"
         colnames(dw)[which(colnames(dw)=="Precip")]<-"Prec"
         if(drop_most) dw<-dw[,c("Year","Month","Day","Tmin","Tmax","Prec")]
+        for (cc in c("Year","Month","Day","Tmin","Tmax","Prec"))
+          dw[,cc]<-as.numeric(dw[,cc])
         return(dw)}
 
 }

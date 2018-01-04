@@ -31,4 +31,3 @@ if they are all the same, FALSE otherwise.
 Eike Luedeling
 }
 \keyword{utility}
-

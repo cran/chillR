@@ -177,32 +177,33 @@ function (HourChillTable,Chill_req,Heat_req,Chill_model="Chill_Portions",Heat_mo
   if(is.null(Start_JDay)) stop("no Start_JDay provided.",call. = FALSE)
   if(Start_JDay>366) stop("Start_JDay can't be greater than 366",call. = FALSE)
   if(Start_JDay<1) stop("Start_JDay can't be less than 1",call. = FALSE)
-                                          
+  if(!"JDay" %in% colnames(HourChillTable))
+    HourChillTable<-make_JDay(HourChillTable)
+  if(!"Season" %in% colnames(HourChillTable))
+    {HourChillTable[which(HourChillTable$JDay>=Start_JDay),"Season"]<-
+      HourChillTable[which(HourChillTable$JDay>=Start_JDay),"Year"]
+    HourChillTable[which(HourChillTable$JDay<Start_JDay),"Season"]<-
+      HourChillTable[which(HourChillTable$JDay<Start_JDay),"Year"]-1}
   
-  cchh<-HourChillTable$Chilling_Hours
-  ccpp<-HourChillTable$Chill_Portions
-  ccuu<-HourChillTable$Chill_Units
+  cc<-HourChillTable[,Chill_model]
   sea<-HourChillTable$Season
   stdd<-HourChillTable$JDay
-  for (s in unique(HourChillTable$Season))
-      {cchh[which(sea==s)]<-cchh[which(sea==s)]-cchh[which(sea==s&stdd==round(Start_JDay))][1]
-       ccpp[which(sea==s)]<-ccpp[which(sea==s)]-ccpp[which(sea==s&stdd==round(Start_JDay))][1]
-       ccuu[which(sea==s)]<-ccuu[which(sea==s)]-ccuu[which(sea==s&stdd==round(Start_JDay))][1]
-       }
-  HourChillTable$Chilling_Hours<-cchh
-  HourChillTable$Chill_Portions<-ccpp
-  HourChillTable$Chill_Units<-ccuu
-  
+  for (s in unique(sea))
+      cc[which(sea==s)]<-cc[which(sea==s)]-cc[which(sea==s&stdd==round(Start_JDay))][1]
+          
+  HourChillTable[,Chill_model]<-cc
+
   results <- data.frame()
   HCT <- HourChillTable
   chill <- HCT[, Chill_model]
   chill2 <- chill[c(2:length(chill), 1)]
   Creqfull <- which((chill<=Chill_req)&(chill2>Chill_req)) + 1
+  Seas<-HourChillTable[Creqfull,"Season"]
   Creqfull <- Creqfull[!chill[Creqfull] == 0]
   Creqfull <- Creqfull[which(!is.na(Creqfull))]
-  results <- data.frame(Creqfull = Creqfull)
-  results[, c("Creq_year", "Creq_month", "Creq_day", "Creq_JDay")] <- HCT[Creqfull, 
-                                                                          c("Year", "Month", "Day", "JDay")]
+  results <- data.frame(Season = Seas, Creqfull = Creqfull)
+  results[, c("Creq_year", "Creq_month", "Creq_day", "Creq_JDay")] <-
+    HCT[Creqfull,c("Year", "Month", "Day", "JDay")]
   results[, "Hreqfull"]<-rep(NA,nrow(results))
   results[, "Hreq_year"]<-rep(NA,nrow(results))
   results[, "Hreq_month"]<-rep(NA,nrow(results))

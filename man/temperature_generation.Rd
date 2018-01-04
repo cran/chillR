@@ -79,4 +79,3 @@ Temp<-temperature_generation(weather=KA_weather,years=c(1999,2001),
 Eike Luedeling
 }
 \keyword{utility}
-

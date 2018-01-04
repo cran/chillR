@@ -27,11 +27,10 @@ leap_year(2016)
 
  
 }
-\author{
-Eike Luedeling, but based on pseudocode from Wikipedia
-}
 \references{
 https://en.wikipedia.org/wiki/Leap_year
 }
+\author{
+Eike Luedeling, but based on pseudocode from Wikipedia
+}
 \keyword{utility}
-

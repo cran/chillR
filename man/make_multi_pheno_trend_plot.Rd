@@ -88,4 +88,3 @@ make_multi_pheno_trend_plot(pheno_list,weather, split_month=6,
 Eike Luedeling
 }
 \keyword{utility}
-

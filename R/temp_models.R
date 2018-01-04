@@ -290,8 +290,52 @@ GDH<-function(HourTemp,summ=TRUE)
   if (summ) return(cumsum(GDH_weight)) else
     return(GDH_weight)
 }
+#' Calculation of cumulative heat according to the Growing Degree Hours Model
+#' (alternative function name)
+#'
+#' This function calculates heat for temperate trees according to the Growing
+#' Degree Hours Model.
+#'
+#' Growing Degree Hours are calculated as suggested by Anderson et al. (1986).
+#'
+#' @param HourTemp Vector of hourly temperatures.
+#' @param summ Boolean parameter indicating whether calculated metrics should
+#' be provided as cumulative values over the entire record (TRUE) or as the
+#' actual accumulation for each hour (FALSE).
+#' @return Vector of length length(HourTemp) containing the cumulative Growing
+#' Degree Hours over the entire duration of HourTemp.
+#' @author Eike Luedeling
+#' @references Growing Degree Hours reference:
+#'
+#' Anderson JL, Richardson EA, Kesner CD (1986) Validation of chill unit and
+#' flower bud phenology models for 'Montmorency' sour cherry. Acta Hortic 184,
+#' 71-78
+#' @keywords chill and heat calculation
+#' @examples
+#'
+#' weather<-fix_weather(KA_weather[which(KA_weather$Year>2006),])
+#'
+#' hourtemps<-stack_hourly_temps(weather,latitude=50.4)
+#'
+#' GDH_model(hourtemps$hourtemps$Temp)
+#'
+#' @export GDH_model
+GDH_model<-function(HourTemp,summ=TRUE)
+{Stress<-1
+Tb<-4
+Tu<-25
+Tc<-36
 
-#' Calculation of cumulative heat according to the Growing Degree Day Model
+GDH_weight<-rep(0,length(HourTemp))
+GDH_weight[which(HourTemp>=Tb&HourTemp<=Tu)]<-Stress*(Tu-Tb)/2*
+  (1+cos(pi+pi*(HourTemp[which(HourTemp>=Tb&HourTemp<=Tu)]-Tb)/(Tu-Tb)))
+GDH_weight[which(HourTemp>Tu&HourTemp<=Tc)]<-Stress*(Tu-Tb)*
+  (1+cos(pi/2+pi/2*(HourTemp[which(HourTemp>Tu&HourTemp<=Tc)]-Tu)/(Tc-Tu)))
+if (summ) return(cumsum(GDH_weight)) else
+  return(GDH_weight)
+}
+#'
+#'  Calculation of cumulative heat according to the Growing Degree Day Model
 #'
 #' This function calculates heat for temperate trees according to the Growing
 #' Degree Day Model. Note that the calculuation differs slightly from the original,

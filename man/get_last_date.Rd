@@ -38,4 +38,3 @@ get_last_date(c(345,356,360,365,2,5,7,10),first=TRUE)
 Eike Luedeling
 }
 \keyword{utility}
-

@@ -72,4 +72,3 @@ fix_weather(KA_weather_gap, 1990,2011,300,100)
 Eike Luedeling
 }
 \keyword{utility}
-

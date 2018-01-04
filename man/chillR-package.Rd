@@ -2,8 +2,8 @@
 % Please edit documentation in R/chillR-package.R
 \docType{package}
 \name{chillR-package}
-\alias{chillR}
 \alias{chillR-package}
+\alias{chillR}
 \title{Statistical methods for phenology analysis in temperate fruit trees}
 \description{
 The phenology of plants (i.e. the timing of their annual life phases)
@@ -42,9 +42,6 @@ stack<-stack_hourly_temps(weather,latitude=50.4)
 cc<-chilling(stack,305,60)
 
 }
-\author{
-Eike Luedeling Maintainer: Eike Luedeling <eike@eikeluedeling.com>
-}
 \references{
 Applications of some of the methods in the package:
 
@@ -80,5 +77,7 @@ Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat
 requirements of cherry trees - a statistical approach. International Journal
 of Biometeorology 57,679-689.
 }
+\author{
+Eike Luedeling Maintainer: Eike Luedeling <eike@eikeluedeling.com>
+}
 \keyword{package}
-
