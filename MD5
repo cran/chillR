@@ -1,4 +1,4 @@
-ccd7c239e9e067d4faf58192045f48ac *DESCRIPTION
+0605c6a611f2bb6d47ab659ab3b06a41 *DESCRIPTION
 25e3f10b97c41f7247024b286d60ad70 *NAMESPACE
 2c3732bcc5a9bf44dc8546b620067f2c *R/Date2YEARMODA.R
 b5c73823ba26eb782576a775217f7624 *R/PLS_chill_force.R
@@ -11,7 +11,7 @@ c621f105da20c014185a4f80e7d0924c *R/bloom_prediction2.R
 6e6dd2a15627eafe2e353c4f3a346606 *R/check_temperature_record.R
 a398f68cd5560103ac4135fbf868c23a *R/check_temperature_scenario.R
 672fdc6cf7c3e334d78514eb781052f3 *R/chile_agromet2chillR.R
-5781401575522adac753209badcb1698 *R/chillR-package.R
+a02d3fcb1564b2dd6f4086164115c210 *R/chillR-package.R
 5c7da1000c5f2c85dba888f4ca4cbdf9 *R/chillR.R
 b66f11dcf883dfa8310e5609943b6559 *R/chilling.R
 19ee4de9c0ebc9c6555f3826818cd9e1 *R/chilling_hourtable.R
@@ -25,7 +25,7 @@ dc97e072c946637d8f9fc95b9e9aa61b *R/filter_temperatures.R
 4deec0fee446626e2151a3f3aed3d2b4 *R/get_last_date.R
 1dfca80520331c7680bbdeac3b1bf9ef *R/get_weather.R
 e68f445f52433eeac71688294099ed3f *R/handle_chile_agromet.R
-7431eaad2c46472e70634c64d77182bf *R/handle_cimis.R
+cd86d98df5ffafee95c787868fce00eb *R/handle_cimis.R
 a1b1be7477a5a76f74a29d35e57ca75c *R/handle_gsod.R
 0c8e058afc2ecebe650f3cf0b79c6d58 *R/handle_ucipm.R
 5ac1a7f105cf2c63fd0ffb49aad44645 *R/handle_wunderground.R
@@ -67,7 +67,7 @@ cf09444e6264879b6ef511bfa266955a *R/weather2chillR.R
 dfe396905139e63e255d9049c1f8fc0d *data/california_stations.rda
 acc6173c130b0deb05fbc28b705fcc39 *inst/doc/hourly_temperatures.R
 821124420a480680e195e7511fcf253e *inst/doc/hourly_temperatures.Rmd
-64e80813e30368484764268fd172075e *inst/doc/hourly_temperatures.html
+506e6d0e90f863ce095de5607d0f66a7 *inst/doc/hourly_temperatures.html
 83fcf726305bc980f0d2c9779373c53d *man/Chilling_Hours.Rd
 7e4536e163a75e4615c8b432d3bdee56 *man/Date2YEARMODA.Rd
 341e0c225434340c55959e45a2fc5e62 *man/Dynamic_Model.Rd
@@ -91,7 +91,7 @@ d615a43cd600ab499cf69bbb24f5dc05 *man/california_stations.Rd
 cbe58997f318c4ffec166d63ebeeec6c *man/check_temperature_record.Rd
 2a18b04173f6dd4d9f6b3148cd77d832 *man/check_temperature_scenario.Rd
 8d21edf45217f550aa405ec593dcca78 *man/chile_agromet2chillR.Rd
-eee12c1021717527dbf19a23fb37351b *man/chillR-package.Rd
+f5c8ebad22c0c1c55e719e70ebd8ff10 *man/chillR-package.Rd
 afe9a41c4657c2c4c6eb72aec6d7832d *man/chilling.Rd
 7f67049f0b84ac4e43793af4854d7817 *man/chilling_hourtable.Rd
 af942cb8726d65637521c07eceb7d9b8 *man/color_bar_maker.Rd

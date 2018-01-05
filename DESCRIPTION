@@ -2,8 +2,8 @@ Package: chillR
 Type: Package
 Title: Statistical Methods for Phenology Analysis in Temperate Fruit
         Trees
-Version: 0.70.0
-Date: 2018-01-04
+Version: 0.70.1
+Date: 2018-01-05
 Author: Eike Luedeling
 Maintainer: Eike Luedeling <eike@eikeluedeling.com>
 Description: The phenology of plants (i.e. the timing of their annual life
@@ -11,17 +11,20 @@ Description: The phenology of plants (i.e. the timing of their annual life
     spring phases, such as leaf emergence and flowering, have been found to result
     from the effects of both cool (chilling) conditions and heat. Fruit tree
     scientists (pomologists) have developed some metrics to quantify chilling
-    and heat. 'chillR' contains functions for processing temperature records into
+    and heat (e.g. see Luedeling (2012) <doi.org/10.1016/j.scienta.2012.07.011>).
+    'chillR' contains functions for processing temperature records into
     chilling (Chilling Hours, Utah Chill Units and Chill Portions) and heat units
     (Growing Degree Hours). Regarding chilling metrics, Chill Portions are often
     considered the most promising, but they are difficult to calculate. This package
     makes it easy. 'chillR' also contains procedures for conducting a PLS analysis
     relating phenological dates (e.g. bloom dates) to either mean temperatures or
     mean chill and heat accumulation rates, based on long-term weather and phenology
-    records. As of version 0.65, it also includes functions for generating weather
+    records (Luedeling and Gassner (2012) <doi.org/10.1016/j.agrformet.2011.10.020>).
+    As of version 0.65, it also includes functions for generating weather
     scenarios with a weather generator, for conducting climate change analyses
     for temperature-based climatic metrics and for plotting results from such
-    analyses.
+    analyses. Since version 0.70, 'chillR' contains a function for interpolating
+    hourly temperature records.
 Depends: R (>= 3.2.0)
 Imports: pls, Kendall, fields, sp, readxl, XML, httr, grDevices,
         graphics, stats, utils, RMAWGEN, RCurl, raster
@@ -31,6 +34,6 @@ License: GPL-3
 LazyData: TRUE
 RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2018-01-04 09:14:15 UTC; USER
+Packaged: 2018-01-05 17:29:20 UTC; USER
 Repository: CRAN
-Date/Publication: 2018-01-04 14:54:59 UTC
+Date/Publication: 2018-01-05 23:53:17 UTC

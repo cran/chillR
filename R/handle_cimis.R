@@ -328,7 +328,12 @@ if(is.character(action)) if(action=="download_weather")
   #weather cleaning section
 
   if(is.list(action)) if(names(action)[1]=="database") # then we assume that this is a downloaded file to be cleaned
-        {dw<-action$weather
+        {
+        dw<-action$weather
+        if(length(dw)==1)
+          if(is.na(dw))
+          {warning("no usable weather downloaded")
+           return(NA)}
         colnames(dw)[which(colnames(dw)=="Average Air Temperature")]<-"Tmean"
         colnames(dw)[which(colnames(dw)=="Minimum Air Temperature")]<-"Tmin"
         colnames(dw)[which(colnames(dw)=="Maximum Air Temperature")]<-"Tmax"
@@ -339,6 +344,10 @@ if(is.character(action)) if(action=="download_weather")
         return(list(database="CIMIS",weather=dw))}
   if(is.data.frame(action)) # then we assume that this is a downloaded file to be cleaned
         {dw<-action
+        if(length(dw)==1)
+          if(is.na(dw))
+          {warning("no usable weather downloaded")
+            return(NA)}
         colnames(dw)[which(colnames(dw)=="Average Air Temperature")]<-"Tmean"
         colnames(dw)[which(colnames(dw)=="Minimum Air Temperature")]<-"Tmin"
         colnames(dw)[which(colnames(dw)=="Maximum Air Temperature")]<-"Tmax"

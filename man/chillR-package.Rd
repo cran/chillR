@@ -6,19 +6,25 @@
 \alias{chillR}
 \title{Statistical methods for phenology analysis in temperate fruit trees}
 \description{
-The phenology of plants (i.e. the timing of their annual life phases)
-depends on climatic cues. For temperate trees and many other plants, spring
-phases, such as leaf emergence and flowering, have been found to result from
-the effects of both cool (chilling) conditions and heat. Fruit tree
+The phenology of plants (i.e. the timing of their annual life
+phases) depends on climatic cues. For temperate trees and many other plants,
+spring phases, such as leaf emergence and flowering, have been found to result
+from the effects of both cool (chilling) conditions and heat. Fruit tree
 scientists (pomologists) have developed some metrics to quantify chilling
-and heat. 'chillR' contains functions for processing temperature records
-into chilling (Chilling Hours, Utah Chill Units and Chill Portions) and heat
-units (Growing Degree Hours). Regarding chilling metrics, Chill Portions are
-often considered the most promising, but they are difficult to calculate.
-This package makes it easy. 'chillR' also contains procedures for conducting
-a PLS analysis relating phenological dates (e.g. bloom dates) to either mean
-temperatures or mean chill and heat accumulation rates, based on long-term
-weather and phenology records.
+and heat (e.g. see Luedeling (2012) <doi.org/10.1016/j.scienta.2012.07.011>).
+'chillR' contains functions for processing temperature records into
+chilling (Chilling Hours, Utah Chill Units and Chill Portions) and heat units
+(Growing Degree Hours). Regarding chilling metrics, Chill Portions are often
+considered the most promising, but they are difficult to calculate. This package
+makes it easy. 'chillR' also contains procedures for conducting a PLS analysis
+relating phenological dates (e.g. bloom dates) to either mean temperatures or
+mean chill and heat accumulation rates, based on long-term weather and phenology
+records (Luedeling and Gassner (2012) <doi.org/10.1016/j.agrformet.2011.10.020>).
+As of version 0.65, it also includes functions for generating weather
+scenarios with a weather generator, for conducting climate change analyses
+for temperature-based climatic metrics and for plotting results from such
+analyses. Since version 0.70, 'chillR' contains a function for interpolating
+hourly temperature records.
 }
 \details{
 \tabular{ll}{ Package: \tab chillR\cr Type: \tab Package\cr License: \tab The "GNU General Public
