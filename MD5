@@ -1,4 +1,4 @@
-0605c6a611f2bb6d47ab659ab3b06a41 *DESCRIPTION
+58c748ac908ff354615baf66b642ce30 *DESCRIPTION
 25e3f10b97c41f7247024b286d60ad70 *NAMESPACE
 2c3732bcc5a9bf44dc8546b620067f2c *R/Date2YEARMODA.R
 b5c73823ba26eb782576a775217f7624 *R/PLS_chill_force.R
@@ -25,7 +25,7 @@ dc97e072c946637d8f9fc95b9e9aa61b *R/filter_temperatures.R
 4deec0fee446626e2151a3f3aed3d2b4 *R/get_last_date.R
 1dfca80520331c7680bbdeac3b1bf9ef *R/get_weather.R
 e68f445f52433eeac71688294099ed3f *R/handle_chile_agromet.R
-cd86d98df5ffafee95c787868fce00eb *R/handle_cimis.R
+64ecdc80a0d96f40a7675c0db43201e7 *R/handle_cimis.R
 a1b1be7477a5a76f74a29d35e57ca75c *R/handle_gsod.R
 0c8e058afc2ecebe650f3cf0b79c6d58 *R/handle_ucipm.R
 5ac1a7f105cf2c63fd0ffb49aad44645 *R/handle_wunderground.R
@@ -67,7 +67,7 @@ cf09444e6264879b6ef511bfa266955a *R/weather2chillR.R
 dfe396905139e63e255d9049c1f8fc0d *data/california_stations.rda
 acc6173c130b0deb05fbc28b705fcc39 *inst/doc/hourly_temperatures.R
 821124420a480680e195e7511fcf253e *inst/doc/hourly_temperatures.Rmd
-506e6d0e90f863ce095de5607d0f66a7 *inst/doc/hourly_temperatures.html
+549a8dae1028e7e54220bc509bb6f49f *inst/doc/hourly_temperatures.html
 83fcf726305bc980f0d2c9779373c53d *man/Chilling_Hours.Rd
 7e4536e163a75e4615c8b432d3bdee56 *man/Date2YEARMODA.Rd
 341e0c225434340c55959e45a2fc5e62 *man/Dynamic_Model.Rd
@@ -104,7 +104,7 @@ e0894396e9cab9660fc643dc0bde8ae9 *man/extract_differences_between_characters.Rd
 f81935e7d4e4f39f91824910e76a63fe *man/get_last_date.Rd
 9f43e421bd384b818091023791addbb0 *man/get_weather.Rd
 27c8d1611c4af70db54dcd0f270ee84b *man/handle_chile_agromet.Rd
-dbb06d794190dc630774354fa906048a *man/handle_cimis.Rd
+0123f8bf4610ab9ab0d5936509cc33ed *man/handle_cimis.Rd
 45abab0f0b3a9ed761d2d11eca0d9dbf *man/handle_gsod.Rd
 5367638548fa85b6b2bf8835a6bfe21f *man/handle_ucipm.Rd
 b186b5833c8f6e4f62ed389cacec6264 *man/handle_wunderground.Rd

@@ -105,7 +105,7 @@
 #' 
 #' gw<-handle_cimis(action="download_weather",location="6",time_interval=c(1982,1982),
 #'   station_list=stat_list)
-#' weather<-handle_cimis(gw)$weather
+#' weather<-handle_cimis(gw)
 #' #make_chill_plot(tempResponse(stack_hourly_temps(fix_weather(weather)),Start_JDay=300,End_JDay=50),
 #' #                "Chill_Portions",start_year=2010,end_year=2012,metriclabel="Chill Portions",
 #' #misstolerance = 50)
