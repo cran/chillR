@@ -17,7 +17,7 @@
 #' interval to be used for calibrating the temperature generator.
 #' @param sim_years vector of length 2 indicating the start and end year of the time
 #' interval for which temperatures are to be generated.
-#' @param temperature_scenario can be one of two options:
+#' @param temperature_scenario can be one of three options:
 #' 1) a data.frame with two columns Tmin and Tmax and n_intervals (default: 12) rows containing
 #' temperature changes for all time intervals, or absolute temperatures for these intervals.
 #' 2) a temperature scenario object, consisting of the following elements: 'data' = a data frame with
@@ -26,6 +26,8 @@
 #' is representative of; 'scenario_type' = the scenario type ('absolute' or 'relative' - if NA, this is
 #' assigned automatically); 'labels' = and elements attached to the input temperature_scenario as an
 #' element names 'labels'. A subset of these elements can also be specified, but 'data' must be present.
+#' 3) a (named or unnamed) list containing multiple objects of types 1 and 2. In this case, outputs are
+#' generated for all scenarios.
 #' @param seed integer specifying the random seed for the weather generation.
 #' @param check_temperature_scenario_type boolean variable specifying whether
 #' temperature scenarios should be checked - and the scenario_type updated if necessary -
@@ -36,10 +38,13 @@
 #' between the reference years of the scenario and the weather record used for calibration (the median
 #' of the two elements in the 'years' argument.
 #' @param warn_me boolean variable specifying whether warnings should be shown. Defaults to TRUE.
+#' @param remove_NA_scenarios boolean parameter indicating whether temperature scenarios that
+#' contain NA values should be removed. Such scenarios would generate an error.
 #' 
 #' 
-#' @return Data.frame containing the simulated weather, with columns c("YEARMODA",
-#' "DATE","Year","Month","Day","Tmin","Tmax")
+#' @return list of data.frames containing the simulated weather, with columns c("YEARMODA",
+#' "DATE","Year","Month","Day","Tmin","Tmax"). If temperature_scenario is a list, the output
+#' list contains simulated temperature records for all scenarios.
 #' @author Eike Luedeling
 #' @keywords utility
 #' @examples
@@ -57,8 +62,12 @@
 #' @export temperature_generation
 temperature_generation<-function(weather,years,sim_years,temperature_scenario=data.frame(Tmin=rep(0,12),Tmax=rep(0,12)),
                                  seed=99,check_temperature_scenario_type=TRUE,
-                                 temperature_check_args=NULL,max_reference_year_difference=5,warn_me=TRUE)
+                                 temperature_check_args=NULL,max_reference_year_difference=5,warn_me=TRUE,
+                                 remove_NA_scenarios=TRUE)
 {
+  
+  if(is.data.frame(temperature_scenario))
+    temperature_scenario<-list(temperature_scenario)
   
   temperature_scenario_check_n_intervals<-12
   temperature_scenario_check_check_scenario_type<-TRUE
@@ -81,16 +90,21 @@ temperature_generation<-function(weather,years,sim_years,temperature_scenario=da
     
   if(is.null(temperature_scenario)) stop("No temperature scenario provided")   
 
-  temperature_scenario<-check_temperature_scenario(temperature_scenario,
+  if(remove_NA_scenarios)
+  {scen_ok<-rep(1,length(temperature_scenario))
+  for(i in 1:length(temperature_scenario))
+    if(length(which(is.na(temperature_scenario[[i]]$data)))>0) scen_ok[i]<-0
+    temperature_scenario<-temperature_scenario[which(scen_ok==1)]}
+  
+  for(ts in 1:length(temperature_scenario))
+    {temperature_scenario[[ts]]<-check_temperature_scenario(temperature_scenario[[ts]],
                                n_intervals=temperature_scenario_check_n_intervals,
                                check_scenario_type=temperature_scenario_check_check_scenario_type,
                                scenario_check_thresholds=temperature_scenario_check_scenario_check_thresholds,
                                update_scenario_type=temperature_scenario_check_update_scenario_type,
                                warn_me=temperature_scenario_check_warn_me)
-                
-
-  if(!nrow(temperature_scenario$data)==12)
-    stop("This function only works with monthly temperature scenarios",call. = FALSE)
+    if(!nrow(temperature_scenario[[ts]]$data)==12)
+      stop("This function only works with monthly temperature scenarios",call. = FALSE)}
   
   if("weather" %in% names(weather)&"QC" %in% names(weather)) weather<-weather$weather
   year_min <- years[1]
@@ -130,26 +144,30 @@ temperature_generation<-function(weather,years,sim_years,temperature_scenario=da
   
   if(!miss==0) stop("Weather record not complete for the calibration period - NULL returned",call. = FALSE)
   
-  if(temperature_scenario$scenario_type=="relative")
-    if(is.na(temperature_scenario$reference_year))
+  simoutput<-list()
+  
+  for (ts in 1:length(temperature_scenario))
+  {
+  if(temperature_scenario[[ts]]$scenario_type=="relative")
+    if(is.na(temperature_scenario[[ts]]$reference_year))
       {if (warn_me) warning("Reference year missing - can't check if relative temperature scenario is valid",call. = FALSE)} else
-       if(!temperature_scenario$reference_year==median(c(year_min,year_max)))
+       if(!temperature_scenario[[ts]]$reference_year==median(c(year_min,year_max)))
          stop("weather data used for calibration not valid as a baseline for this scenario",
               "the reference year of the scenario must correspond to the median year of the weather record ",
               "(specified by c(year_min,year_max). At the moment, this is ",median(c(year_min,year_max)),
-              " but it should be ",temperature_scenario$reference_year,", so that it works for this scenario",
+              " but it should be ",temperature_scenario[[ts]]$reference_year,", so that it works for this scenario",
               call. = FALSE)
   
-  temperatures<-temperature_scenario$data
+  temperatures<-temperature_scenario[[ts]]$data
   
-  if(temperature_scenario$scenario_type=="relative")
+  if(temperature_scenario[[ts]]$scenario_type=="relative")
     {mean_climate_Tn_sim=min_mean+temperatures$Tmin
     mean_climate_Tx_sim=max_mean+temperatures$Tmax
     
-    if(!is.na(temperature_scenario$reference_year))
-      if(!is.numeric(temperature_scenario$reference_year))
+    if(!is.na(temperature_scenario[[ts]]$reference_year))
+      if(!is.numeric(temperature_scenario[[ts]]$reference_year))
         {if (warn_me) warning("Reference year not numeric",call. = FALSE)} else
-        {year_diff<-abs(temperature_scenario$reference_year-median(c(year_min,year_max)))
+        {year_diff<-abs(temperature_scenario[[ts]]$reference_year-median(c(year_min,year_max)))
           if(year_diff>0&year_diff<=max_reference_year_difference) if (warn_me) warning(year_diff," year(s) difference between reference years of the temperature scenario",
                                               " and the dataset used for calibrating the weather generator",
                                               call. = FALSE)
@@ -158,7 +176,7 @@ temperature_generation<-function(weather,years,sim_years,temperature_scenario=da
         }
   }
   
-  if(temperature_scenario$scenario_type=="absolute")
+  if(temperature_scenario[[ts]]$scenario_type=="absolute")
     {mean_climate_Tn_sim=min_mean-min_mean+temperatures$Tmin
      mean_climate_Tx_sim=min_mean-min_mean+temperatures$Tmax
      if (warn_me) warning(paste("Absolute temperature scenario specified - calibration weather record only used for",
@@ -176,6 +194,8 @@ temperature_generation<-function(weather,years,sim_years,temperature_scenario=da
   colnames(sim)<-c("Tmin","Tmax")
   dates<-make_all_day_table(data.frame(Year=c(year_min_sim,year_max_sim),Month=c(1,12),Day=c(1,31),nodata=c(1,2)),no_variable_check=TRUE)
   dates<-dates[,-6]
-  sim<-cbind(dates,sim)
+  simoutput[[ts]]<-cbind(dates,sim)
+  }
+  names(simoutput)<-names(temperature_scenario)
   
-  return(gen_temps=sim)}
+  return(gen_temps=simoutput)}

@@ -6,7 +6,8 @@
 \usage{
 check_temperature_scenario(temperature_scenario, n_intervals = 12,
   check_scenario_type = TRUE, scenario_check_thresholds = c(-5, 10),
-  update_scenario_type = TRUE, warn_me = TRUE)
+  update_scenario_type = TRUE, warn_me = TRUE,
+  required_variables = c("Tmin", "Tmax"))
 }
 \arguments{
 \item{temperature_scenario}{can be one of two options:
@@ -42,6 +43,9 @@ inconsistent with the numbers, the scenario_type should be updated. Defaults to 
 used if check_scenario_type==TRUE.}
 
 \item{warn_me}{boolean variable specifying whether warnings should be shown. Defaults to TRUE.}
+
+\item{required_variables}{character vector containing the names of columns that are required.
+This defaults to c("Tmin","Tmax").}
 }
 \value{
 temperature scenario object, consisting of the following elements: 'data' = a data frame with
@@ -57,6 +61,13 @@ chillR.
 chillR's temperature generation procedures require absolute or relative temperature scenarios.
 This function checks these scenarios for consistency, regarding the data format, the reference
 year, and whether they are relative or absolute scenarios (based on specified criteria).
+}
+\details{
+Besides being able to validate classic temperature scenarios consisting of "Tmin" and "Tmax"
+data, the function can also validate other datasets (e.g. outputs of the getClimateWizardData
+function). To do this, the required variables should be provided as "required_variables" parameter.
+If there is no column "GCM" in the data element of the scenario, then the check_scenario_type
+parameter should be set to FALSE.
 }
 \examples{
 

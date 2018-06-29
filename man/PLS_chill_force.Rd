@@ -143,7 +143,7 @@ though far from perfect, seems much more reliable.
 
 weather<-fix_weather(KA_weather[which(KA_weather$Year>2004),])
 #Plots look much better with weather<-fix_weather(KA_weather)
-#but that takes to long to run for passing CRAN checks
+#but that takes too long to run for passing CRAN checks
 
 dc<-daily_chill(stack_hourly_temps(weather,50.4), 11)
 plscf<-PLS_chill_force(daily_chill_obj=dc, bio_data_frame=KA_bloom, split_month=6)

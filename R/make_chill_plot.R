@@ -14,15 +14,15 @@
 #' data with fix_weather, this should work.)
 #' @param model the name of the column of the chill object that contains the
 #' metric to be displayed
-#' @param start_year the first year shown in the diagram. Note that the default
-#' is 1950, and the function does not automatically remove years for which
-#' there is no data.
-#' @param end_year the last year shown in the diagram. Note that the default is
-#' 2020, and the function does not automatically remove years for which there
-#' is no data.
+#' @param start_year the first year shown in the diagram. Default
+#' to NA, which means the first date on record is used as start_year.
+#' @param end_year the last year shown in the diagram.  Default
+#' to NA, which means the last date on record is used as end_year.
 #' @param metriclabel character string that can be used for labeling the y-axis
 #' in the plot. If this is not specified, the function will use the model
 #' argument.
+#' @param yearlabel character string indicating the name of the column in the chill
+#' object that is to be used for the time axis.
 #' @param misstolerance Percentage of missing values that leads to exclusion of
 #' an annual value from plotting.
 #' @param image_type Character string indicating the file format that should be
@@ -35,6 +35,10 @@
 #' @param fonttype The type of font to be used for the figures. Can be 'serif'
 #' (default) for a Times New Roman like font, 'sans' for an Arial type font or
 #' 'mono' for a typewriter type font.
+#' @param plotylim numeric vector of length 2 indicating the extent of the y axis.
+#' Defaults to NA, which means that y limits are determined automatically.
+#' @param plottitle character string indicating the plot title. Defaults to NULL for
+#' no title.
 #' @return only a side effect - plot of climate metric over time; bars are
 #' color coded according to the number of missing values. Bars with numbers of
 #' missing values above the misstolerance are not show and instead marked '*'
@@ -48,27 +52,36 @@
 #' 
 #'  
 #' @export make_chill_plot
-make_chill_plot<-function(chill,model,start_year=1990,end_year=2020,metriclabel=NULL,misstolerance=10,
-                          image_type=NA,outpath=NA,filename=NA,fonttype='serif')
+make_chill_plot<-function(chill,model,start_year=NA,end_year=NA,metriclabel=NULL,yearlabel="End_year",misstolerance=10,
+                          image_type=NA,outpath=NA,filename=NA,fonttype='serif',plotylim=NA,
+                          plottitle=NULL)
 {
 
+  if(!is.null(chill))
+    if(!is.data.frame(chill))
+      if(is.data.frame(chill[[1]]))
+        chill<-chill[[1]]
+  
+      if(is.na(start_year)) start_year<-min(chill[yearlabel]$End_year)
+      if(is.na(end_year)) end_year<-max(chill[yearlabel]$End_year)
+      
   if(is.null(metriclabel)) metriclabel<-model
   allyears<-c(start_year:end_year)
-  NAy<-allyears[which(!(allyears %in% chill$End_year))]
-  NAy<-sort(c(NAy,chill$End_year[which(chill$Perc_complete<100-misstolerance)]))
+  NAy<-allyears[which(!(allyears %in% chill[[yearlabel]]))]
+  NAy<-sort(c(NAy,chill[[yearlabel]][which(chill$Perc_complete<100-misstolerance)]))
   NAyears<-which(allyears %in% NAy)
   
-  missingyears<-allyears[which(!(allyears %in% chill$End_year ))]
-  percMissDay<-1+10*round(100-chill$Perc_complete)[which(chill$End_year %in% allyears)]
-  names(percMissDay)<-chill$End_year[which(chill$End_year %in% allyears)]
+  missingyears<-allyears[which(!(allyears %in% chill[[yearlabel]] ))]
+  percMissDay<-1+10*round(100-chill$Perc_complete)[which(chill[[yearlabel]] %in% allyears)]
+  names(percMissDay)<-chill[[yearlabel]][which(chill[[yearlabel]] %in% allyears)]
   percMissDay<-c(percMissDay,rep(1,length(missingyears)))
-  names(percMissDay)<-c(chill$End_year[which(chill$End_year %in% allyears)],missingyears)
+  names(percMissDay)<-c(chill[[yearlabel]][which(chill[[yearlabel]] %in% allyears)],missingyears)
   percMissDay<-percMissDay[sort(names(percMissDay))]
   QC_colors<-gray.colors(1001,0,1)[percMissDay]
   
   metric<-percMissDay
   metric[]<-NA
-  metric[which(names(metric) %in% chill$End_year)]<-chill[which(chill$End_year %in% allyears),model]
+  metric[which(names(metric) %in% chill[[yearlabel]])]<-chill[which(chill[[yearlabel]] %in% allyears),model]
   metric[which(names(metric) %in% NAy)]<-NA
   
   if(!is.na(image_type)) if(image_type=="png") {suppressWarnings(dir.create(outpath))
@@ -77,25 +90,28 @@ make_chill_plot<-function(chill,model,start_year=1990,end_year=2020,metriclabel=
       par(family=fonttype)
       layout(t(1:2), widths=c(10,1))
       if (!imageout)
-        {par(mar=rep(.5, 4), oma=c(3,4.5,.5,3))
+        {par(mar=rep(.5, 4), oma=c(3,4.5,1.5,3))
         if(length(which(!is.na(metric)))==0) {yl<-c(0,10);starY<-1} else {yl<-c(min(metric,na.rm=TRUE),max(metric,na.rm=TRUE)*1.02)
                                                                           if(yl[1]>0) yl[1]<-0
                                                                           starY<-max(metric/10,na.rm=TRUE)}
-        b<-barplot(metric,ylab=metriclabel,xlab="Year (end of chilling season)",col=QC_colors,border=QC_colors,ylim=yl,names.arg="")
+        if (!is.na(plotylim[1])) yl<-plotylim
+        b<-barplot(metric,ylab=" ",xlab=" ",col=QC_colors,border=QC_colors,ylim=yl,names.arg="")
         labs<-pretty(as.numeric(names(metric)))
         labs<-labs[which(labs %in% names(metric))]
         axis(1,at=b[which(names(metric) %in% labs)],labels=labs,padj=0.5)
         text(x=b[NAyears,1],y=starY,labels="*",cex=2)
         mtext("Year (end of time interval)",1,line=2.3)
         mtext(metriclabel,2,line=3,par(las=0))
+        if(!is.null(plottitle)) mtext(plottitle,3,line=1)
         box(which="plot")
         image(1, c(0:100), t(seq_along(c(1:100))), col=gray.colors(1001,0,1), axes=FALSE)}     
       
-      if (imageout)  {par(mar=rep(1, 4), oma=c(7,7.5,1,7))
+      if (imageout)  {par(mar=rep(1, 4), oma=c(7,7.5,2,7))
         if(length(which(!is.na(metric)))==0) {yl<-c(0,10);starY<-1} else {yl<-c(min(metric,na.rm=TRUE),max(metric,na.rm=TRUE)*1.02)
                                                                           if(yl[1]>0) yl[1]<-0
-                                                                          starY<-max(metric/10,na.rm=TRUE)}      
-        b<-barplot(metric,ylab=metriclabel,xlab="Year (end of chilling season)",col=QC_colors,border=QC_colors,ylim=yl,
+                                                                          starY<-max(metric/10,na.rm=TRUE)}
+        if (!is.na(plotylim[1])) yl<-plotylim
+        b<-barplot(metric,ylab=" ",xlab=" ",col=QC_colors,border=QC_colors,ylim=yl,
                    cex.axis=3,cex.names=3,axisnames=TRUE,names.arg="")
         labs<-pretty(as.numeric(names(metric)))
         labs<-labs[which(labs %in% names(metric))]
@@ -104,6 +120,7 @@ make_chill_plot<-function(chill,model,start_year=1990,end_year=2020,metriclabel=
         text(x=b[NAyears,1],y=starY,labels="*",cex=3)
         mtext("Year (end of time interval)",1,line=5.5,cex=4,font=2)
         mtext(metriclabel,2,line=5,par(las=0),cex=4,font=2)
+        if(!is.null(plottitle)) mtext(plottitle,3,line=1)
         box(which="plot",lwd=3)
         image(1, c(0:100), t(seq_along(c(1:100))), col=gray.colors(1001,0,1), axes=FALSE)
         }

@@ -219,18 +219,11 @@ Dynamic_Model<-function(HourTemp,summ=TRUE)
   xs<-aa*exp(ee/TK)
   ak1<-a1*exp(-e1/TK)
   interE<-0
-
-  memo<-new.env(hash=TRUE)
-
-  posi<-1
-  assign(x=paste(1),value=0,envir=memo)
   E=0
-
   S<-ak1
   S[1]<-0
   E<-S
-  options(scipen=30)
-
+ 
   for (l in 2:length(HourTemp))  {if(E[l-1]<1)
   {S[l]<-E[l-1]
   E[l]<-xs[l]-(xs[l]-S[l])*exp(-ak1[l])} else

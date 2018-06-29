@@ -47,6 +47,8 @@
 #' (default) for a Times New Roman like font, 'sans' for an Arial type font or
 #' 'mono' for a typewriter type font.
 #' @param title title of the plot (if unhappy with the default).
+#' @param plotylim numeric vector of length 2 indicating the extent of the y axis.
+#' Defaults to NA, which means that y limits are determined automatically.
 #' @return The main purpose of the function is a side effect - plots of daily
 #' climate metric accumulation. However, all the data used for making the plots
 #' is returned as a list containing an element for each metric, which consists
@@ -64,7 +66,7 @@
 #' @export make_daily_chill_plot
 make_daily_chill_plot <-function(daily_chill,metrics=NA,startdate=1,enddate=366,useyears=NA,metriclabels=NA,
                                  focusyears="none",cumulative=FALSE,image_type=NA,outpath=NA,filename=NA,fonttype='serif',
-                                 title=NA)
+                                 title=NA,plotylim=NA)
 {
 
  make_plot<-function(plottable,name,ylabel,focusyears,imageout,fonttype="default")
@@ -87,11 +89,14 @@ make_daily_chill_plot <-function(daily_chill,metrics=NA,startdate=1,enddate=366,
 
     if(!(focusyears[1]=="none")) layout(matrix(c(1,2),1,2,byrow=TRUE),widths=c(3,1))   else par(mfcol=c(1,1))
 
-    if(imageout) par(mar=c(5.1,7.1,4.1,0.5))  else par(mar=c(3.1,4.1,2.1,0.5))
+    if(imageout) par(mar=c(5.1,7.1,4.1,0.5))  else par(mar=c(0,0,1.5,0))
     suppressWarnings(if(!(focusdata[1]=="none")) {ymin<-min(c(means-sds,min(plottable[,as.character(focusyears)],na.rm=TRUE)),na.rm=TRUE)
        ymax<-max(c(means+sds,max(plottable[,as.character(focusyears)],na.rm=TRUE)),na.rm=TRUE)} else
       {ymin<-min(means-sds,na.rm=TRUE)
        ymax<-max(means+sds,na.rm=TRUE)})
+    if(!is.na(plotylim[1]))
+      {ymin<-plotylim[1]
+       ymax<-plotylim[2]}
     ymin<-ymin-(ymax-ymin)/20
     ymax<-ymax+(ymax-ymin)/20
     if(is.na(title)) main<-paste(name,"accumulation") else main<-title
@@ -124,7 +129,7 @@ make_daily_chill_plot <-function(daily_chill,metrics=NA,startdate=1,enddate=366,
     {
       if(!imageout)
         {par(mar=c(3.1,0,2.1,0))
-        yend<-min(-(length(focusyears)+3),-20)
+        yend<-min(-(length(focusyears)+3),-15)
         plot(-100,ylim=c(yend,0),xlim=c(0,5),axes=FALSE,xlab="")
         for (focusyear in focusyears)  lines(c(0.5,2),y=rep(-3-which(focusyear==focusyears),2),
             lwd=2,col=rainbow(length(focusyears))[which(focusyear==focusyears)])
@@ -136,7 +141,7 @@ make_daily_chill_plot <-function(daily_chill,metrics=NA,startdate=1,enddate=366,
 
       if(imageout)
       {par(mar=c(5.1,0,4.1,0))
-        yend<-min(-(length(focusyears)+3),-20)
+        yend<-min(-(length(focusyears)+3),-15)
         plot(-100,ylim=c(yend,0),xlim=c(0,5),axes=FALSE,xlab="")
         for (focusyear in focusyears)  lines(c(0.5,2),y=rep(-3-which(focusyear==focusyears),2),
                                              lwd=4,col=rainbow(length(focusyears))[which(focusyear==focusyears)])

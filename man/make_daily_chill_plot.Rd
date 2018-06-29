@@ -7,7 +7,7 @@
 make_daily_chill_plot(daily_chill, metrics = NA, startdate = 1,
   enddate = 366, useyears = NA, metriclabels = NA, focusyears = "none",
   cumulative = FALSE, image_type = NA, outpath = NA, filename = NA,
-  fonttype = "serif", title = NA)
+  fonttype = "serif", title = NA, plotylim = NA)
 }
 \arguments{
 \item{daily_chill}{a daily chill object generated with the daily_chill
@@ -58,6 +58,9 @@ be amended by the name of the metric and by the file extension.}
 'mono' for a typewriter type font.}
 
 \item{title}{title of the plot (if unhappy with the default).}
+
+\item{plotylim}{numeric vector of length 2 indicating the extent of the y axis.
+Defaults to NA, which means that y limits are determined automatically.}
 }
 \value{
 The main purpose of the function is a side effect - plots of daily

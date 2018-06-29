@@ -39,6 +39,8 @@
 #' @param caption_above Boolean variable indicating whether the caption should be drawn above (TRUE) or
 #' inside the figure.
 #' @param family character string specifying the font family ('serif', 'sans' or 'mono').
+#' @param no_scenario_numbers Boolean variable indicating whether climate scenarios should be numbered
+#' in the plot (this can clutter the figure).
 #' 
 #' @importFrom grDevices col2rgb
 #' @importFrom graphics boxplot strheight strwidth
@@ -98,7 +100,7 @@
 plot_climate_scenarios<-function(climate_scenario_list,metric,metric_label,
                                           year_name="End_year",label_sides="both",ylim=c(0,NA),
                                           reference_line=NULL,col_rect=NA,col_line=NA,hist_col=NA,
-                                          texcex=2,caption_above=FALSE,family='serif')
+                                          texcex=2,caption_above=FALSE,family='serif',no_scenario_numbers=FALSE)
 {
   layout(matrix(c(1:length(climate_scenario_list)),ncol=length(climate_scenario_list),byrow=FALSE),
          widths=rep(6,length(climate_scenario_list)))
@@ -181,12 +183,12 @@ plot_climate_scenarios<-function(climate_scenario_list,metric,metric_label,
     
     
     if(!time_series)
-      boxplot(lapply(plotdata,function(x) x[[metric]][which(x$Perc_complete==100)]),
+      boxplot(lapply(plotdata,function(x) x[[metric]]),
               ylab=NA,ylim=ylimplot,xlim=xlimplot,axes=FALSE,yaxs="i",col="LIGHT YELLOW",lwd=texcex*3/4)
     if(time_series)
     {if(!length(plotdata)==length(plotlabels)) stop("number of points in time doesn't correspond to number of scenarios",call. = FALSE)
       if(!is.numeric(plotlabels)) stop("labels for time series aren't numeric")
-      boxplot(lapply(plotdata,function(x) x$Chill_Portions[which(x$Perc_complete==100)]),
+      boxplot(lapply(plotdata,function(x) x[[metric]]),
               ylab=NA,ylim=ylimplot,xlim=xlimplot,yaxs="i",las=1,at=as.numeric(plotlabels),
               axes=FALSE,col="LIGHT YELLOW",lwd=texcex*3/4,boxwex=2)}
     
@@ -215,7 +217,8 @@ plot_climate_scenarios<-function(climate_scenario_list,metric,metric_label,
     if(!time_series)
       if(length(plotlabels)==length(plotdata))
         {labelpos<-unique(round(pretty(c(0.5,1:length(plotdata)))))
-        axis(1,at=labelpos[which(labelpos>0)],cex.axis=texcex,lwd=texcex,padj=0.5,tck=-0.05)
+        if(no_scenario_numbers) axis(1,labels=FALSE,at=labelpos[which(labelpos>0)],cex.axis=texcex,lwd=texcex,padj=0.5,tck=-0.05) else
+          axis(1,at=labelpos[which(labelpos>0)],cex.axis=texcex,lwd=texcex,padj=0.5,tck=-0.05)
         axis(1,labels=FALSE,at=c(1:length(plotdata)),cex.axis=texcex,lwd=texcex,padj=0.5,tck=-0.05,tck=-0.025)
         legend[[scen]]<-data.frame(code=1:length(plotlabels),Label=plotlabels)} else
                     legend[[scen]]<-"no adequate labels provided" else legend[[scen]]<-"time series labels"

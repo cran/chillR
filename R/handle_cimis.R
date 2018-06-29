@@ -210,9 +210,14 @@ if(is.character(action)) if(action=="download_weather")
       {gz <- gzfile(dest, open = "rt")
       ziplist<-unzip(dest,list=TRUE)
       if(numm %in% sapply(ziplist[,1],function(x) substr(x,nchar(x)-6,nchar(x)-4)))
-      {unzip(dest,files=paste(y,"daily",numm,".csv",sep=""),exdir="chillRtempdirectory")
-        yweath<-read.csv(paste("chillRtempdirectory/",y,"daily",numm,".csv",sep=""))
-        file.remove(paste("chillRtempdirectory/",y,"daily",numm,".csv",sep=""))
+      {if(!y==2016)
+        {unzip(dest,files=paste(y,"daily",numm,".csv",sep=""),exdir="chillRtempdirectory")
+         yweath<-read.csv(paste("chillRtempdirectory/",y,"daily",numm,".csv",sep=""))
+         file.remove(paste("chillRtempdirectory/",y,"daily",numm,".csv",sep=""))}
+        if(y==2016)
+        {unzip(dest,files=paste("dlymet",numm,".csv",sep=""),exdir="chillRtempdirectory")
+          yweath<-read.csv(paste("chillRtempdirectory/","dlymet",numm,".csv",sep=""))
+          file.remove(paste("chillRtempdirectory/","dlymet",numm,".csv",sep=""))}
         closeAllConnections()
         file.remove(dest)
       } else yweath<-NA

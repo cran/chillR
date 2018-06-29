@@ -7,7 +7,8 @@
 plot_climate_scenarios(climate_scenario_list, metric, metric_label,
   year_name = "End_year", label_sides = "both", ylim = c(0, NA),
   reference_line = NULL, col_rect = NA, col_line = NA, hist_col = NA,
-  texcex = 2, caption_above = FALSE, family = "serif")
+  texcex = 2, caption_above = FALSE, family = "serif",
+  no_scenario_numbers = FALSE)
 }
 \arguments{
 \item{climate_scenario_list}{list of lists containing information about the chill scenarios.
@@ -55,6 +56,9 @@ to draw a line (e.g. to show a best estimate and a confidence interval around it
 inside the figure.}
 
 \item{family}{character string specifying the font family ('serif', 'sans' or 'mono').}
+
+\item{no_scenario_numbers}{Boolean variable indicating whether climate scenarios should be numbered
+in the plot (this can clutter the figure).}
 }
 \value{
 List of legends for the different panels of the plot. This list reads 'time series labels'

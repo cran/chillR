@@ -5,7 +5,8 @@
 \title{Make temperature scenario relative to a particular baseline}
 \usage{
 temperature_scenario_baseline_adjustment(baseline_temperature_scenario,
-  temperature_scenario, temperature_check_args = NULL, warn_me = TRUE)
+  temperature_scenario, temperature_check_args = NULL, warn_me = TRUE,
+  required_variables = c("Tmin", "Tmax"))
 }
 \arguments{
 \item{baseline_temperature_scenario}{baseline temperature scenario (e.g. produced with
@@ -22,7 +23,7 @@ corresponds to the period, for
 which observed weather records are available. The first step in this is to compute the change
 generation. This is needed for making extracting information on prospective changes from sense of future climate scenarios, climate change analyses}
 
-\item{temperature_scenario}{can be one of two options:
+\item{temperature_scenario}{can be one of three options:
 1) a data.frame with two columns Tmin and Tmax and n_intervals (default: 12) rows containing
 temperature changes for all time intervals, or absolute temperatures for these intervals.
 2) a temperature scenario object, consisting of the following elements: 'data' = a data frame with
@@ -31,12 +32,16 @@ n_intervals elements containing the absolute or relative temperature information
 scenario is representative of; 'scenario_type' = the scenario type ('absolute' or 'relative' - if
 NA, this is assigned automatically); 'labels' = and elements attached to the input
 temperature_scenario as an element names 'labels'. A subset of these elements can also be specified,
-but 'data' must be present.}
+but 'data' must be present.
+3) a list of elements of type 1 or 2. Then the adjustment is done for all elements.}
 
 \item{temperature_check_args}{list of arguments to be passed to the check_temperature_scenario function.
 Check documentation of that function for details.}
 
 \item{warn_me}{boolean variable specifying whether warnings should be shown. Defaults to TRUE.}
+
+\item{required_variables}{character vectors containing names of variables that must be included in the
+scenario.}
 }
 \value{
 temperature scenario object, consisting of the following elements: 'data' = a data frame with

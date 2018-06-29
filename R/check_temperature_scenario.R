@@ -4,6 +4,12 @@
 #' This function checks these scenarios for consistency, regarding the data format, the reference
 #' year, and whether they are relative or absolute scenarios (based on specified criteria).
 #' 
+#' Besides being able to validate classic temperature scenarios consisting of "Tmin" and "Tmax"
+#' data, the function can also validate other datasets (e.g. outputs of the getClimateWizardData
+#' function). To do this, the required variables should be provided as "required_variables" parameter.
+#' If there is no column "GCM" in the data element of the scenario, then the check_scenario_type
+#' parameter should be set to FALSE.
+#' 
 #' @param temperature_scenario can be one of two options:
 #' 1) a data.frame with two columns Tmin and Tmax and n_intervals (default: 12) rows containing
 #' temperature changes for all time intervals, or absolute temperatures for these intervals.
@@ -32,6 +38,8 @@
 #' inconsistent with the numbers, the scenario_type should be updated. Defaults to TRUE and is only
 #' used if check_scenario_type==TRUE.
 #' @param warn_me boolean variable specifying whether warnings should be shown. Defaults to TRUE.
+#' @param required_variables character vector containing the names of columns that are required.
+#' This defaults to c("Tmin","Tmax").
 #' 
 #' @return temperature scenario object, consisting of the following elements: 'data' = a data frame with
 #' n_intervals elements containing the absolute or relative temperature information. 'reference_year' =
@@ -65,11 +73,11 @@
 #' @export check_temperature_scenario
 check_temperature_scenario<-function(temperature_scenario,n_intervals=12,check_scenario_type=TRUE,
                                      scenario_check_thresholds=c(-5,10),update_scenario_type=TRUE,
-                                     warn_me=TRUE)
+                                     warn_me=TRUE,required_variables=c("Tmin","Tmax"))
 {
   if(is.null(temperature_scenario)) stop("temperature_scenario is NULL",call. = FALSE)
   
-  if("Tmin" %in% colnames(temperature_scenario)&"Tmax" %in% colnames(temperature_scenario))
+  if(length(which(required_variables %in% names(temperature_scenario)))==length(required_variables))
     {if (warn_me) warning(paste("scenario doesn't contain named elements - consider using the",
                   "following element names: 'data', 'reference_year','scenario_type','labels'"),call. = FALSE)
      data<-temperature_scenario
@@ -99,18 +107,21 @@ check_temperature_scenario<-function(temperature_scenario,n_intervals=12,check_s
 
    if(!is.data.frame(data))
      stop("specified temperature scenario not provided in valid format - not a data frame",call. = FALSE)
-   if(!("Tmin" %in% colnames(data)&"Tmax" %in% colnames(data)))
-     stop("specified temperature scenario not provided in valid format - column Tmin or Tmax missing",call. = FALSE)
-   if(!(is.numeric(data$Tmin)&(is.numeric(data$Tmax))))
-     stop("specified temperature scenario not provided in valid format - Tmin or Tmax not numeric",call. = FALSE)
-   if(!(sum(is.na(data$Tmin))==0&(sum(is.na(data$Tmax))==0)))
+   if(!(length(which(required_variables %in% colnames(data)))==length(required_variables)))
+     stop("specified temperature scenario not provided in valid format - at least one of the following columns is missing: ",toString(required_variables),call. = FALSE)
+   if(!(is.numeric(unlist(data[,required_variables]))))
+     stop("specified temperature scenario not provided in valid format - one of the following columns is not numeric: ",toString(required_variables),call. = FALSE)
+   if(!(sum(is.na(unlist(data[,required_variables])))==0))
      stop("specified temperature scenario contains NA values",call. = FALSE)
-   if(!(nrow(data)==n_intervals))
-     stop(paste("wrong number of time intervals in temperature scenario - should be",n_intervals),call. = FALSE)
+   if(!"GCM" %in% colnames(data))
+     if(!(nrow(data)==n_intervals))
+       stop(paste("wrong number of time intervals in temperature scenario - should be",n_intervals),call. = FALSE)
   
    if(!scen_type %in% c("relative","absolute",NA))
      stop("scenario_type must be either 'relative' or 'absolute'",call. = FALSE)
    
+   if("GCM" %in% colnames(data)) check_scenario_type<-FALSE
+
    if(check_scenario_type)
      {if (max(data[,"Tmax"])<=scenario_check_thresholds[2]&
          min(data[,"Tmin"])>=scenario_check_thresholds[1])

@@ -152,6 +152,7 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
     dev_clim <- PLS_obj$Tstdev
     tick_label_pos <- leg[sapply(strsplit(as.character(leg), 
                                           "-"), "[", 3) == "15"]
+    dir.create(PLS_results_path)
     png(paste(PLS_results_path, ".png", sep = ""), width = 2000, 
         height = 2000, pointsize = 20)
     par(family=fonttype)  

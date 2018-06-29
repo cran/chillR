@@ -82,6 +82,9 @@
 #' record indicated in the summary file isn't always very useful (e.g. there
 #' could only be two records for the first and last date). Files are downloaded
 #' by year, so if we specify a long interval, this may take a bit of time.
+#' 
+#' @importFrom R.utils gunzip
+#' 
 #' @author Eike Luedeling
 #' @references The chillR package:
 #' 
@@ -211,10 +214,9 @@ handle_gsod<-function(action,location=NA,time_interval=NA,station_list=NULL,stat
      dest<-"chillRtempdirectory/weather.op.gz"
      ff<-suppressWarnings(try(download.file(URL, dest),silent = TRUE))
      if(ff==0)
-     {gz <- gzfile(dest, open = "rt")
+     {gz <- R.utils::gunzip(dest)     #gzfile(dest, open = "rt")
       out<-suppressWarnings(read.fwf(gz, c(6,1,5,2,4,2,2,2,6,1,2,2,6,1,2,2,6,1,2,2,6,1,2,2,5,1,2,2,5,1,2,2,5,2,5,2,6,1,1,6,1,1,5,1,1,5,2,6), header = FALSE, sep = "\t",skip=1))
-      close(gz)
-      file.remove("chillRtempdirectory/weather.op.gz")
+      file.remove(gz)
       colnames(out)<-c("STN---","space1","WBAN","space2","YEAR","MONTH","DAY","space3","TEMP","space4","Count1","space5","DEWP","space6","Count2",
                       "space7","SLP","space8","Count3","space9","STP","space10","Count4","space11","VISIB","space12","Count5","space13",
                       "WDSP","space14","Count6","space15","MXSPD","space16","GUST","space17","MAX","MaxFlag","space18",
@@ -242,6 +244,7 @@ handle_gsod<-function(action,location=NA,time_interval=NA,station_list=NULL,stat
    if(startlisting) {record<-NA
    warning("No weather data found for the time interval of interest.")
    return(record)}
+   record<-record[which(record$YEAR %in% c(time_interval[1]:time_interval[2])),]
    first_line<-record[1,]
    if(!((as.numeric(first_line["YEAR"])*10000+as.numeric(first_line["MONTH"])*100+as.numeric(first_line["DAY"]))==time_interval[1]*10000+101))
    {first_line[,]<-NA

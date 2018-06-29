@@ -4,9 +4,10 @@
 \alias{make_chill_plot}
 \title{Plot climate metrics over time}
 \usage{
-make_chill_plot(chill, model, start_year = 1990, end_year = 2020,
-  metriclabel = NULL, misstolerance = 10, image_type = NA, outpath = NA,
-  filename = NA, fonttype = "serif")
+make_chill_plot(chill, model, start_year = NA, end_year = NA,
+  metriclabel = NULL, yearlabel = "End_year", misstolerance = 10,
+  image_type = NA, outpath = NA, filename = NA, fonttype = "serif",
+  plotylim = NA, plottitle = NULL)
 }
 \arguments{
 \item{chill}{a chill object generated either with the chilling function or
@@ -18,17 +19,18 @@ data with fix_weather, this should work.)}
 \item{model}{the name of the column of the chill object that contains the
 metric to be displayed}
 
-\item{start_year}{the first year shown in the diagram. Note that the default
-is 1950, and the function does not automatically remove years for which
-there is no data.}
+\item{start_year}{the first year shown in the diagram. Default
+to NA, which means the first date on record is used as start_year.}
 
-\item{end_year}{the last year shown in the diagram. Note that the default is
-2020, and the function does not automatically remove years for which there
-is no data.}
+\item{end_year}{the last year shown in the diagram.  Default
+to NA, which means the last date on record is used as end_year.}
 
 \item{metriclabel}{character string that can be used for labeling the y-axis
 in the plot. If this is not specified, the function will use the model
 argument.}
+
+\item{yearlabel}{character string indicating the name of the column in the chill
+object that is to be used for the time axis.}
 
 \item{misstolerance}{Percentage of missing values that leads to exclusion of
 an annual value from plotting.}
@@ -46,6 +48,12 @@ be amended by the name of the metric and by the file extension.}
 \item{fonttype}{The type of font to be used for the figures. Can be 'serif'
 (default) for a Times New Roman like font, 'sans' for an Arial type font or
 'mono' for a typewriter type font.}
+
+\item{plotylim}{numeric vector of length 2 indicating the extent of the y axis.
+Defaults to NA, which means that y limits are determined automatically.}
+
+\item{plottitle}{character string indicating the plot title. Defaults to NULL for
+no title.}
 }
 \value{
 only a side effect - plot of climate metric over time; bars are

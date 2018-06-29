@@ -27,7 +27,7 @@
 #' corresponds to the period, for
 #' which observed weather records are available. The first step in this is to compute the change
 #' generation. This is needed for making extracting information on prospective changes from sense of future climate scenarios, climate change analyses
-#' @param temperature_scenario can be one of two options:
+#' @param temperature_scenario can be one of three options:
 #' 1) a data.frame with two columns Tmin and Tmax and n_intervals (default: 12) rows containing
 #' temperature changes for all time intervals, or absolute temperatures for these intervals.
 #' 2) a temperature scenario object, consisting of the following elements: 'data' = a data frame with
@@ -37,9 +37,12 @@
 #' NA, this is assigned automatically); 'labels' = and elements attached to the input
 #' temperature_scenario as an element names 'labels'. A subset of these elements can also be specified,
 #' but 'data' must be present.
+#' 3) a list of elements of type 1 or 2. Then the adjustment is done for all elements.
 #' @param  temperature_check_args list of arguments to be passed to the check_temperature_scenario function.
 #' Check documentation of that function for details.
 #' @param warn_me boolean variable specifying whether warnings should be shown. Defaults to TRUE.
+#' @param required_variables character vectors containing names of variables that must be included in the
+#' scenario.
 #' 
 #' @return temperature scenario object, consisting of the following elements: 'data' = a data frame with
 #' n_intervals elements containing the absolute or relative temperature information. 'reference_year' =
@@ -89,8 +92,18 @@
 #'  
 #' @export temperature_scenario_baseline_adjustment
 temperature_scenario_baseline_adjustment<-function(baseline_temperature_scenario,temperature_scenario,
-                                             temperature_check_args=NULL,warn_me=TRUE)
+                                                   temperature_check_args=NULL,warn_me=TRUE,required_variables=c("Tmin","Tmax"))
 {
+  if(!is.data.frame(baseline_temperature_scenario[[1]]))
+    baseline_temperature_scenario<-baseline_temperature_scenario[[1]]
+  
+  if(is.data.frame(temperature_scenario[[1]]))
+    temperature_scenario<-list(temperature_scenario)
+  
+  if(required_variables[1]=="monthly_min_max_temps")
+    required_variables<-c(paste("tasmin",1:12,sep=""),
+                          paste("tasmax",1:12,sep=""))
+  
   temperature_scenario_check_n_intervals<-12
   temperature_scenario_check_check_scenario_type<-TRUE
   temperature_scenario_check_scenario_check_thresholds<-c(-5,10)
@@ -113,46 +126,60 @@ temperature_scenario_baseline_adjustment<-function(baseline_temperature_scenario
   if(is.null(temperature_scenario)) stop("No temperature scenario provided",call. = FALSE)   
   
   baseline_temperature_scenario<-check_temperature_scenario(baseline_temperature_scenario,
-                                                   n_intervals=temperature_scenario_check_n_intervals,
-                                                   check_scenario_type=temperature_scenario_check_check_scenario_type,
-                                                   scenario_check_thresholds=temperature_scenario_check_scenario_check_thresholds,
-                                                   update_scenario_type=temperature_scenario_check_update_scenario_type,
-                                                   warn_me=temperature_scenario_check_warn_me)
+                                                            n_intervals=temperature_scenario_check_n_intervals,
+                                                            check_scenario_type=temperature_scenario_check_check_scenario_type,
+                                                            scenario_check_thresholds=temperature_scenario_check_scenario_check_thresholds,
+                                                            update_scenario_type=temperature_scenario_check_update_scenario_type,
+                                                            warn_me=temperature_scenario_check_warn_me,
+                                                            required_variables=required_variables)
+  for(i in 1:length(temperature_scenario))
+    temperature_scenario[[i]]<-check_temperature_scenario(temperature_scenario[[i]],
+                                                          n_intervals=temperature_scenario_check_n_intervals,
+                                                          check_scenario_type=temperature_scenario_check_check_scenario_type,
+                                                          scenario_check_thresholds=temperature_scenario_check_scenario_check_thresholds,
+                                                          update_scenario_type=temperature_scenario_check_update_scenario_type,
+                                                          warn_me=temperature_scenario_check_warn_me,
+                                                          required_variables=required_variables)  
   
-  temperature_scenario<-check_temperature_scenario(temperature_scenario,
-                                                   n_intervals=temperature_scenario_check_n_intervals,
-                                                   check_scenario_type=temperature_scenario_check_check_scenario_type,
-                                                   scenario_check_thresholds=temperature_scenario_check_scenario_check_thresholds,
-                                                   update_scenario_type=temperature_scenario_check_update_scenario_type,
-                                                   warn_me=temperature_scenario_check_warn_me)  
-  
-  #subtracting two absolute temperature scenarios
-  if(baseline_temperature_scenario$scenario_type=="absolute"&temperature_scenario$scenario_type=="absolute")
-     {out_scenario<-temperature_scenario
-      out_scenario$data<-temperature_scenario$data-baseline_temperature_scenario$data
-      out_scenario$scenario_year<-temperature_scenario$scenario_year
-      out_scenario$reference_year<-baseline_temperature_scenario$scenario_year
-      out_scenario$scenario_type<-"relative"
-     }
-  
-  #adjusting the baseline of relative temperature scenarios (both are relative)
-  #this adjusts the reference year
-  if(baseline_temperature_scenario$scenario_type=="relative"&temperature_scenario$scenario_type=="relative")
-     {if(is.na(baseline_temperature_scenario$scenario_year)|is.na(temperature_scenario$reference_year))
-       {if (warn_me) warning("scenario year of baseline scenario and/or reference year of the temperature scenario",
-               "not specified - can't verify whether this is a valid transaction!",call. = FALSE)} else
-       if(!baseline_temperature_scenario$scenario_year==temperature_scenario$reference_year)
-          stop("scenario year of the baseline scenario isn't equal to the reference year of the temperature scenario - ",
-               "these scenarios aren't compatible.",call. = FALSE)
-      out_scenario<-temperature_scenario
-      out_scenario$data<-temperature_scenario$data+baseline_temperature_scenario$data
-      out_scenario$scenario_year<-temperature_scenario$scenario_year
-      out_scenario$reference_year<-baseline_temperature_scenario$reference_year
-      out_scenario$scenario_type<-"relative"
-     }
-  
-  
+  out_scenario<-list()
+  for(i in 1:length(temperature_scenario))
+  {
+    
+    #subtracting two absolute temperature scenarios
+    if(baseline_temperature_scenario$scenario_type=="absolute"&temperature_scenario[[i]]$scenario_type=="absolute")
+    {out_scenario[[i]]<-temperature_scenario[[i]]
+    if("GCM" %in% colnames(out_scenario[[i]]$data))
+    {out_scenario[[i]]$data<-temperature_scenario[[i]]$data
+    out_scenario[[i]]$data[,which(!colnames(out_scenario[[i]]$data)=="GCM")]<-temperature_scenario[[i]]$data[,which(!colnames(temperature_scenario[[i]]$data)=="GCM")]-
+      baseline_temperature_scenario$data[,which(!colnames(temperature_scenario[[i]]$data)=="GCM")]} else
+        out_scenario[[i]]$data<-temperature_scenario[[i]]$data-baseline_temperature_scenario$data
+      
+      out_scenario[[i]]$scenario_year<-temperature_scenario[[i]]$scenario_year
+      out_scenario[[i]]$reference_year<-baseline_temperature_scenario$scenario_year
+      out_scenario[[i]]$scenario_type<-"relative"
+    }
+    
+    #adjusting the baseline of relative temperature scenarios (both are relative)
+    #this adjusts the reference year
+    if(baseline_temperature_scenario$scenario_type=="relative"&temperature_scenario[[i]]$scenario_type=="relative")
+    {if(is.na(baseline_temperature_scenario$scenario_year)|is.na(temperature_scenario[[i]]$reference_year))
+    {if (warn_me) warning("scenario year of baseline scenario and/or reference year of the temperature scenario",
+                          " not specified - can't verify whether this is a valid transaction!",call. = FALSE)} else
+                            if(!baseline_temperature_scenario$scenario_year==temperature_scenario[[i]]$reference_year)
+                              stop("scenario year of the baseline scenario isn't equal to the reference year of the temperature scenario - ",
+                                   "these scenarios aren't compatible.",call. = FALSE)
+      out_scenario[[i]]<-temperature_scenario[[i]]
+      if("GCM" %in% colnames(out_scenario[[i]]$data))
+      {out_scenario[[i]]$data<-temperature_scenario[[i]]$data
+      out_scenario[[i]]$data[,which(!colnames(out_scenario[[i]]$data)=="GCM")]<-temperature_scenario[[i]]$data[,which(!colnames(temperature_scenario[[i]]$data)=="GCM")]+
+        baseline_temperature_scenario$data[,which(!colnames(temperature_scenario[[i]]$data)=="GCM")]} else
+          out_scenario[[i]]$data<-temperature_scenario[[i]]$data+baseline_temperature_scenario$data
+      out_scenario[[i]]$scenario_year<-temperature_scenario[[i]]$scenario_year
+      out_scenario[[i]]$reference_year<-baseline_temperature_scenario$reference_year
+      out_scenario[[i]]$scenario_type<-"relative"
+    }
+  }
+  names(out_scenario)<-names(temperature_scenario)
   
   return(out_scenario)
 }
-  

@@ -8,7 +8,7 @@ temperature_generation(weather, years, sim_years,
   temperature_scenario = data.frame(Tmin = rep(0, 12), Tmax = rep(0, 12)),
   seed = 99, check_temperature_scenario_type = TRUE,
   temperature_check_args = NULL, max_reference_year_difference = 5,
-  warn_me = TRUE)
+  warn_me = TRUE, remove_NA_scenarios = TRUE)
 }
 \arguments{
 \item{weather}{daily weather, as produced with the fix_weather
@@ -21,7 +21,7 @@ interval to be used for calibrating the temperature generator.}
 \item{sim_years}{vector of length 2 indicating the start and end year of the time
 interval for which temperatures are to be generated.}
 
-\item{temperature_scenario}{can be one of two options:
+\item{temperature_scenario}{can be one of three options:
 1) a data.frame with two columns Tmin and Tmax and n_intervals (default: 12) rows containing
 temperature changes for all time intervals, or absolute temperatures for these intervals.
 2) a temperature scenario object, consisting of the following elements: 'data' = a data frame with
@@ -29,7 +29,9 @@ n_intervals elements containing the absolute or relative temperature information
 'scenario_year' = the year the scenario is representative of; 'reference_year' = the year the scenario
 is representative of; 'scenario_type' = the scenario type ('absolute' or 'relative' - if NA, this is
 assigned automatically); 'labels' = and elements attached to the input temperature_scenario as an
-element names 'labels'. A subset of these elements can also be specified, but 'data' must be present.}
+element names 'labels'. A subset of these elements can also be specified, but 'data' must be present.
+3) a (named or unnamed) list containing multiple objects of types 1 and 2. In this case, outputs are
+generated for all scenarios.}
 
 \item{seed}{integer specifying the random seed for the weather generation.}
 
@@ -45,10 +47,14 @@ between the reference years of the scenario and the weather record used for cali
 of the two elements in the 'years' argument.}
 
 \item{warn_me}{boolean variable specifying whether warnings should be shown. Defaults to TRUE.}
+
+\item{remove_NA_scenarios}{boolean parameter indicating whether temperature scenarios that
+contain NA values should be removed. Such scenarios would generate an error.}
 }
 \value{
-Data.frame containing the simulated weather, with columns c("YEARMODA",
-"DATE","Year","Month","Day","Tmin","Tmax")
+list of data.frames containing the simulated weather, with columns c("YEARMODA",
+"DATE","Year","Month","Day","Tmin","Tmax"). If temperature_scenario is a list, the output
+list contains simulated temperature records for all scenarios.
 }
 \description{
 Function to incorporate the temperature generation function of the
