@@ -5,8 +5,9 @@
 \title{Combine multiple phenology contour plots in one figure}
 \usage{
 make_multi_pheno_trend_plot(pheno_list, fixed_weather, split_month = 6,
-  outpath = NA, file_name = NA, image_type = "png", fonttype = "serif",
-  percol = 5, xlabel = NA, ylabel = NA, height_factor = 0.8)
+  outpath = NA, file_name = NA, image_type = "png",
+  fonttype = "serif", percol = 5, xlabel = NA, ylabel = NA,
+  height_factor = 0.8)
 }
 \arguments{
 \item{pheno_list}{a data.frame with the following columns: varieties

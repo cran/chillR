@@ -4,8 +4,9 @@
 \alias{make_daily_chill_figures}
 \title{Produce image of daily chill and heat accumulation}
 \usage{
-make_daily_chill_figures(daily_chill, file_path, models = c("Chilling_Hours",
-  "Utah_Chill_Units", "Chill_Portions", "GDH"), labels = NA)
+make_daily_chill_figures(daily_chill, file_path,
+  models = c("Chilling_Hours", "Utah_Chill_Units", "Chill_Portions",
+  "GDH"), labels = NA)
 }
 \arguments{
 \item{daily_chill}{a daily chill object. This should be generated with the

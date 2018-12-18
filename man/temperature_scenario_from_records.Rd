@@ -5,7 +5,7 @@
 \title{Make monthly temperature scenario from historic records}
 \usage{
 temperature_scenario_from_records(weather, year, weather_start = NA,
-  weather_end = NA)
+  weather_end = NA, scen_type = "running_mean", runn_mean = 15)
 }
 \arguments{
 \item{weather}{daily weather, as produced with the fix_weather
@@ -18,7 +18,17 @@ c("Month","Day","Year","Tmin","Tmax").}
 Defaults to NA, which means the first year of the record is used as start year.}
 
 \item{weather_end}{end year of the period to be considered in calculating the regression.
-#' Defaults to NA, which means the last year of the record is used as end year.}
+Defaults to NA, which means the last year of the record is used as end year.}
+
+\item{scen_type}{character string, either "regression" or "running_mean", specifying how the
+scenario should be produced. "regression" computed the scenario based on an assumed linear trend
+in the data; "running_mean" uses a running mean function instead, with the length of the
+running mean window determined by the runn_mean parameter. The default is a running mean function,
+since the assumption of a linear trend often does not hold.}
+
+\item{runn_mean}{number of vector elements to use for calculating the
+running mean; this is reduced, if the time series is not long enough to accommodate the specified
+window. Defaults to 15.}
 }
 \value{
 list of climate scenario objects, consisting of the following elements: 'data' =

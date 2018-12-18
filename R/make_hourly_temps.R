@@ -9,6 +9,11 @@
 #' preserved, but ignored in the processing. References to papers outlining the
 #' procedures are given below.
 #' 
+#' Note that this function should be able to generate hourly temperatures for
+#' all latitudes, but it uses an algorithm designed for locations with regular
+#' day/night behavior. It may therefore be that the curves aren't very realistic
+#' for very short or very long days, or especially for polar days and nights.
+#' 
 #' @param latitude the geographic latitude (in decimal degrees) of the location
 #' of interest
 #' @param year_file a data frame containing data on daily minimum temperature
@@ -77,59 +82,66 @@ function (latitude,year_file,keep_sunrise_sunset=FALSE)
                               JDay=c(year_file$JDay[1]-1,
                                      year_file$JDay,
                                      year_file$JDay[nrow(year_file)]+1))
+         Day_times$Sunrise[which(Day_times$Sunrise==99)]<-0
+         Day_times$Sunrise[which(Day_times$Sunrise==-99)]<-12
+         Day_times$Sunset[which(Day_times$Sunset==99)]<-24
+         Day_times$Sunset[which(Day_times$Sunset==-99)]<-12
+         
          year_file$Sunrise<-Day_times$Sunrise[2:(length(Day_times$Sunrise)-1)]
          year_file$Sunset<-Day_times$Sunset[2:(length(Day_times$Sunset)-1)]
          year_file$Daylength<-Day_times$Daylength[2:(length(Day_times$Daylength)-1)]
          year_file$prev_Sunset<-Day_times$Sunset[1:(length(Day_times$Sunset)-2)]
          year_file$next_Sunrise<-Day_times$Sunrise[3:length(Day_times$Sunrise)]
-               
          year_file$prev_max<-year_file$Tmax[c(NA,1:(nrow(year_file)-1))]
          year_file$next_min<-year_file$Tmin[c(2:nrow(year_file),NA)]
          year_file$prev_min<-year_file$Tmin[c(NA,1:(nrow(year_file)-1))]
          year_file$Tsunset<-year_file$Tmin+(year_file$Tmax-year_file$Tmin)*
                             sin((pi*(year_file$Sunset-year_file$Sunrise)/(year_file$Daylength+4)))
          year_file$prev_Tsunset<-year_file$prev_min+(year_file$prev_max-year_file$prev_min)*
-                            sin((pi*(year_file$Sunset-year_file$Sunrise)/(year_file$Daylength+4)))
+                            sin((pi*(year_file$Daylength)/(year_file$Daylength+4)))
          colnum<-ncol(year_file)+1
 
          hourcol<-c(colnum:(colnum+23))
 
+
+ 
+         
      for (hour in 0:23)
       {
        hourcount<-hour+1
 
        #if(length(which(year_file$Daylength==-99))>0)
        #{
-         year_file[which(year_file$Daylength==-99),colnum+hour]<-(year_file$Tmax+year_file$Tmin)/2
+         no_riseset<-which(year_file$Daylength %in% c(0,24,-99))
+         year_file[no_riseset,colnum+hour]<-((year_file$Tmax+year_file$Tmin)/2)[no_riseset]
          #}
 
          c_morn<-which(hour<=year_file$Sunrise)
+         if(1 %in% c_morn) c_morn<-c_morn[2:length(c_morn)] #can't compute temperatures before sunrise for day 1
          c_day<-which(hour>year_file$Sunrise&hour<=year_file$Sunset)
-         c_eve<-which(hour>year_file$Sunset)
+         c_eve<-which(hour>=year_file$Sunset)
+         if(nrow(year_file) %in% c_eve) c_eve<-c_eve[1:(length(c_eve)-1)] #can't compute temperatures after sunset for last day
          
-         if(length(which(year_file$Daylength>(-99)))>0)
-           {if(length(c_morn)>0)     #before sunrise
-             {year_file[c_morn,colnum+hour]<-
-                 year_file$prev_Tsunset[c_morn]-  #prev temp at sunset
-                      ((year_file$prev_Tsunset[c_morn]-year_file$Tmin[c_morn])/
-                         log(24-(year_file$prev_Sunset[c_morn]-year_file$Sunrise[c_morn]))*
-                             log(hour+24-year_file$prev_Sunset[c_morn]+1))}
-
-         if(length(c_day)>0)     #between sunrise and an hour after sunset
-           {year_file[c_day,colnum+hour]<-
-               year_file$Tmin[c_day]+
-                 (year_file$Tmax[c_day]-year_file$Tmin[c_day])*
-                    sin((pi*(hour-year_file$Sunrise[c_day])/
-                      (year_file$Daylength[c_day]+4)))}
-
-         if(length(c_eve)>0)                   #at least one hour after sunset
-           {year_file[c_eve,colnum+hour]<-
-               year_file$Tsunset[c_eve]- #temp at sunset
-                 ((year_file$Tsunset[c_eve]-year_file$next_min[c_eve])/
-                    log(24-(year_file$Sunset[c_eve]-year_file$next_Sunrise[c_eve])+1)*
-                        log(hour-year_file$Sunset[c_eve]+1))}
-
-                 }}
+         
+         year_file[c_morn,colnum+hour]<-
+           year_file$prev_Tsunset[c_morn]-  #prev temp at sunset
+           ((year_file$prev_Tsunset[c_morn]-year_file$Tmin[c_morn])/
+              log(max(1,24-(year_file$prev_Sunset[c_morn]-year_file$Sunrise[c_morn])))*
+              log(hour+24-year_file$prev_Sunset[c_morn]+1))
+         
+         year_file[c_day,colnum+hour]<-
+           year_file$Tmin[c_day]+
+           (year_file$Tmax[c_day]-year_file$Tmin[c_day])*
+           sin((pi*(hour-year_file$Sunrise[c_day])/
+                  (year_file$Daylength[c_day]+4)))
+         
+         year_file[c_eve,colnum+hour]<-
+           year_file$Tsunset[c_eve]- #temp at sunset
+           ((year_file$Tsunset[c_eve]-year_file$next_min[c_eve])/
+              log(24-(year_file$Sunset[c_eve]-year_file$next_Sunrise[c_eve])+1)*
+              log(hour-year_file$Sunset[c_eve]+1))
+        
+          }
                  colnames(year_file)[(ncol(year_file)-23):(ncol(year_file))]<-c(paste("Hour_",0:23,sep=""))
                  if (!keep_sunrise_sunset)
                    year_file<-year_file[,c(preserve_columns,paste("Hour_",0:23,sep=""))]

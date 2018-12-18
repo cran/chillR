@@ -5,10 +5,11 @@
 \title{Partial Least Squares analysis of phenology vs. accumulated daily chill and
 heat}
 \usage{
-PLS_chill_force(daily_chill_obj, bio_data_frame, split_month, expl.var = 30,
-  ncomp.fix = NULL, return.all = FALSE, crossvalidate = "none",
-  end_at_pheno_end = TRUE, chill_models = c("Chilling_Hours",
-  "Utah_Chill_Units", "Chill_Portions"), heat_models = c("GDH"))
+PLS_chill_force(daily_chill_obj, bio_data_frame, split_month,
+  expl.var = 30, ncomp.fix = NULL, return.all = FALSE,
+  crossvalidate = "none", end_at_pheno_end = TRUE,
+  chill_models = c("Chilling_Hours", "Utah_Chill_Units",
+  "Chill_Portions"), heat_models = c("GDH"))
 }
 \arguments{
 \item{daily_chill_obj}{a daily chill object. This should be generated with

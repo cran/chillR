@@ -119,18 +119,18 @@ function (hourtemps,Start_JDay=1,End_JDay=366,models=list(Chilling_Hours=Chillin
 
                                                               
 for (sea in seasons)
-    #if(sea==seasons[1])
-     {#chillout<-data.frame(Season=paste(sea-1,"/",sea,sep=""),End_year=sea,Days=length(which(hourtemps$sea==sea))/24)
-      seas<-hourtemps[which(hourtemps$sea==sea),]
+     { seas<-hourtemps[which(hourtemps$sea==sea),]
       if("no_Tmin" %in% names(hourtemps)&"no_Tmax" %in% names(hourtemps))
         chillout[which(chillout$End_year==sea),"Interpolated_days"]<-length(which(seas$no_Tmin|seas$no_Tmax))/24
         chillout[,"Perc_complete"]<-NA
-        if (sea == seasons[1]&(Start_JDay>End_JDay|Start_JDay==hourtemps$JDay[1]))
-          {temp<-seas[,names(models)]
-           last_end <- temp[1, ] - temp[1, ]} else last_end<-hourtemps[min(which(hourtemps$sea==sea))-1,]
+
+        last_end<-hourtemps[max(c(1,min(which(hourtemps$sea==sea))-1)),]
+          if (sea == seasons[1]&(Start_JDay>End_JDay|Start_JDay==hourtemps$JDay[1]))
+            { last_end[,names(models)] <- 0}
         for(m in 1:length(models))
           chillout[which(chillout$End_year==sea),names(models)[m]]<-seas[nrow(seas),names(models)[m]]-last_end[,names(models)[m]]
-}
+        
+    }
      if("no_Tmin" %in% names(hourtemps)&"no_Tmax" %in% names(hourtemps))
        chillout[,"Perc_complete"]<-(chillout[,"Data_days"]-chillout[,"Interpolated_days"])/chillout[,"Season_days"]*100 else
          chillout[,"Perc_complete"]<-chillout[,"Data_days"]/chillout[,"Season_days"]*100

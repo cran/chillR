@@ -8,8 +8,14 @@
 #' (in decimal degrees) of the location of interest
 #' @param JDay numeric (usually integer) value or vector specifying the
 #' Julian day (day of the year), for which calculations should be done.
+#' @param notimes.as.na parameter to determine whether for days without
+#' sunrise or sunset, na should be returned for Sunset and Sunrise. If
+#' left at FALSE (the default), the function returns -99 and 99 for
+#' sunrise and sunset or polar nights and polar days, respectively.
 #' @return list with three elements Sunrise, Sunset and Daylength. For days
-#' without sunrise or sunset (polar days or nights), all values become -99.
+#' without sunrise (polar nights), sunset and sunrise become -99 and the
+#' daylength 0. For days without sunset, sunset and sunrise are 99 and
+#' daylength 24.
 #' @author Eike Luedeling
 #' @references  
 #' Spencer JW, 1971. Fourier series representation of the position of the Sun.
@@ -26,7 +32,7 @@
 #' 
 #' 
 #' @export daylength
-daylength<-function(latitude,JDay)
+daylength<-function(latitude,JDay,notimes.as.na=FALSE)
 {
   if(missing(latitude)) stop("'latitude' not specified")
   if(missing(JDay)) stop("'JDay' not specified")
@@ -41,26 +47,23 @@ daylength<-function(latitude,JDay)
   CosWo<-(sin(-0.8333/360*2*pi)-sin(latitude/360*2*pi)*
             sin(Delta/360*2*pi))/(cos(latitude/360*2*pi)*cos(Delta/360*2*pi))
   
-  if(length(CosWo)==1)
-    if(CosWo>=-1&CosWo<=1) 
-      {Sunrise<-12-acos(CosWo)/(15/360*2*pi)
-       Sunset<-12+acos(CosWo)/(15/360*2*pi)
-       Daylength<-2*acos(CosWo)/(15/360*2*pi)
-      }  else 
-      {Sunrise<--99
-       Sunset<--99
-       Daylength=-99}
-  if(length(CosWo)>1)
-  {Sunrise<-rep(-99,length(CosWo))
-   Sunset<-rep(-99,length(CosWo))
-   Daylength<-rep(-99,length(CosWo))
-   Sunrise[which(CosWo>=-1&CosWo<=1)]<-12-acos(CosWo[which(CosWo>=-1&CosWo<=1)])/(15/360*2*pi)
-   Sunset[which(CosWo>=-1&CosWo<=1)]<-12+acos(CosWo[which(CosWo>=-1&CosWo<=1)])/(15/360*2*pi)
-   Daylength[which(CosWo>=-1&CosWo<=1)]<-2*acos(CosWo[which(CosWo>=-1&CosWo<=1)])/(15/360*2*pi)
-  }
- Sunset[which(is.na(JDay))]<-NA
- Sunrise[which(is.na(JDay))]<-NA
- Daylength[which(is.na(JDay))]<-NA
+  normal_days<-which(CosWo>=-1&CosWo<=1)
+  Sunrise<-rep(-99,length(CosWo))
+  Sunrise[normal_days]<-12-acos(CosWo[normal_days])/(15/360*2*pi)
+  Sunset<-rep(-99,length(CosWo))
+  Sunset[normal_days]<-12+acos(CosWo[normal_days])/(15/360*2*pi)
+  Daylength<-Sunset-Sunrise
+  Daylength[which(CosWo>1)]<-0
+  Daylength[which(CosWo<(-1))]<-24
+  Sunrise[which(Daylength==24)]<-99
+  Sunset[which(Daylength==24)]<-99
+  
+  if(notimes.as.na)
+   {Sunrise[which(Sunrise %in% c(-99,99))]<-NA
+    Sunset[which(Sunset %in% c(-99,99))]<-NA}
+  Sunset[which(is.na(JDay))]<-NA
+  Sunrise[which(is.na(JDay))]<-NA
+  Daylength[which(is.na(JDay))]<-NA
  
  return(list(Sunrise=Sunrise,Sunset=Sunset,Daylength=Daylength))  
 }

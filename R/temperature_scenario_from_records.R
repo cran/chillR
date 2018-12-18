@@ -21,7 +21,15 @@
 #' @param weather_start start year of the period to be considered in calculating the regression.
 #' Defaults to NA, which means the first year of the record is used as start year.
 #' @param weather_end end year of the period to be considered in calculating the regression.
-#' #' Defaults to NA, which means the last year of the record is used as end year.
+#' Defaults to NA, which means the last year of the record is used as end year.
+#' @param scen_type character string, either "regression" or "running_mean", specifying how the
+#' scenario should be produced. "regression" computed the scenario based on an assumed linear trend
+#' in the data; "running_mean" uses a running mean function instead, with the length of the
+#' running mean window determined by the runn_mean parameter. The default is a running mean function,
+#' since the assumption of a linear trend often does not hold.
+#' @param runn_mean number of vector elements to use for calculating the
+#' running mean; this is reduced, if the time series is not long enough to accommodate the specified
+#' window. Defaults to 15.
 #' @return list of climate scenario objects, consisting of the following elements: 'data' =
 #' a data frame with n_intervals elements containing the absolute temperature information.
 #' 'scenario_year' = the year the scenario is representative of, i.e. the specified 'year' parameter.
@@ -39,7 +47,7 @@
 #'  
 #' @export temperature_scenario_from_records
 temperature_scenario_from_records<-function(weather,year,
-                                            weather_start=NA,weather_end=NA)
+                                            weather_start=NA,weather_end=NA,scen_type="running_mean",runn_mean=15)
 {
   if(!is.data.frame(weather)) return(warning("Error - weather object is not a data.frame"))
   if(!"Tmin" %in% colnames(weather)|
@@ -69,18 +77,28 @@ temperature_scenario_from_records<-function(weather,year,
   
   out_scenarios<-list()
   for(y in 1:length(year))
-  for (v in c("Tmin","Tmax"))
+  {for (v in c("Tmin","Tmax"))
     {for (i in 1:12)
     {monthly<-past_means[[v]][which(past_means[[v]]$Month==i),]
-    model<-lm(monthly$Temp~monthly$Year)
-    baseclim_baseline_duration_adjustment[i,v]<-as.numeric(model$coefficients[1]+model$coefficients[2]*year[y])
-    if(is.na(baseclim_baseline_duration_adjustment[i,v]))
-      return(warning(paste("Error - unable to calculate regression for",v,"in month",i)))}
+    
+    if(scen_type=="regression")
+      {model<-lm(monthly$Temp~monthly$Year)
+       baseclim_baseline_duration_adjustment[i,v]<-as.numeric(model$coefficients[1]+model$coefficients[2]*year[y])
+       if(is.na(baseclim_baseline_duration_adjustment[i,v]))
+         return(warning(paste("Error - unable to calculate regression for",v,"in month",i)))}
+    if(scen_type=="running_mean")
+      {baseclim_baseline_duration_adjustment[i,v]<-runn_mean_pred(indep=monthly$Year,dep=monthly$Temp,pred=year[y],runn_mean=runn_mean)$predicted
+       if(is.na(baseclim_baseline_duration_adjustment[i,v]))
+         return(warning(paste("Error - cannot calculate value for",v,"in month",i)))}
+    
+    }}
+    
     out_scenarios[[y]]<-list(data=baseclim_baseline_duration_adjustment,
                            scenario_year=year[y],
                            reference_year=NA,
                            scenario_type="absolute",
                            labels="regression-based scenario")
+    if(scen_type=="running_mean") out_scenarios[[y]]$labels<-"running mean scenario"
   }
    names(out_scenarios)<-as.character(year)
   

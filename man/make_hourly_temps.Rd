@@ -36,6 +36,11 @@ uses a sine curve for daytime warming and a logarithmic decay function for
 nighttime cooling. The input data frame can have more columns, which are
 preserved, but ignored in the processing. References to papers outlining the
 procedures are given below.
+
+Note that this function should be able to generate hourly temperatures for
+all latitudes, but it uses an algorithm designed for locations with regular
+day/night behavior. It may therefore be that the curves aren't very realistic
+for very short or very long days, or especially for polar days and nights.
 }
 \examples{
 

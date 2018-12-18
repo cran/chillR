@@ -5,9 +5,9 @@
 \title{Calculation of cumulative temperature metric according to a user-defined
 stepwise weight function}
 \usage{
-step_model(HourTemp, df = data.frame(lower = c(-1000, 1.4, 2.4, 9.1, 12.4,
-  15.9, 18), upper = c(1.4, 2.4, 9.1, 12.4, 15.9, 18, 1000), weight = c(0, 0.5,
-  1, 0.5, 0, -0.5, -1)), summ = TRUE)
+step_model(HourTemp, df = data.frame(lower = c(-1000, 1.4, 2.4, 9.1,
+  12.4, 15.9, 18), upper = c(1.4, 2.4, 9.1, 12.4, 15.9, 18, 1000), weight =
+  c(0, 0.5, 1, 0.5, 0, -0.5, -1)), summ = TRUE)
 }
 \arguments{
 \item{HourTemp}{Vector of hourly temperatures.}

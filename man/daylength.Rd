@@ -4,7 +4,7 @@
 \alias{daylength}
 \title{Compute sunrise and sunset times, and daylength}
 \usage{
-daylength(latitude, JDay)
+daylength(latitude, JDay, notimes.as.na = FALSE)
 }
 \arguments{
 \item{latitude}{numeric value specifying the geographic latitude
@@ -12,10 +12,17 @@ daylength(latitude, JDay)
 
 \item{JDay}{numeric (usually integer) value or vector specifying the
 Julian day (day of the year), for which calculations should be done.}
+
+\item{notimes.as.na}{parameter to determine whether for days without
+sunrise or sunset, na should be returned for Sunset and Sunrise. If
+left at FALSE (the default), the function returns -99 and 99 for
+sunrise and sunset or polar nights and polar days, respectively.}
 }
 \value{
 list with three elements Sunrise, Sunset and Daylength. For days
-without sunrise or sunset (polar days or nights), all values become -99.
+without sunrise (polar nights), sunset and sunrise become -99 and the
+daylength 0. For days without sunset, sunset and sunrise are 99 and
+daylength 24.
 }
 \description{
 This function computes sunrise time, sunset time and daylength for a

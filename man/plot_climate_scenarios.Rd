@@ -6,9 +6,9 @@
 \usage{
 plot_climate_scenarios(climate_scenario_list, metric, metric_label,
   year_name = "End_year", label_sides = "both", ylim = c(0, NA),
-  reference_line = NULL, col_rect = NA, col_line = NA, hist_col = NA,
-  texcex = 2, caption_above = FALSE, family = "serif",
-  no_scenario_numbers = FALSE)
+  reference_line = NULL, col_rect = NA, col_line = NA,
+  hist_col = NA, texcex = 2, caption_above = FALSE,
+  family = "serif", no_scenario_numbers = FALSE)
 }
 \arguments{
 \item{climate_scenario_list}{list of lists containing information about the chill scenarios.

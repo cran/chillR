@@ -4,8 +4,8 @@
 \alias{check_temperature_record}
 \title{Check a daily or hourly temperature record for compliance with chillR's standards}
 \usage{
-check_temperature_record(weather, hourly = FALSE, completeness_check = TRUE,
-  no_variable_check = FALSE)
+check_temperature_record(weather, hourly = FALSE,
+  completeness_check = TRUE, no_variable_check = FALSE)
 }
 \arguments{
 \item{weather}{object to be tested for whether it contains chillR-compatible

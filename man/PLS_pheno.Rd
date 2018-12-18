@@ -6,7 +6,8 @@
 \usage{
 PLS_pheno(weather_data, bio_data, split_month = 7, runn_mean = 11,
   expl.var = 30, ncomp.fix = NULL, use_Tmean = FALSE,
-  return.all = FALSE, crossvalidate = "none", end_at_pheno_end = TRUE)
+  return.all = FALSE, crossvalidate = "none",
+  end_at_pheno_end = TRUE)
 }
 \arguments{
 \item{weather_data}{a dataframe containing daily minimum and maximum

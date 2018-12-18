@@ -4,9 +4,9 @@
 \alias{extract_temperatures_from_grids}
 \title{Extract temperature information from gridded dataset}
 \usage{
-extract_temperatures_from_grids(coordinates, grid_format, grid_specifications,
-  scenario_year = NA, reference_year = NA, scenario_type = NA,
-  labels = NA, temperature_check_args = NULL)
+extract_temperatures_from_grids(coordinates, grid_format,
+  grid_specifications, scenario_year = NA, reference_year = NA,
+  scenario_type = NA, labels = NA, temperature_check_args = NULL)
 }
 \arguments{
 \item{coordinates}{numeric vector specifying coordinates for the point location of interest.

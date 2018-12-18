@@ -6,8 +6,8 @@
 \usage{
 tempResponse(hourtemps, Start_JDay = 1, End_JDay = 366,
   models = list(Chilling_Hours = Chilling_Hours, Utah_Chill_Units =
-  Utah_Model, Chill_Portions = Dynamic_Model, GDH = GDH), misstolerance = 50,
-  whole_record = FALSE)
+  Utah_Model, Chill_Portions = Dynamic_Model, GDH = GDH),
+  misstolerance = 50, whole_record = FALSE)
 }
 \arguments{
 \item{hourtemps}{a list of two elements, with element 'hourtemps' being a

@@ -37,5 +37,5 @@ plot(runn_mean(rnorm(1000),150))
 \author{
 Eike Luedeling
 }
-\keyword{~kwd1}
-\keyword{~kwd2}
+\keyword{"running}
+\keyword{mean"}

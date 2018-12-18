@@ -6,8 +6,8 @@
 airport database}
 \usage{
 handle_wunderground(action, location = NA, time_interval = NA,
-  station_list = NULL, stations_to_choose_from = 25, drop_most = TRUE,
-  end_at_present = TRUE)
+  station_list = NULL, stations_to_choose_from = 25,
+  drop_most = TRUE, end_at_present = TRUE)
 }
 \arguments{
 \item{action}{if this is the character string "list_stations", the function

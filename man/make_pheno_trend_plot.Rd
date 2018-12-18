@@ -6,9 +6,9 @@
 \usage{
 make_pheno_trend_plot(weather_data_frame, split_month = 6, pheno,
   use_Tmean = FALSE, Start_JDay_chill, End_JDay_chill, Start_JDay_heat,
-  End_JDay_heat, outpath, file_name, plot_title, ylabel = NA, xlabel = NA,
-  legend_label = NA, image_type = "png", colorscheme = "normal",
-  fonttype = "serif")
+  End_JDay_heat, outpath, file_name, plot_title, ylabel = NA,
+  xlabel = NA, legend_label = NA, image_type = "png",
+  colorscheme = "normal", fonttype = "serif")
 }
 \arguments{
 \item{weather_data_frame}{a dataframe containing daily minimum and maximum

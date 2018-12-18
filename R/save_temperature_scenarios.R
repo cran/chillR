@@ -67,7 +67,7 @@ load_temperature_scenarios<-function(path,prefix)
              function(x) as.numeric(strsplit(x,"_")[[1]][1])))
   ordered_scenarios<-scenario_files[order(nums)]
   ordered_scenario_names<-scenario_num_names[order(nums)]
-  scennames<-lapply(scenario_num_names,
+  scennames<-lapply(ordered_scenario_names,
                 function(x)
                   {num<-strsplit(x,"_")[[1]][1]
                    substr(x,nchar(num)+2,nchar(x)-4)})
@@ -77,3 +77,60 @@ load_temperature_scenarios<-function(path,prefix)
   names(output)<-scennames
   return(output)
 }
+
+#' Load climate wizard scenarios
+#' 
+#' This is a slightly modified version of the load_temperature_scenarios function that can
+#' load climate scenarios downloaded with the getClimateWizardData and saved with the
+#' save_temperature_scenarios function. This separate function is necessary, because the
+#' climate scenarios are expressed as lists, with one element being a data.frame.
+#' 
+#' @param path character string indicating the file path where the files are to be written.
+#' @param prefix character string specifying the prefix for all files.
+#' @return a list of temperature scenarios.
+#' 
+#' @author Eike Luedeling
+#' @keywords utility
+#' @examples
+#' 
+#' temps<-list(Element1=data.frame(a=1,b=2),Element2=data.frame(a=c(2,3),b=c(8,4)))
+#' save_temperature_scenarios(temps,path=getwd(),prefix="temperatures")
+#' temps_reloaded<-load_temperature_scenarios(path=getwd(),prefix="temperatures")
+#' 
+#'  
+#' @export load_ClimateWizard_scenarios
+load_ClimateWizard_scenarios<-function(path,prefix)
+{
+  files<-list.files(path)
+  file_prefixes<-lapply(files,function(x) substr(x,1,nchar(prefix)))
+  scenario_files<-files[which(file_prefixes==prefix)]
+  scenario_num_names<-lapply(scenario_files,function(x) substr(x,nchar(prefix)+2,nchar(x)))
+  nums<-unlist(lapply(scenario_num_names,
+                      function(x) as.numeric(strsplit(x,"_")[[1]][1])))
+  ordered_scenarios<-scenario_files[order(nums)]
+  ordered_scenario_names<-scenario_num_names[order(nums)]
+  scennames<-lapply(ordered_scenario_names,
+                    function(x)
+                    {num<-strsplit(x,"_")[[1]][1]
+                    substr(x,nchar(num)+2,nchar(x)-4)})
+  output<-list()
+  for(i in 1:length(ordered_scenarios))
+    output[[i]]<-read.csv(file.path(path,ordered_scenarios[[i]]))
+  names(output)<-scennames
+  
+  for(o in 1:length(output))
+    output[[o]]<-list(data=data.frame(Tmin=output[[o]]$data.Tmin,
+                       Tmax=output[[o]]$data.Tmax),
+            scenario=as.character(output[[o]]$scenario[1]),
+            start_year=output[[o]]$start_year[1],
+            end_year=output[[o]]$end_year[1],
+            scenario_year=output[[o]]$scenario_year[1],
+            reference_year=output[[o]]$reference_year[1],
+            scenario_type=as.character(output[[o]]$scenario_type[1]),
+            labels=as.character(output[[o]]$labels[1]))
+            
+            
+    
+  return(output)
+}
+
