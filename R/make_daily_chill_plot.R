@@ -239,3 +239,169 @@ return(df)
 
 
 
+
+
+#' Plot daily climate metric accumulation throughout the year (2)
+#' 
+#' This function generates a plot of the accumulation of a climate metric
+#' throughout the year. Its standard output are the mean daily accumulation and
+#' the standard deviation. It is also possible to add one or several so-called
+#' focusyears to add the daily accumulation during these years to the plots.
+#' Plots can be produced in R or directly exported as .png files.
+#' 
+#' Plots daily accumulation of climatic metrics, such as winter chill, as daily
+#' accumulation rates or as cumulative accumulation. A legend is only added,
+#' when focusyears are also shown. Otherwise the plot is reasonably
+#' self-explanatory.
+#' 
+#' @param daily an object generated with the daily_chill
+#' function, which can calculate several standard chilling metrics or be
+#' supplied with user-written temperature models. Since the format for the
+#' input file must meet certain requirements, I recommend that you follow the
+#' steps shown in the example below to prepare it.
+#' @param metrics list of the metrics to be evaluated. This defaults to NA, in
+#' which case the function makes a guess on what metrics you want to
+#' calculated. This is done by choosing all column headers that are not
+#' required for a daily_chill object.
+#' @param startdate the first day of the season for which the metrics are to be
+#' summarized (as a Julian date = day of the year)
+#' @param enddate the last day of the season for which the metrics are to be
+#' summarized (as a Julian date = day of the year)
+#' @param useyears if only certain years are to be used, these can be provided
+#' here as a numeric vector. Defaults to NA, which means all years in the
+#' daily_chill object are used.
+#' @param metriclabels Character vector with labels for each metric to be
+#' analyzed. Defaults to NA, which means that the strings passed as metrics
+#' will be used.
+#' @param focusyears Numeric vector containing the years that are to be
+#' highlighted in the plot. Years for which no data are available are
+#' automatically removed.
+#' @param cumulative Boolean argument (TRUE or FALSE) indicating whether the
+#' climate metric should be shown as daily accumulation rates or as cumulative
+#' accumulation.
+#' @param fix_leap boolean parameter indicating whether the anomaly that can
+#' originate when leaf years are present in the data should be smoothed by
+#' interpolating between Dec 30 and Jan 1 in leap years.
+#' @return The main purpose of the function is a side effect - plots of daily
+#' climate metric accumulation. However, all the data used for making the plots
+#' is returned as a list containing an element for each metric, which consists
+#' of a data.table with the daily means, standard deviation and daily values
+#' for all focusyears.
+#' @import ggplot2
+#' @author Eike Luedeling
+#' @keywords utility
+#' @examples
+#' 
+#' 
+#' daily<-daily_chill(stack_hourly_temps(fix_weather(
+#'   KA_weather[which(KA_weather$Year>2005),])),running_mean=11)
+#' 
+#' make_daily_chill_plot2(daily,metrics=c("Chill_Portions","GDH"),cumulative=TRUE,
+#'    startdate=300,enddate=30,focusyears=c(2009,2008))
+#' 
+#' 
+#'  
+#' @export make_daily_chill_plot2
+make_daily_chill_plot2 <-function(daily,metrics=NA,startdate=1,enddate=366,useyears=NA,metriclabels=NA,
+                                 focusyears="none",cumulative=FALSE,fix_leap=TRUE)
+{
+  if(length(metriclabels)==length(metrics))
+    metriclabels[which(is.na(metriclabels))]<-metrics[which(is.na(metriclabels))] else
+      metriclabels<-metrics
+  
+  dc<-daily$daily_chill
+  dc[,"JDay"]<-strptime(paste(dc$Month,"/",dc$Day,"/",dc$Year,sep=""),"%m/%d/%Y")$yday+1
+  if("no_Tmin" %in% colnames(dc) & "no_Tmax" %in% colnames(dc))
+    dc<-dc[1:max(which(!(dc$no_Tmin|dc$no_Tmax))),]
+  if(enddate>startdate) relevant_days<-c(startdate:enddate) else relevant_days<-c(startdate:366,1:enddate)
+  relevant_days<-relevant_days[which(relevant_days %in% unique(dc$JDay))]
+  if(is.na(metrics[1])) metrics<-colnames(dc) [which(!colnames(dc) %in% c("YYMMDD","Year","Month","Day","Tmean","JDay","End_year","no_Tmin","no_Tmax"))]
+  if(is.na(metriclabels[1])) metriclabels<-metrics
+  
+
+  if(startdate<enddate) Jdays<-relevant_days else
+    Jdays<-c((c(startdate:366)-366),c(1:enddate))
+  
+  dc<-make_JDay(dc)
+  dc[,"seasonday"]<-unlist(sapply(dc$JDay,function(x) if(x %in% relevant_days) Jdays[which(relevant_days==x)] else NA))
+  dc[,"End_year"]<-dc$Year+(dc$seasonday<=0)
+  
+  if(cumulative)
+   for (met in metrics)
+    {for(e in unique(dc$End_year))
+      dc[which(dc$End_year==e&(dc$JDay %in% relevant_days)),met]<-cumsum(dc[which(dc$End_year==e&(dc$JDay %in% relevant_days)),met])
+    dc[which(is.na(dc$End_year)),met]<-NA}
+  
+  
+  endyears<-as.numeric(names(table(dc$End_year))[table(dc$End_year) %in% c(max(table(dc$End_year)),max(table(dc$End_year)-1))])
+  dc<-dc[which(dc$End_year %in% endyears),]
+  
+  output<-list()
+  
+  for (met in metrics)
+    {dc_summ <- plyr::ddply(dc[which(!is.na(dc[,met])&(dc$End_year %in% endyears)),], "seasonday", .drop=TRUE,
+                   .fun = function(xx, col) {
+                            c(N    = sum(!is.na(xx[[col]])),
+                              mean = mean   (xx[[col]], na.rm=TRUE),
+                              sd   = sd     (xx[[col]], na.rm=TRUE))},
+                   met)
+     dc_summ$sd[which(is.na(dc_summ$sd))]<-0
+     dc_summ[,"se"]<-dc_summ$sd/sqrt(dc_summ$N)
+     if(fix_leap) dc_summ$mean[which(dc_summ$seasonday==0)]<-mean(c(dc_summ$mean[which(dc_summ$seasonday %in% c(-1,1))]))
+     
+     focusyears<-focusyears[which(focusyears %in% endyears)]
+     
+     if(!length(focusyears)==0)
+       {
+         for(foc in focusyears)
+           {dc_summ<-merge(dc_summ,dc[which(dc$End_year==foc),c("End_year","seasonday",met)])
+            dc_summ<-dc_summ[,c(1:(ncol(dc_summ)-2),ncol(dc_summ))]
+            colnames(dc_summ)[ncol(dc_summ)]<-foc}
+       foci<-reshape2::melt(dc_summ[,c("seasonday",focusyears)],id.vars="seasonday")
+       colnames(foci)<-c("seasonday","Year","value")
+       foci[,"Date"]<-as.Date(foci$seasonday,origin=as.Date("2011-12-31"))
+       }
+       
+     dc_summ[,"Date"]<-as.Date(dc_summ$seasonday,origin=as.Date("2011-12-31"))
+
+     
+     all_dates<-as.Date(dc_summ$seasonday,origin=as.Date("2011-12-31"))
+     months<-as.numeric(format(all_dates, "%m"))
+     days<-as.numeric(format(all_dates, "%d"))
+     griddatelist<-all_dates[which((months<3&days==1)|(months>2&days<3))]
+     days<-as.numeric(format(griddatelist, "%d"))
+     gridlabels<-format(griddatelist, "%b")
+     gridlabels[which(days==2)]<-""
+     
+     if(cumulative) ylabe<-paste("Cumulative",metriclabels[which(metrics==met)]) else ylabe<-metriclabels[which(metrics==met)]
+
+     
+     
+     if(!length(focusyears)==0)
+       print(ggplot2::ggplot(dc_summ,aes_(x=~Date,y=~mean)) +
+         geom_errorbar(aes_(ymin=~mean-sd, ymax=~mean+sd), width=.1,lwd=2,colour="grey") +
+         geom_line(colour="black",lwd=1) +
+         geom_line(data=foci,aes_(x=~Date,y=~value,colour=~Year),lwd=2) +
+         ylab(ylabe) + xlab("Date") +
+         theme_gray(base_size=22) +
+         scale_x_date(breaks=griddatelist,labels=gridlabels,expand=expand_scale(add=0),minor_breaks=NULL)
+       )
+     
+     if(length(focusyears)==0)
+       print(ggplot2::ggplot(dc_summ,aes_(x=~Date,y=~mean)) +
+               geom_errorbar(aes_(ymin=~mean-sd, ymax=~mean+sd), width=.1,lwd=2,colour="grey") +
+               geom_line(colour="black",lwd=1) +
+               ylab(ylabe) + xlab("Date") +
+               theme_gray(base_size=22) +
+               scale_x_date(breaks=griddatelist,labels=gridlabels,expand=expand_scale(add=0),minor_breaks=NULL) 
+       )
+
+          output[[met]]<-dc_summ[,1:ncol(dc_summ)-1]
+     
+     if(!met==metrics[length(metrics)]) readline(prompt="Press [enter] to continue")
+     }
+     
+  return(output)
+}
+
+

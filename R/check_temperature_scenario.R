@@ -75,7 +75,9 @@ check_temperature_scenario<-function(temperature_scenario,n_intervals=12,check_s
                                      scenario_check_thresholds=c(-5,10),update_scenario_type=TRUE,
                                      warn_me=TRUE,required_variables=c("Tmin","Tmax"))
 {
-  if(is.null(temperature_scenario)) stop("temperature_scenario is NULL",call. = FALSE)
+  assertthat::assert_that(!is.null(temperature_scenario),msg="temperature_scenario is NULL")
+  
+  #if(is.null(temperature_scenario)) stop("temperature_scenario is NULL",call. = FALSE)
   
   if(length(which(required_variables %in% names(temperature_scenario)))==length(required_variables))
     {if (warn_me) warning(paste("scenario doesn't contain named elements - consider using the",

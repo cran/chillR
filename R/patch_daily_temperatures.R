@@ -30,7 +30,7 @@
 #' number of values that were filled from this source and the number of missing records
 #' that remained after exhausting this auxiliary data source.)
 #' @author Eike Luedeling
-#' @keywords ~kwd1 ~kwd2
+#' @keywords temperature gap-filling
 #' @examples
 #' 
 #' gap_weather<-KA_weather[1:100,]

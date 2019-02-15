@@ -67,5 +67,5 @@ patched<-patch_daily_temperatures(gap_weather,patch_weather,max_mean_bias=1)
 \author{
 Eike Luedeling
 }
-\keyword{~kwd1}
-\keyword{~kwd2}
+\keyword{gap-filling}
+\keyword{temperature}

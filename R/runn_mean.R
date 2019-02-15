@@ -105,7 +105,7 @@ runn_mean_pred<-function(indep,dep,pred,runn_mean=11,na.rm=FALSE,exclude_central
   pred_fun<-function(pr)
   {
     if(is.na(pr)) return(NA)
-    if(!(min(indep,na.rm=TRUE)<pr&pr<max(indep,na.rm=TRUE))) return(NA)
+    if(!(min(indep,na.rm=TRUE)<=pr&pr<=max(indep,na.rm=TRUE))) return(NA)
     
     start_y<-runny[max(which(indep<=pr))]
     end_y<-runny[min(which(indep>=pr))]
