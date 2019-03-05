@@ -1,4 +1,4 @@
-37d26be5e86a4588a7460b190dca754b *DESCRIPTION
+eecf671e36cc300f7d14d5d19951343b *DESCRIPTION
 24b81a58580cee69110c27eb374789aa *NAMESPACE
 2c3732bcc5a9bf44dc8546b620067f2c *R/Date2YEARMODA.R
 53e00e00c6192ea4955a7f8cf99643a8 *R/PLS_chill_force.R
@@ -74,7 +74,7 @@ e482f78f407337057ed8151a1e9ffb40 *R/temperature_generation.R
 dfe396905139e63e255d9049c1f8fc0d *data/california_stations.rda
 acc6173c130b0deb05fbc28b705fcc39 *inst/doc/hourly_temperatures.R
 821124420a480680e195e7511fcf253e *inst/doc/hourly_temperatures.Rmd
-8822136a05ac878792ea31e6d811e1e3 *inst/doc/hourly_temperatures.html
+9f54354ee65b75ec34d5135a372c2095 *inst/doc/hourly_temperatures.html
 83fcf726305bc980f0d2c9779373c53d *man/Chilling_Hours.Rd
 7e4536e163a75e4615c8b432d3bdee56 *man/Date2YEARMODA.Rd
 341e0c225434340c55959e45a2fc5e62 *man/Dynamic_Model.Rd
