@@ -271,7 +271,8 @@ PLS_pheno <- function (weather_data,bio_data,split_month=7,runn_mean=11,expl.var
     out[1:tablength,"Date"] <- labdates
     out[1:tablength,"JDay"] <- labJdates
     out[1:tablength,"Coef"] <- coef(PLS_output)
-    out[1:tablength,"VIP"] <- VIP(PLS_output)[ncomp, ]
+    if(ncomp==1)  out[1:tablength,"VIP"] <- VIP(PLS_output)
+    if(ncomp>1)  out[1:tablength,"VIP"] <- VIP(PLS_output)[ncomp, ]
     out[1:tablength,"Tmean"] <- colMeans(indep)
     out[1:tablength,"Tstdev"] <- apply(indep, 2, sd, na.rm = TRUE)
     if (return.all) return(list(object_type="PLS_Temp_pheno",pheno=bio_data,PLS_summary=out,PLS_output=PLS_output)) else return(list(object_type="PLS_Temp_pheno",pheno=bio_data,PLS_summary=out))  }

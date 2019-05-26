@@ -8,7 +8,7 @@ output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{chillR hourly_temperatures}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+
 ---
 
 

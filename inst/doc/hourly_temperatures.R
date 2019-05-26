@@ -23,7 +23,7 @@ knitr::kable(hourtemps[20:30,],row.names = FALSE)
 
 par(mar=c(5,5,1,1))
 plot(hourtemps$Temp[10:250]~hourtemps$DATE[10:250],type="l",col="red",lwd=3,
-     xlab="Date",ylab="Temperature (캜)",xaxs="i")
+     xlab="Date",ylab="Temperature (째C)",xaxs="i")
 
 
 ## ------------------------------------------------------------------------
@@ -42,7 +42,7 @@ par(mar=c(5,5,1,1))
 plot(fixed$weather$Tmin_original~fixed$weather$DATE,type="l",lwd=4,col="blue",
      ylim=c(min(fixed$weather[,c("Tmin","Tmin_original")],na.rm=TRUE),
             max(fixed$weather[,c("Tmax","Tmax_original")],na.rm=TRUE)),xaxs="i",
-     xlab="Date",ylab="Temperature (캜)")
+     xlab="Date",ylab="Temperature (째C)")
 lines(fixed$weather$Tmax_original~fixed$weather$DATE,type="l",lwd=4,col="red")
 lines(fixed$weather$Tmin~fixed$weather$DATE,type="l",lwd=2)
 lines(fixed$weather$Tmax~fixed$weather$DATE,type="l",lwd=2)
@@ -76,7 +76,7 @@ par(mar=c(5,5,0,0))
 plot(fixed$weather$Tmin_original~fixed$weather$DATE,type="l",lwd=4,col="blue",
      ylim=c(min(fixed$weather[,c("Tmin","Tmin_original")],na.rm=TRUE),
             max(fixed$weather[,c("Tmax","Tmax_original")],na.rm=TRUE)),xaxs="i",
-     xlab="Date",ylab="Temperature (캜)")
+     xlab="Date",ylab="Temperature (째C)")
 lines(fixed$weather$Tmax_original~fixed$weather$DATE,type="l",lwd=4,col="red")
 lines(patched_weather$weather$Tmin~fixed$weather$DATE,type="l",lwd=2)
 lines(patched_weather$weather$Tmax~fixed$weather$DATE,type="l",lwd=2)
@@ -85,7 +85,7 @@ lines(patched_weather$weather$Tmax~fixed$weather$DATE,type="l",lwd=2)
 Winters_hours_gaps[,"DATE"]<-ISOdate(Winters_hours_gaps$Year,Winters_hours_gaps$Month,Winters_hours_gaps$Day,Winters_hours_gaps$Hour)
 par(mar=c(5,5,1,1))
 plot(Winters_hours_gaps$Temp[50:300]~Winters_hours_gaps$DATE[50:300],type="l",
-     lwd=2,col="dark grey",xaxs="i",xlab="Date",ylab="Temperature (캜)")
+     lwd=2,col="dark grey",xaxs="i",xlab="Date",ylab="Temperature (째C)")
 
 lines(interpolate_gaps(Winters_hours_gaps$Temp_gaps)$interp[50:300]~Winters_hours_gaps$DATE[50:300],col="red",lwd=2)
 lines(Winters_hours_gaps$Temp_gaps[50:300]~Winters_hours_gaps$DATE[50:300],type="l",lwd=2)
@@ -122,7 +122,7 @@ inter<-interp$weather
 inter[,"DATE"]<-ISOdate(inter$Year,inter$Month,inter$Day,inter$Hour)
 par(mar=c(5,5,1,1))
 plot(inter$Temp_recorded[50:300]~inter$DATE[50:300],type="l",
-     lwd=2,col="dark grey",xaxs="i",xlab="Date",ylab="Temperature (캜)")
+     lwd=2,col="dark grey",xaxs="i",xlab="Date",ylab="Temperature (째C)")
 
 lines(inter$Temp[50:300]~inter$DATE[50:300],col="red",lwd=2)
 lines(inter$Temp_gaps[50:300]~inter$DATE[50:300],type="l",lwd=2)
