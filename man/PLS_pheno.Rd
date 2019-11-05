@@ -134,7 +134,7 @@ PLS_results<-PLS_pheno(
   
 PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
   
-plot_PLS(PLS_results,PLS_results_path)
+# plot_PLS(PLS_results,PLS_results_path)
 
 }
 \references{

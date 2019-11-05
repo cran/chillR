@@ -42,10 +42,10 @@ PLS_results<-PLS_pheno(
   
 PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
   
-plot_PLS(PLS_results,PLS_results_path)
+# plot_PLS(PLS_results,PLS_results_path)
 
-stack<-stack_hourly_temps(weather,latitude=50.4)
-cc<-chilling(stack,305,60)
+# stack<-stack_hourly_temps(weather,latitude=50.4)
+# cc<-chilling(stack,305,60)
 
 }
 \references{

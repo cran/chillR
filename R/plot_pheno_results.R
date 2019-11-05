@@ -51,6 +51,22 @@
 #' should be a numeric vector: c(start_chill,end_chill).
 #' @param add_heat option for indicating the forcing period in the plot. This
 #' should be a numeric vector: c(start_heat,end_heat).
+#' @param plot_titles_Temp title for the bottom plot, which relates PLS outputs
+#' to values of the input variable (temperature in the original version). Only
+#' affects the output for PLS_Temp_pheno objects.
+#' @param plot_titles_chill_force titles for the bottom plots, which relate PLS outputs
+#' to values of the input variables (chill and heat accumulation). Only affects the
+#' output for PLS_chillforce_pheno objects.
+#' @param axis_labels_Temp y-axis label for the bottom plot, which relates PLS outputs
+#' to values of the input variable (temperature in the original version). Only
+#' affects the output for PLS_Temp_pheno objects.
+#' @param axis_labels_chill_force y-axis labels for the bottom plots, which relate PLS outputs
+#' to values of the input variables (chill and heat accumulation). Only affects the
+#' output for PLS_chillforce_pheno objects.
+#' @param chill_force_same_scale Boolean parameter indicating whether the two sets of
+#' VIP scores and model coefficients resulting from a PLS_chillforce_pheno analysis
+#' should be shown on the same scale in the separate output diagrams. Since this
+#' is generally advisable for comparison, this defaults to TRUE.
 #' @author Eike Luedeling
 #' @references The method is described here:
 #' 
@@ -99,13 +115,13 @@
 #'   
 #' PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
 #'   
-#' plot_PLS(PLS_results,PLS_results_path)
+#' #plot_PLS(PLS_results,PLS_results_path)
 #' #plot_PLS(PLS_results,PLS_results_path,add_chill=c(307,19),add_heat=c(54,109))
 #' 
 #' dc<-daily_chill(stack_hourly_temps(weather,50.4), 11)
 #' plscf<-PLS_chill_force(daily_chill_obj=dc, bio_data_frame=KA_bloom, split_month=6)
 #' 
-#' plot_PLS(plscf,PLS_results_path)
+#' #plot_PLS(plscf,PLS_results_path)
 #' #plot_PLS(plscf,PLS_results_path,add_chill=c(307,19),add_heat=c(54,109))
 #' 
 #' 
@@ -113,7 +129,12 @@
 #' @export plot_PLS
 plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8, 
                     colorscheme = "color",plot_bloom=TRUE,fonttype='serif',
-                    add_chill=c(NA,NA),add_heat=c(NA,NA)) 
+                    add_chill=c(NA,NA),add_heat=c(NA,NA),
+                    plot_titles_Temp="Mean temperature",
+                    plot_titles_chill_force=c("Chill Accumulation","Heat Accumulation"),
+                    axis_labels_Temp=expression("Mean temperature ("^"o" * "C)"),
+                    axis_labels_chill_force=c("Chill Portions per day", "GDH per day"),
+                    chill_force_same_scale=TRUE) 
 {
   get_leg<-function(x,leg)
   {leg_SC<-x-leg[1]$yday
@@ -159,13 +180,14 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
     par(mfcol = c(3, 1))
     par(mar = c(6.1, 9.4, 6.1, 2.1))
     par(mgp = c(4, 1.5, 0))
+    
     if (colorscheme == "bw") 
       color_bars_VIP <- color_bar_maker(VIPs[1:lc], VIPs[1:lc], 
                                     threshold = VIP_threshold, col1 = "BLACK", col2 = "BLACK", 
                                     col3 = "GREY")  else color_bars_VIP <- color_bar_maker(VIPs[1:lc], VIPs[1:lc], 
                                        threshold = VIP_threshold, col1 = "DARK BLUE", col2 = "DARK BLUE", 
                                        col3 = "DARK GREY")
-    plot(leg, VIPs[1:lc], main = "VIP", xlab = NA, ylab = NA, 
+      plot(leg, VIPs[1:lc], main = "VIP", xlab = NA, ylab = NA, 
          xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
          cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
          lwd = 6)
@@ -237,7 +259,7 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
          cex.axis = 4, cex.main = 5, type = "h", col = color_bars, 
          lwd = 6)
     
-    plot(leg, mean_clim[1:lc], main = "Mean temperature", 
+    plot(leg, mean_clim[1:lc], main = plot_titles_Temp, 
          ylab = NA, xlab = NA, xaxs = "i", yaxs = "i", xaxt = "n", 
          cex.lab = 4, cex.axis = 4, cex.main = 5, type = "l", 
          lwd = 3, col = "BLACK", ylim = c(min(mean_clim[1:lc] - 
@@ -252,8 +274,7 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
     box(which = "plot", lwd = 3)
     axis(1, lwd.ticks = 0, at = ticks_labels, labels = tick_labels, 
          cex.axis = 4, padj = 1)
-    mtext(side = 2, text = expression("Mean temperature ("^"o" * 
-                                        "C)"), line = 5, cex = 3)
+    mtext(side = 2, text = axis_labels_Temp, line = 5, cex = 3)
     if(!is.na(add_chill[1])&!is.na(add_chill[2]))
       rect(get_leg(add_chill[1],leg),-10000,get_leg(add_chill[2],leg),10000,col = rgb(204/255,229/255,1,1/2),border=NA)
     if(!is.na(add_heat[1])&!is.na(add_chill[1]))
@@ -309,6 +330,12 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
           par(mfcol = c(3, 2))
           par(mar = c(6.1, 9.1, 6.1, 2.1))
           par(mgp = c(4, 1.5, 0))
+          
+          if (chill_force_same_scale)
+          {ylims_VIP<-c(min(PLS_obj[, "VIP"]),max(PLS_obj[, "VIP"]))
+          ylims_coeff<-c(min(PLS_obj[, "Coef"]),max(PLS_obj[, "Coef"]))}
+          
+          
           for (graph in c("Chill", "Heat")) {
             if (graph == "Chill") {
               VIPs <- PLS_obj[1:lc, "VIP"]
@@ -325,13 +352,21 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
             if (colorscheme == "bw") 
               color_bars_VIP <- color_bar_maker(VIPs, VIPs, threshold = VIP_threshold, 
                                             col1 = "BLACK", col2 = "BLACK", col3 = "GREY") else
-                                              color_bars_VIP <- color_bar_maker(VIPs, VIPs, 
+                                     color_bars_VIP <- color_bar_maker(VIPs, VIPs, 
                                                                             threshold = VIP_threshold, col1 = "DARK BLUE", 
                                                                             col2 = "DARK BLUE", col3 = "DARK GREY")
-                                            plot(leg, VIPs, main = "VIP", xlab = NA, ylab = NA, 
-                                                 xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
-                                                 cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
-                                                 lwd = 6)
+
+                                            if(!chill_force_same_scale)
+                                              plot(leg, VIPs, main = "VIP", xlab = NA, ylab = NA, 
+                                                   xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
+                                                   cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
+                                                   lwd = 6)
+                                            if(chill_force_same_scale)
+                                              plot(leg, VIPs, main = "VIP", xlab = NA, ylab = NA, 
+                                                   xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
+                                                   cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
+                                                   lwd = 6,ylim=ylims_VIP)
+
                                             tick_marks <- grconvertX(tick_marks, from = "user", 
                                                                      to = "user")
                                             X_coords <- grconvertX(leg, from = "user", to = "user")
@@ -349,8 +384,8 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
                                             if (colorscheme == "bw") 
                                               color_bars <- color_bar_maker(VIPs, Coefs, 
                                                                             threshold = VIP_threshold, col1 = "BLACK", 
-                                                                            col2 = "#CECECE", col3 = "#7B7B7B")
-                                            else color_bars <- color_bar_maker(VIPs, Coefs, 
+                                                                            col2 = "#CECECE", col3 = "#7B7B7B") else
+                                                                              color_bars <- color_bar_maker(VIPs, Coefs, 
                                                                                threshold = VIP_threshold, col1 = "RED", col2 = "DARK GREEN", 
                                                                                col3 = "DARK GREY")
                                             if(!is.na(add_chill[1])&!is.na(add_chill[2]))
@@ -364,15 +399,29 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
                                               lines(list(x=rep(get_leg(median(pheno,na.rm=TRUE),leg),2),y=c(-10000,10000)),lwd=3,lty="dashed")}
                                             
                                             par(new=TRUE)   
-                                            plot(leg, VIPs, main = "VIP", xlab = NA, ylab = NA, 
-                                                 xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
-                                                 cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
-                                                 lwd = 6)
+                                            if(!chill_force_same_scale)
+                                              plot(leg, VIPs, main = "VIP", xlab = NA, ylab = NA, 
+                                                   xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
+                                                   cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
+                                                   lwd = 6)
+                                            if(chill_force_same_scale)
+                                              plot(leg, VIPs, main = "VIP", xlab = NA, ylab = NA, 
+                                                   xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
+                                                   cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
+                                                   lwd = 6,ylim=ylims_VIP)
                                             
-                                            plot(leg, Coefs, main = "Model coefficients", 
-                                                 ylab = NA, xlab = NA, xaxs = "i", xaxt = "n", 
-                                                 yaxs = "i", cex.lab = 4, cex.axis = 4, cex.main = 5, 
-                                                 type = "h", col = color_bars, lwd = 6)
+                if(!chill_force_same_scale)
+                  plot(leg, Coefs, main = "Model coefficients", 
+                       ylab = NA, xlab = NA, xaxs = "i", xaxt = "n", 
+                       yaxs = "i", cex.lab = 4, cex.axis = 4, cex.main = 5, 
+                       type = "h", col = color_bars, lwd = 6)
+                if(chill_force_same_scale)
+                  plot(leg, Coefs, main = "Model coefficients", 
+                       ylab = NA, xlab = NA, xaxs = "i", xaxt = "n", 
+                       yaxs = "i", cex.lab = 4, cex.axis = 4, cex.main = 5, 
+                       type = "h", col = color_bars, lwd = 6,ylim=ylims_coeff)                
+                                            
+
                                             axis(1, lwd.ticks = 3, at = tick_marks, labels = FALSE, 
                                                  cex.axis = 4, padj = 1)
                                             axis(2, lwd.ticks = 3, labels = FALSE)
@@ -399,19 +448,25 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
                                               lines(list(x=rep(get_leg(median(pheno,na.rm=TRUE),leg),2),y=c(-10000,10000)),lwd=3,lty="dashed")   
                                             }
                                             par(new=TRUE)
-                                            plot(leg, Coefs, main = "Model coefficients", 
-                                                 ylab = NA, xlab = NA, xaxs = "i", xaxt = "n", 
-                                                 yaxs = "i", cex.lab = 4, cex.axis = 4, cex.main = 5, 
-                                                 type = "h", col = color_bars, lwd = 6)
+                                            if(!chill_force_same_scale)
+                                              plot(leg, Coefs, main = "Model coefficients", 
+                                                   ylab = NA, xlab = NA, xaxs = "i", xaxt = "n", 
+                                                   yaxs = "i", cex.lab = 4, cex.axis = 4, cex.main = 5, 
+                                                   type = "h", col = color_bars, lwd = 6)
+                                            if(chill_force_same_scale)
+                                              plot(leg, Coefs, main = "Model coefficients", 
+                                                   ylab = NA, xlab = NA, xaxs = "i", xaxt = "n", 
+                                                   yaxs = "i", cex.lab = 4, cex.axis = 4, cex.main = 5, 
+                                                   type = "h", col = color_bars, lwd = 6,ylim=ylims_coeff) 
                                             
                                             if (graph == "Chill") 
-                                              plot(leg, mean_climg, main = "Chill accumulation", 
+                                              plot(leg, mean_climg, main = plot_titles_chill_force[1], 
                                                    ylab = NA, xlab = NA, xaxs = "i", yaxs = "i", 
                                                    xaxt = "n", cex.lab = 4, cex.axis = 4, cex.main = 5, 
                                                    type = "l", lwd = 3, col = "BLACK", ylim = c(min(mean_climg - 
                                                                                                       dev_climg), max(mean_climg + dev_climg)))
                                             if (graph == "Heat") 
-                                              plot(leg, mean_climg, main = "Heat accumulation", 
+                                              plot(leg, mean_climg, main = plot_titles_chill_force[2], 
                                                    ylab = NA, xlab = NA, xaxs = "i", yaxs = "i", 
                                                    xaxt = "n", cex.lab = 4, cex.axis = 4, cex.main = 5, 
                                                    type = "l", lwd = 3, col = "BLACK", ylim = c(min(mean_climg - 
@@ -433,7 +488,7 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
                                                 for (i in 2:length(ccc)) cctemp <- paste(cctemp, 
                                                                                          ccc[i])
                                               }
-                                              mtext(side = 2, text = paste(cctemp, "per day"), 
+                                              mtext(side = 2, text = axis_labels_chill_force[1], 
                                                     line = 5, cex = 3)
                                             }
                                             if (graph == "Heat") {
@@ -443,7 +498,7 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
                                                 for (i in 2:length(ccc)) cctemp <- paste(cctemp, 
                                                                                          ccc[i])
                                               }
-                                              mtext(side = 2, text = paste(cctemp, "per day"), 
+                                              mtext(side = 2, text = axis_labels_chill_force[2], 
                                                     line = 5, cex = 3)
                                             }
                                             if(!is.na(add_chill[1])&!is.na(add_chill[2]))

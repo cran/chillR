@@ -9,7 +9,8 @@ PLS_chill_force(daily_chill_obj, bio_data_frame, split_month,
   expl.var = 30, ncomp.fix = NULL, return.all = FALSE,
   crossvalidate = "none", end_at_pheno_end = TRUE,
   chill_models = c("Chilling_Hours", "Utah_Chill_Units",
-  "Chill_Portions"), heat_models = c("GDH"))
+  "Chill_Portions"), heat_models = c("GDH"), runn_means = 1,
+  metric_categories = c("Chill", "Heat"))
 }
 \arguments{
 \item{daily_chill_obj}{a daily chill object. This should be generated with
@@ -60,6 +61,20 @@ column names of daily_chill. This defaults to c("Chilling_Hours",
 \item{heat_models}{Character vector containing names of heat models that
 should be considered in the PLS regression. These names should correspond to
 column names of daily_chill. This defaults to c("GDH").}
+
+\item{runn_means}{numeric vector specifying whether inputs to the PLS calculation
+should be processed by a running mean filter. This usually enhances the clarity of
+results. This vector contains either one element (an integer), in which case the
+same filter is applied to all input metrics, or one element for each model, which
+allows specifying metric-specific running means. In this case the sequence of numbers
+should correspond to the sequence specified in the function call, with chill models
+listed first, followed by heat models.}
+
+\item{metric_categories}{while the original application of this function is the
+calculation of tree responses to chill and heat accumulation, it can also be applied
+for other variables. In this case, you may not want the outputs to be called 'Chill'
+and 'Heat' (the default). Here you can specify a character vector of length 2, which
+contains the labels you want to appear in the output table.}
 }
 \value{
 \item{object_type}{ the character string "PLS_chillforce_pheno".

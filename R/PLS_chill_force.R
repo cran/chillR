@@ -100,6 +100,18 @@
 #' @param heat_models Character vector containing names of heat models that
 #' should be considered in the PLS regression. These names should correspond to
 #' column names of daily_chill. This defaults to c("GDH").
+#' @param runn_means numeric vector specifying whether inputs to the PLS calculation
+#' should be processed by a running mean filter. This usually enhances the clarity of
+#' results. This vector contains either one element (an integer), in which case the
+#' same filter is applied to all input metrics, or one element for each model, which
+#' allows specifying metric-specific running means. In this case the sequence of numbers
+#' should correspond to the sequence specified in the function call, with chill models
+#' listed first, followed by heat models.
+#' @param metric_categories while the original application of this function is the
+#' calculation of tree responses to chill and heat accumulation, it can also be applied
+#' for other variables. In this case, you may not want the outputs to be called 'Chill'
+#' and 'Heat' (the default). Here you can specify a character vector of length 2, which
+#' contains the labels you want to appear in the output table.
 #' @return \item{object_type}{ the character string "PLS_chillforce_pheno".
 #' This is only needed for choosing the correct method for the plot_PLS
 #' function.} \item{pheno}{ a data frame containing the phenology data used for
@@ -234,12 +246,14 @@
 PLS_chill_force<-function (daily_chill_obj, bio_data_frame, split_month, expl.var = 30, 
                            ncomp.fix = NULL, return.all = FALSE, crossvalidate = "none",end_at_pheno_end=TRUE,
                            chill_models=c("Chilling_Hours","Utah_Chill_Units","Chill_Portions"),
-                           heat_models=c("GDH")) 
+                           heat_models=c("GDH"),runn_means=1,metric_categories=c("Chill","Heat")) 
 {
-  if (daily_chill_obj[1] == "daily_chill") {
-    dc <- daily_chill_obj$daily_chill
-    weather_file <- daily_chill_obj$daily_chill
-    bio_data <- bio_data_frame
+  if (!daily_chill_obj[[1]] == "daily_chill")
+    stop("Error: not a daily chill object; use function daily_chill to make one from hourly temperature data")
+    
+  dc <- daily_chill_obj$daily_chill
+  weather_file <- daily_chill_obj$daily_chill
+  bio_data <- bio_data_frame
     weather_file[which(weather_file$Month <= split_month), 
                  "Season"] <- weather_file[which(weather_file$Month <= 
                                                    split_month), "Year"]
@@ -289,6 +303,19 @@ PLS_chill_force<-function (daily_chill_obj, bio_data_frame, split_month, expl.va
     #chill_models <- c("Chilling_Hours", "Utah_Chill_Units", 
     #                  "Chill_Portions")
     #heat_models <- c("GDH")
+    
+    #apply running mean function
+    all_models<-c(chill_models,heat_models)
+    
+    if(!length(runn_means) %in% c(1,length(all_models)))
+      stop("runn_means has to be either 1 or an integer vector with as many elements as
+           the number of models considered (chill and heat models combined)")
+    if(length(runn_means)==1)  runner<-rep(runn_means,length(all_models))
+    if(length(runn_means)==length(all_models))  runner<-runn_means
+    
+    for(i in 1:length(all_models))
+      weather_file[,all_models[i]]<-runn_mean(weather_file[,all_models[i]],runner[i])
+    
     all_outputs <- list(object_type = "PLS_chillforce_pheno")
     for (CM in chill_models) for (HM in heat_models) {
       for (yy in seasons) {
@@ -347,11 +374,14 @@ PLS_chill_force<-function (daily_chill_obj, bio_data_frame, split_month, expl.va
       out <- data.frame()
       tablength<-length(coef(PLS_output))
       out[1:tablength, "Date"] <- labdates
-      out[1:tablength, "Type"] <- c(rep("Chill", tablength/2), rep("Heat", 
+      out[1:tablength, "Type"] <- c(rep(metric_categories[1], tablength/2), rep(metric_categories[2], 
                                                                    tablength/2))
       out[1:tablength, "JDay"] <- labJdates
       out[1:tablength, "Coef"] <- coef(PLS_output)
-      if(ncomp>1) out[1:tablength, "VIP"] <- VIP(PLS_output)[ncomp, ] else out[1:tablength, "VIP"] <- VIP(PLS_output)[ncomp]
+      
+      if(ncomp==1)  out[1:tablength,"VIP"] <- VIP(PLS_output)
+      if(ncomp>1)  out[1:tablength,"VIP"] <- VIP(PLS_output)[ncomp, ]
+
       out[1:tablength, "MetricMean"] <- colMeans(indep)
       out[1:tablength, "MetricStdev"] <- apply(indep, 2, sd, na.rm = TRUE)
       if (return.all) 
@@ -359,9 +389,5 @@ PLS_chill_force<-function (daily_chill_obj, bio_data_frame, split_month, expl.va
             PLS_output = PLS_output)  else all_outputs[[CM]][[HM]] <- list(PLS_summary = out)
     }
     return(all_outputs)
-  }
-  else {
-    "Error: not a daily chill object; use function daily_chill to make one from hourly temperature data"
-  }
 }
 

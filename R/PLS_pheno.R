@@ -141,7 +141,7 @@
 #'   
 #' PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
 #'   
-#' plot_PLS(PLS_results,PLS_results_path)
+#' # plot_PLS(PLS_results,PLS_results_path)
 #' 
 #' @export PLS_pheno
 PLS_pheno <- function (weather_data,bio_data,split_month=7,runn_mean=11,expl.var=30,

@@ -18,8 +18,8 @@
 #' @examples
 #' 
 #' temps<-list(Element1=data.frame(a=1,b=2),Element2=data.frame(a=c(2,3),b=c(8,4)))
-#' save_temperature_scenarios(temps,path=getwd(),prefix="temperatures")
-#' temps_reloaded<-load_temperature_scenarios(path=getwd(),prefix="temperatures")
+#' # save_temperature_scenarios(temps,path=getwd(),prefix="temperatures")
+#' # temps_reloaded<-load_temperature_scenarios(path=getwd(),prefix="temperatures")
 #' 
 #'  
 #' @export save_temperature_scenarios
@@ -52,8 +52,8 @@ save_temperature_scenarios<-function(generated_temperatures,path,prefix)
 #' @examples
 #' 
 #' temps<-list(Element1=data.frame(a=1,b=2),Element2=data.frame(a=c(2,3),b=c(8,4)))
-#' save_temperature_scenarios(temps,path=getwd(),prefix="temperatures")
-#' temps_reloaded<-load_temperature_scenarios(path=getwd(),prefix="temperatures")
+#' # save_temperature_scenarios(temps,path=getwd(),prefix="temperatures")
+#' # temps_reloaded<-load_temperature_scenarios(path=getwd(),prefix="temperatures")
 #' 
 #'  
 #' @export load_temperature_scenarios
@@ -94,8 +94,8 @@ load_temperature_scenarios<-function(path,prefix)
 #' @examples
 #' 
 #' temps<-list(Element1=data.frame(a=1,b=2),Element2=data.frame(a=c(2,3),b=c(8,4)))
-#' save_temperature_scenarios(temps,path=getwd(),prefix="temperatures")
-#' temps_reloaded<-load_temperature_scenarios(path=getwd(),prefix="temperatures")
+#' # save_temperature_scenarios(temps,path=getwd(),prefix="temperatures")
+#' # temps_reloaded<-load_temperature_scenarios(path=getwd(),prefix="temperatures")
 #' 
 #'  
 #' @export load_ClimateWizard_scenarios

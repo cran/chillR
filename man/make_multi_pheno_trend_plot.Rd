@@ -72,16 +72,16 @@ pheno_list<-data.frame(varieties=c("KA1","KA2","KA3","KA4"), Start_chill=c(270,3
   End_chill=c(15,20,35,40), Start_heat=c(17,25,40,45),End_heat=c(90,100,110,115),
   Link=c("KA1.csv","KA2.csv","KA3.csv","KA4.csv"))
   
- write.csv(KA_bloom,"KA1.csv",row.names=FALSE)
+ # write.csv(KA_bloom,"KA1.csv",row.names=FALSE)
  KA_bloom$pheno<-as.numeric(as.character(KA_bloom$pheno))+10
- write.csv(KA_bloom,"KA2.csv",row.names=FALSE)
+ # write.csv(KA_bloom,"KA2.csv",row.names=FALSE)
  KA_bloom$pheno<-KA_bloom$pheno+10
- write.csv(KA_bloom,"KA3.csv",row.names=FALSE)
+ # write.csv(KA_bloom,"KA3.csv",row.names=FALSE)
  KA_bloom$pheno<-KA_bloom$pheno+10
- write.csv(KA_bloom,"KA4.csv",row.names=FALSE)
+ # write.csv(KA_bloom,"KA4.csv",row.names=FALSE)
 
-make_multi_pheno_trend_plot(pheno_list,weather, split_month=6,
-           outpath=NA,file_name=NA,image_type="",fonttype="serif",percol=2)
+# make_multi_pheno_trend_plot(pheno_list,weather, split_month=6,
+#            outpath=NA,file_name=NA,image_type="",fonttype="serif",percol=2)
 
  
 }

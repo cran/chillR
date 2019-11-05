@@ -79,8 +79,8 @@
 #'    Lat=c(38.383,38.378,38.533),Long=c(-121.967,-121.958,-121.783),
 #'    BEGIN=c(20010811,20060101,20130101),END=c(20051231,20160110,20160109))
 #' 
-#' gw<-get_weather(location="724828_93241",time_interval=c(2012,2012),database="GSOD",
-#'   station_list = stat_list)
+#' #gw<-get_weather(location="724828_93241",time_interval=c(2012,2012),database="GSOD",
+#' #   station_list = stat_list)
 #' 
 #' #stat_list<-get_weather(location=c(lat=50,lon=10,ele=150),time_interval=c(2001,2001),
 #' #  database="UCIPM")

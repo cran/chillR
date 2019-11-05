@@ -7,7 +7,8 @@
 tempResponse_daily_list(temperature_list, latitude, Start_JDay = 1,
   End_JDay = 366, models = list(Chilling_Hours = Chilling_Hours,
   Utah_Chill_Units = Utah_Model, Chill_Portions = Dynamic_Model, GDH =
-  GDH), misstolerance = 50, whole_record = FALSE, empirical = NULL)
+  GDH), misstolerance = 50, whole_record = FALSE, empirical = NULL,
+  mean_out = FALSE)
 }
 \arguments{
 \item{temperature_list}{list of daily temperature records, as produced
@@ -48,6 +49,9 @@ latter, this parameter needs to be a data.frame including columns \code{Month},
 \code{Hour} and \code{Prediction_coefficients}. See
 \code{\link[=Empirical_daily_temperature_curve]{Empirical_daily_temperature_curve}}
 for further details on the format.}
+
+\item{mean_out}{boolean parameter indicating whether the mean of the input
+metric (e.g. temperature) should be returned in a column named "Input_mean".}
 }
 \value{
 data frame showing totals for all specified models for the

@@ -7,7 +7,12 @@ temperatures}
 \usage{
 plot_PLS(PLS_output, PLS_results_path, VIP_threshold = 0.8,
   colorscheme = "color", plot_bloom = TRUE, fonttype = "serif",
-  add_chill = c(NA, NA), add_heat = c(NA, NA))
+  add_chill = c(NA, NA), add_heat = c(NA, NA),
+  plot_titles_Temp = "Mean temperature",
+  plot_titles_chill_force = c("Chill Accumulation", "Heat Accumulation"),
+  axis_labels_Temp = expression("Mean temperature ("^"o" * "C)"),
+  axis_labels_chill_force = c("Chill Portions per day", "GDH per day"),
+  chill_force_same_scale = TRUE)
 }
 \arguments{
 \item{PLS_output}{a PLS_output object - the output of the PLS_pheno
@@ -48,6 +53,27 @@ should be a numeric vector: c(start_chill,end_chill).}
 
 \item{add_heat}{option for indicating the forcing period in the plot. This
 should be a numeric vector: c(start_heat,end_heat).}
+
+\item{plot_titles_Temp}{title for the bottom plot, which relates PLS outputs
+to values of the input variable (temperature in the original version). Only
+affects the output for PLS_Temp_pheno objects.}
+
+\item{plot_titles_chill_force}{titles for the bottom plots, which relate PLS outputs
+to values of the input variables (chill and heat accumulation). Only affects the
+output for PLS_chillforce_pheno objects.}
+
+\item{axis_labels_Temp}{y-axis label for the bottom plot, which relates PLS outputs
+to values of the input variable (temperature in the original version). Only
+affects the output for PLS_Temp_pheno objects.}
+
+\item{axis_labels_chill_force}{y-axis labels for the bottom plots, which relate PLS outputs
+to values of the input variables (chill and heat accumulation). Only affects the
+output for PLS_chillforce_pheno objects.}
+
+\item{chill_force_same_scale}{Boolean parameter indicating whether the two sets of
+VIP scores and model coefficients resulting from a PLS_chillforce_pheno analysis
+should be shown on the same scale in the separate output diagrams. Since this
+is generally advisable for comparison, this defaults to TRUE.}
 }
 \description{
 This function produces figures that illustrate statistical correlations
@@ -83,13 +109,13 @@ PLS_results<-PLS_pheno(
   
 PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
   
-plot_PLS(PLS_results,PLS_results_path)
+#plot_PLS(PLS_results,PLS_results_path)
 #plot_PLS(PLS_results,PLS_results_path,add_chill=c(307,19),add_heat=c(54,109))
 
 dc<-daily_chill(stack_hourly_temps(weather,50.4), 11)
 plscf<-PLS_chill_force(daily_chill_obj=dc, bio_data_frame=KA_bloom, split_month=6)
 
-plot_PLS(plscf,PLS_results_path)
+#plot_PLS(plscf,PLS_results_path)
 #plot_PLS(plscf,PLS_results_path,add_chill=c(307,19),add_heat=c(54,109))
 
 

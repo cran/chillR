@@ -42,6 +42,8 @@
 #' FALSE), then the function ignores the specified start and end dates and
 #' simply returns the totals of each metric that accumulated over the entire
 #' temperature record.
+#' @param mean_out boolean parameter indicating whether the mean of the input
+#' metric (e.g. temperature) should be returned in a column named "Input_mean".
 #' @return data frame showing totals for all specified models for the
 #' respective periods for all seasons included in the temperature records.
 #' Columns are Season, End_year (the year when the period ended) and Days (the
@@ -79,7 +81,7 @@
 #' @export tempResponse
 tempResponse <-
 function (hourtemps,Start_JDay=1,End_JDay=366,models=list(Chilling_Hours=Chilling_Hours,Utah_Chill_Units=Utah_Model,Chill_Portions=Dynamic_Model,GDH=GDH),
-          misstolerance=50,whole_record=FALSE)             #hourtemps is a data frame with columns Year, JDay, Hour and Temp
+          misstolerance=50,whole_record=FALSE,mean_out=FALSE)             #hourtemps is a data frame with columns Year, JDay, Hour and Temp
      {
   if((length(names(hourtemps))==2) & ("hourtemps" %in% names(hourtemps))) {QC<-hourtemps$QC; hourtemps<-hourtemps$hourtemps} else QC<-NULL
   if(Start_JDay<End_JDay) {hourtemps[which(hourtemps$JDay>=Start_JDay&hourtemps$JDay<=End_JDay),"sea"]<-
@@ -116,7 +118,8 @@ function (hourtemps,Start_JDay=1,End_JDay=366,models=list(Chilling_Hours=Chillin
          difftime(ISOdate(x-1,12,31)+End_JDay*86400,ISOdate(x-2,12,31)+Start_JDay*86400))     
      chillout[,"Season_days"]<-dt+1
      chillout[,"Data_days"]<-sapply(seasons,function(x) length(which(hourtemps$sea==x))/24)
-
+     if(mean_out) chillout[,"Input_mean"]<-sapply(seasons,function(x) mean(hourtemps$Temp[which(hourtemps$sea==x)]))
+     
                                                               
 for (sea in seasons)
      { seas<-hourtemps[which(hourtemps$sea==sea),]
@@ -126,7 +129,10 @@ for (sea in seasons)
 
         last_end<-hourtemps[max(c(1,min(which(hourtemps$sea==sea))-1)),]
           if (sea == seasons[1]&(Start_JDay>End_JDay|Start_JDay==hourtemps$JDay[1]))
-            { last_end[,names(models)] <- 0}
+          { last_end[,names(models)] <- 0}
+        
+
+        
         for(m in 1:length(models))
           chillout[which(chillout$End_year==sea),names(models)[m]]<-seas[nrow(seas),names(models)[m]]-last_end[,names(models)[m]]
         

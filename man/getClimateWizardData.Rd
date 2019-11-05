@@ -62,7 +62,7 @@ all climate models included in the database (as of January 2018).
 # causes problems with CRAN approval of the package
 
 # getClimateWizardData(coordinates=c(longitude=10.613975,latitude=34.933439),
-#   scenario="rcp45", start_year=20200, end_year=2050,
+#   scenario="rcp45", start_year=2020, end_year=2050,
 #   metric=c("CD18","R02"), GCMs=c("bcc-csm1-1","BNU-ESM"))
 
 

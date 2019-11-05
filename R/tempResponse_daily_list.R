@@ -47,6 +47,8 @@
 #' \code{Hour} and \code{Prediction_coefficients}. See
 #' \code{\link[=Empirical_daily_temperature_curve]{Empirical_daily_temperature_curve}}
 #' for further details on the format.
+#' @param mean_out boolean parameter indicating whether the mean of the input
+#' metric (e.g. temperature) should be returned in a column named "Input_mean".
 #' @return data frame showing totals for all specified models for the
 #' respective periods for all seasons included in the temperature records.
 #' Columns are \code{Season}, \code{End_year} (the year when the period ended)
@@ -76,7 +78,7 @@
 tempResponse_daily_list <-
 function (temperature_list,latitude,Start_JDay=1,End_JDay=366,
           models=list(Chilling_Hours=Chilling_Hours,Utah_Chill_Units=Utah_Model,Chill_Portions=Dynamic_Model,GDH=GDH),
-          misstolerance=50,whole_record=FALSE,empirical=NULL)             
+          misstolerance=50,whole_record=FALSE,empirical=NULL,mean_out=FALSE)             
      {
   
   if(is.data.frame(temperature_list))
@@ -93,7 +95,7 @@ function (temperature_list,latitude,Start_JDay=1,End_JDay=366,
       hourtemps<-Empirical_hourly_temperatures(temperature_list[[i]],empirical)
      output[[i]]<-tempResponse(hourtemps,Start_JDay=Start_JDay,End_JDay=End_JDay,
                             models=models,misstolerance=misstolerance,
-                            whole_record=whole_record)}
+                            whole_record=whole_record,mean_out=mean_out)}
   names(output)<-names(temperature_list)
   return(output)
 }

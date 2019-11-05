@@ -1,1 +1,1 @@
-globalVariables(c("california_stations"))
+utils::globalVariables(c("california_stations"))
