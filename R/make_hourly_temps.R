@@ -117,7 +117,10 @@ function (latitude,year_file,keep_sunrise_sunset=FALSE)
          #}
 
          c_morn<-which(hour<=year_file$Sunrise)
-         if(1 %in% c_morn) c_morn<-c_morn[2:length(c_morn)] #can't compute temperatures before sunrise for day 1
+         if(1 %in% c_morn)
+           if(!length(c_morn)==1) 
+             c_morn<-c_morn[2:length(c_morn)]
+                  else c_morn<-c() #can't compute temperatures before sunrise for day 1
          c_day<-which(hour>year_file$Sunrise&hour<=year_file$Sunset)
          c_eve<-which(hour>=year_file$Sunset)
          if(nrow(year_file) %in% c_eve) c_eve<-c_eve[1:(length(c_eve)-1)] #can't compute temperatures after sunset for last day

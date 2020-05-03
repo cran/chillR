@@ -2,8 +2,8 @@ Package: chillR
 Type: Package
 Title: Statistical Methods for Phenology Analysis in Temperate Fruit
         Trees
-Version: 0.70.21
-Date: 2019-11-05
+Version: 0.70.24
+Date: 2020-05-03
 Author: Eike Luedeling
 Maintainer: Eike Luedeling <eike@eikeluedeling.com>
 Description: The phenology of plants (i.e. the timing of their annual life
@@ -36,6 +36,6 @@ LazyData: TRUE
 RoxygenNote: 6.1.1
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2019-11-05 20:39:18 UTC; EL
+Packaged: 2020-05-03 20:57:47 UTC; EL
 Repository: CRAN
-Date/Publication: 2019-11-05 21:20:03 UTC
+Date/Publication: 2020-05-03 21:40:02 UTC

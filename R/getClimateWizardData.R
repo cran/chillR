@@ -60,33 +60,33 @@ getClimateWizardData<-function(coordinates,scenario,start_year,end_year,
   coordinates_usable<-FALSE
   if(is.null(names(coordinates)))
     if(length(coordinates)==2) {longitude<-coordinates[1]
-                                latitude<-coordinates[2]
-      warning("Coordinates not named. Interpreting the first ",
-              "element (",longitude,") as longitude and the second (",
-              latitude,") as latitude.")
-                                coordinates_usable<-TRUE}
+    latitude<-coordinates[2]
+    warning("Coordinates not named. Interpreting the first ",
+            "element (",longitude,") as longitude and the second (",
+            latitude,") as latitude.")
+    coordinates_usable<-TRUE}
   if(!is.null(names(coordinates)))
-    {if(!length(coordinates)==2)
-      {warning("Unable to interpret coordinates parameter. ",
-               "Needs to be a vector with two numeric elements, ",
-               "ideally called 'x' and 'y' or 'longitude' and 'latitude'")
-      return()}
+  {if(!length(coordinates)==2)
+  {warning("Unable to interpret coordinates parameter. ",
+           "Needs to be a vector with two numeric elements, ",
+           "ideally called 'x' and 'y' or 'longitude' and 'latitude'")
+    return()}
     if(length(which(c("latitude","longitude") %in% names(coordinates)))==2)
-      {longitude<-as.numeric(coordinates["longitude"])
-       latitude<-as.numeric(coordinates["latitude"])
-       coordinates_usable<-TRUE}
+    {longitude<-as.numeric(coordinates["longitude"])
+    latitude<-as.numeric(coordinates["latitude"])
+    coordinates_usable<-TRUE}
     if(length(which(c("x","y") %in% names(coordinates)))==2)
-      {longitude<-as.numeric(coordinates["x"])
-       latitude<-as.numeric(coordinates["y"])
-       coordinates_usable<-TRUE}
+    {longitude<-as.numeric(coordinates["x"])
+    latitude<-as.numeric(coordinates["y"])
+    coordinates_usable<-TRUE}
     if(length(which(c("long","lat") %in% names(coordinates)))==2)
-      {longitude<-as.numeric(coordinates["long"])
-       latitude<-as.numeric(coordinates["lat"])
-       coordinates_usable<-TRUE}
+    {longitude<-as.numeric(coordinates["long"])
+    latitude<-as.numeric(coordinates["lat"])
+    coordinates_usable<-TRUE}
   }
   if(coordinates_usable)
-   {if(is.na(longitude)) coordinates_usable<-FALSE
-    if(is.na(latitude)) coordinates_usable<-FALSE}
+  {if(is.na(longitude)) coordinates_usable<-FALSE
+  if(is.na(latitude)) coordinates_usable<-FALSE}
   if(!coordinates_usable)
   {warning("Unable to interpret coordinates parameter. ",
            "Needs to be a vector with two numeric elements, ",
@@ -113,65 +113,65 @@ getClimateWizardData<-function(coordinates,scenario,start_year,end_year,
   
   for(gcm in gcms)
   {
-      if(metric[1]=="monthly_min_max_temps")
-       {available<-TRUE
-         for(Textreme in c("tasmin","tasmax"))
-          for(i in 1:12)
-           {if(available)
-            {tmetric<-paste(Textreme,i,sep="")
-             if(!is.na(baseline[1]))
-              checkgcm<-jsonlite::fromJSON(paste("http://maprooms.ciat.cgiar.org/climatewizard/service?lat=",
-                             latitude,"&lon=",longitude,
-                             "&index=",tmetric,"&scenario=",scenario,"&gcm=",gcm,"&range=",
-                             start_year,"-",end_year,"&baseline=",baseline[1],"-",baseline[2],"&avg=true",sep="")
-                             ) else
-              checkgcm<-jsonlite::fromJSON(paste("http://maprooms.ciat.cgiar.org/climatewizard/service?lat=",
-                                latitude,"&lon=",longitude,
-                                "&index=",tmetric,"&scenario=",scenario,"&gcm=",gcm,"&range=",
-                                start_year,"-",end_year,"&avg=true",sep=""))
-              if(length(checkgcm)==1) {if(!is.null(checkgcm$error)) available<-FALSE}
-              if (available)
-                if(checkgcm$values[[2]][1]=="out of range")
-                  {warning("Time interval not (fully) contained in the dataset - no data retrieved")}
-              if(available) metric_GCMs[which(metric_GCMs$GCM==gcm),tmetric]<-as.numeric(checkgcm$values[[2]][1])}
-           }
-       } 
+    if(metric[1]=="monthly_min_max_temps")
+    {available<-TRUE
+    for(Textreme in c("tasmin","tasmax"))
+      for(i in 1:12)
+      {if(available)
+      {tmetric<-paste(Textreme,i,sep="")
+      if(!is.na(baseline[1]))
+        checkgcm<-jsonlite::fromJSON(paste("http://climatewizard.ccafs-climate.org/service?lat=",
+                                           latitude,"&lon=",longitude,
+                                           "&index=",tmetric,"&scenario=",scenario,"&gcm=",gcm,"&range=",
+                                           start_year,"-",end_year,"&baseline=",baseline[1],"-",baseline[2],"&avg=true",sep="")
+        ) else
+          checkgcm<-jsonlite::fromJSON(paste("http://climatewizard.ccafs-climate.org/service?lat=",
+                                             latitude,"&lon=",longitude,
+                                             "&index=",tmetric,"&scenario=",scenario,"&gcm=",gcm,"&range=",
+                                             start_year,"-",end_year,"&avg=true",sep=""))
+        if(length(checkgcm)==1) {if(!is.null(checkgcm$error)) available<-FALSE}
+        if (available)
+          if(checkgcm$values[[2]][1]=="out of range")
+          {warning("Time interval not (fully) contained in the dataset - no data retrieved")}
+        if(available) metric_GCMs[which(metric_GCMs$GCM==gcm),tmetric]<-as.numeric(checkgcm$values[[2]][1])}
+      }
+    } 
     
-      if(metric[1]=="precipitation")
-         {available<-TRUE
-          for(i in 1:12)
-           {if(available)
-           {tmetric<-paste("pr",i,sep="")
-            if(!is.na(baseline[1]))
-             checkgcm<-jsonlite::fromJSON(paste("http://maprooms.ciat.cgiar.org/climatewizard/service?lat=",
-                                                latitude,"&lon=",longitude,
-                                                "&index=",tmetric,"&scenario=",scenario,"&gcm=",gcm,"&range=",
-                                                start_year,"-",end_year,"&baseline=",baseline[1],"-",baseline[2],"&avg=true",sep="")
-             ) else
-               checkgcm<-jsonlite::fromJSON(paste("http://maprooms.ciat.cgiar.org/climatewizard/service?lat=",
-                                                  latitude,"&lon=",longitude,
-                                                  "&index=",tmetric,"&scenario=",scenario,"&gcm=",gcm,"&range=",
-                                                  start_year,"-",end_year,"&avg=true",sep=""))
-             if(length(checkgcm)==1) {if(!is.null(checkgcm$error)) available<-FALSE}
-             if (available)
-               if(checkgcm$values[[2]][1]=="out of range")
-               {warning("Time interval not (fully) contained in the dataset - no data retrieved")}
-             if(available) metric_GCMs[which(metric_GCMs$GCM==gcm),tmetric]<-as.numeric(checkgcm$values[[2]][1])}
-           }
-         }
- 
+    if(metric[1]=="precipitation")
+    {available<-TRUE
+    for(i in 1:12)
+    {if(available)
+    {tmetric<-paste("pr",i,sep="")
+    if(!is.na(baseline[1]))
+      checkgcm<-jsonlite::fromJSON(paste("http://climatewizard.ccafs-climate.org/service?lat=",
+                                         latitude,"&lon=",longitude,
+                                         "&index=",tmetric,"&scenario=",scenario,"&gcm=",gcm,"&range=",
+                                         start_year,"-",end_year,"&baseline=",baseline[1],"-",baseline[2],"&avg=true",sep="")
+      ) else
+        checkgcm<-jsonlite::fromJSON(paste("http://climatewizard.ccafs-climate.org/service?lat=",
+                                           latitude,"&lon=",longitude,
+                                           "&index=",tmetric,"&scenario=",scenario,"&gcm=",gcm,"&range=",
+                                           start_year,"-",end_year,"&avg=true",sep=""))
+      if(length(checkgcm)==1) {if(!is.null(checkgcm$error)) available<-FALSE}
+      if (available)
+        if(checkgcm$values[[2]][1]=="out of range")
+        {warning("Time interval not (fully) contained in the dataset - no data retrieved")}
+      if(available) metric_GCMs[which(metric_GCMs$GCM==gcm),tmetric]<-as.numeric(checkgcm$values[[2]][1])}
+    }
+    }
+    
     if(metric[1]=="monthly_tmean")
     {available<-TRUE
     for(i in 1:12)
     {if(available)
     {tmetric<-paste("tas",i,sep="")
     if(!is.na(baseline[1]))
-      checkgcm<-jsonlite::fromJSON(paste("http://maprooms.ciat.cgiar.org/climatewizard/service?lat=",
+      checkgcm<-jsonlite::fromJSON(paste("http://climatewizard.ccafs-climate.org/service?lat=",
                                          latitude,"&lon=",longitude,
                                          "&index=",tmetric,"&scenario=",scenario,"&gcm=",gcm,"&range=",
                                          start_year,"-",end_year,"&baseline=",baseline[1],"-",baseline[2],"&avg=true",sep="")
       ) else
-        checkgcm<-jsonlite::fromJSON(paste("http://maprooms.ciat.cgiar.org/climatewizard/service?lat=",
+        checkgcm<-jsonlite::fromJSON(paste("http://climatewizard.ccafs-climate.org/service?lat=",
                                            latitude,"&lon=",longitude,
                                            "&index=",tmetric,"&scenario=",scenario,"&gcm=",gcm,"&range=",
                                            start_year,"-",end_year,"&avg=true",sep=""))
@@ -186,22 +186,22 @@ getClimateWizardData<-function(coordinates,scenario,start_year,end_year,
     
     
     if(!metric[1] %in% c("precipitation","monthly_min_max_temps","monthly_tmean"))
-     {for (met in metric)
-       {available=TRUE
-        if(!is.na(baseline[1]))
-          checkgcm<-jsonlite::fromJSON(paste("http://maprooms.ciat.cgiar.org/climatewizard/service?lat=",
-                           latitude,"&lon=",longitude,
-                           "&index=",met,"&scenario=",scenario,"&gcm=",gcm,"&range=",
-                           start_year,"-",end_year,"&baseline=",baseline[1],"-",baseline[2],"&avg=true",sep="")) else
-          checkgcm<-jsonlite::fromJSON(paste("http://maprooms.ciat.cgiar.org/climatewizard/service?lat=",
+    {for (met in metric)
+    {available=TRUE
+    if(!is.na(baseline[1]))
+      checkgcm<-jsonlite::fromJSON(paste("http://climatewizard.ccafs-climate.org/service?lat=",
                                          latitude,"&lon=",longitude,
                                          "&index=",met,"&scenario=",scenario,"&gcm=",gcm,"&range=",
-                                         start_year,"-",end_year,"&avg=true",sep=""))
-  
-          if(length(checkgcm)==1) {if(!is.null(checkgcm$error)) available<-FALSE}
-          if (available) if(checkgcm$values[[2]][1]=="out of range") {warning("Time interval not (fully) contained in the dataset - no data retrieved")}
-          if(available) metric_GCMs[which(metric_GCMs$GCM==gcm),met]<-as.numeric(checkgcm$values[[2]][1])
-       }
+                                         start_year,"-",end_year,"&baseline=",baseline[1],"-",baseline[2],"&avg=true",sep="")) else
+                                           checkgcm<-jsonlite::fromJSON(paste("http://climatewizard.ccafs-climate.org/service?lat=",
+                                                                              latitude,"&lon=",longitude,
+                                                                              "&index=",met,"&scenario=",scenario,"&gcm=",gcm,"&range=",
+                                                                              start_year,"-",end_year,"&avg=true",sep=""))
+                                         
+                                         if(length(checkgcm)==1) {if(!is.null(checkgcm$error)) available<-FALSE}
+                                         if (available) if(checkgcm$values[[2]][1]=="out of range") {warning("Time interval not (fully) contained in the dataset - no data retrieved")}
+                                         if(available) metric_GCMs[which(metric_GCMs$GCM==gcm),met]<-as.numeric(checkgcm$values[[2]][1])
+    }
     }
     if(length(metric)==1) metric_GCMs[which(metric_GCMs$GCM==gcm),"metric_available"]<-available
   }
@@ -223,17 +223,17 @@ getClimateWizardData<-function(coordinates,scenario,start_year,end_year,
   output<-list(data=metric_GCMs,scenario=scenario,start_year=start_year,end_year=end_year,scenario_year=median(c(start_year,end_year)),
                reference_year=NA,scenario_type="absolute",labels=list())
   if(!is.na(baseline[1])) {output$reference_year<-median(baseline[1]:baseline[2])
-                           output$scenario_type<-"relative"}
+  output$scenario_type<-"relative"}
   
   if(metric[1]=="monthly_min_max_temps" & temperature_generation_scenarios)
-    {outputs<-list()
-    for (i in 1:nrow(output$data))
-      {outputs[[i]]<-output
-       outputs[[i]]$data<-data.frame(Tmin=as.numeric(output$data[i,2:13]),Tmax=as.numeric(output$data[i,14:25]))
-       outputs[[i]]$labels<-as.character(output$data[i,1])
-    }
-    names(outputs)<-output$data$GCM
-    output<-outputs
+  {outputs<-list()
+  for (i in 1:nrow(output$data))
+  {outputs[[i]]<-output
+  outputs[[i]]$data<-data.frame(Tmin=as.numeric(output$data[i,2:13]),Tmax=as.numeric(output$data[i,14:25]))
+  outputs[[i]]$labels<-as.character(output$data[i,1])
+  }
+  names(outputs)<-output$data$GCM
+  output<-outputs
   }
   
   return(output)

@@ -80,8 +80,10 @@
 #' 
 #' bloom_prediction3(hourtemps,c(30,140,50),c(1000,1500,2000))
 #' 
-#' bloom_prediction3(hourtemps,c(30,40,50),c(1000,1500,2000),permutations=TRUE)
+#' bloom_prediction3(hourtemps,c(30,40,50),c(1000,1500,2000),permutations=TRUE,Start_JDay=1)
 #' 
+#' bloom_prediction3(hourtemps,c(300,400,600),c(100,150,200),permutations=TRUE,Start_JDay=1,
+#'     models=c(CH=Chilling_Hours,Heat=GDD),Chill_model = "CH", Heat_model="Heat")
 #' 
 #' @export bloom_prediction3
 bloom_prediction3 <-
@@ -148,32 +150,45 @@ bloom_prediction3 <-
     unireq<-unique(reqs[,c("Creq","Season")])
     
     unireq[,"Chill_comp"]<-as.numeric(sapply(1:nrow(unireq),function(x)
-      which(chill<unireq$Creq[x]&chill2>unireq$Creq[x]&seas==unireq$Season[x])))
+      which(chill<unireq$Creq[x]&chill2>=unireq$Creq[x]&seas==unireq$Season[x])[1]))
+  
+    chill_complete<-unireq[,"Chill_comp"]
+    
     unireq[which(!is.na(unireq$Chill_comp)),"Heat_on_CR"]<-
       as.numeric(sapply(unireq$Chill_comp[which(!is.na(unireq$Chill_comp))],function(x)
-        HourChillTable$GDH[x]))
+        HourChillTable[x,Heat_model]))
     unireq[which(!is.na(unireq$Chill_comp)),"Chill_comp"]<-
       as.numeric(sapply(unireq$Chill_comp[which(!is.na(unireq$Chill_comp))],function(x)
         HourChillTable$JDay[x]))
+    unireq[which(!is.na(chill_complete)),"Chill_comp_YEARMODA"]<-
+      sapply(chill_complete[which(!is.na(chill_complete))],function(x)
+        HourChillTable$Year[x]*10000+HourChillTable$Month[x]*100+HourChillTable$Day[x])
     
-    reqs<-merge(reqs,unireq,by = c("Creq","Season"))
+    
+    reqs<-merge(reqs,unireq,by = c("Season","Creq"))
+    reqs<-reqs[order(reqs$Season, reqs$Creq),]
     reqs[,"Heat_on_stage"]<-reqs$Hreq+reqs$Heat_on_CR
     
     heatstage<-reqs$Heat_on_stage
     reqseas<-reqs$Season
     reqs[,"Heat_comp"]<-as.numeric(sapply(1:nrow(reqs),function(x)
-      which(heat<heatstage[x]&heat2>heatstage[x]&seas==reqseas[x])))
+      which(heat<heatstage[x]&heat2>=heatstage[x]&seas==reqseas[x])[1]))
 
     heat_comps<-as.numeric(sapply(reqs$Heat_comp,function(x)
       HourChillTable$JDay[x]))
+    #add YEARMODA dates
+    heat_comp_YEARMODA<-sapply(reqs$Heat_comp,function(x)
+      HourChillTable$Year[x]*10000+HourChillTable$Month[x]*100+HourChillTable$Day[x])
     heat_comp_seasons<-as.numeric(sapply(reqs$Heat_comp,function(x)
       HourChillTable$Season[x]))
     heat_comps[which(!heat_comp_seasons==reqs$Season)]<-NA
+    heat_comp_YEARMODA[which(!heat_comp_seasons==reqs$Season)]<-NA
     reqs[,"Pheno_date"]<-heat_comps
+    reqs[,"Pheno_YEARMODA"]<-heat_comp_YEARMODA
 
     if("infocol" %in% colnames(reqs))
-      reqs<-reqs[,c("infocol","Season","Creq","Hreq","Chill_comp","Pheno_date")] else
-        reqs<-reqs[,c("Season","Creq","Hreq","Chill_comp","Pheno_date")]
+      reqs<-reqs[,c("infocol","Season","Creq","Hreq","Chill_comp","Pheno_date","Chill_comp_YEARMODA","Pheno_YEARMODA")] else
+        reqs<-reqs[,c("Season","Creq","Hreq","Chill_comp","Pheno_date","Chill_comp_YEARMODA","Pheno_YEARMODA")]
     
     return(reqs)
   }

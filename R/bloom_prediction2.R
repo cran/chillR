@@ -140,10 +140,10 @@ bloom_prediction2 <-
     unireq<-unique(reqs[,c("Creq","Season")])
     
     unireq[,"Chill_comp"]<-as.numeric(sapply(1:nrow(unireq),function(x)
-      which(chill<unireq$Creq[x]&chill2>unireq$Creq[x]&seas==unireq$Season[x])))
+      which(chill<unireq$Creq[x]&chill2>=unireq$Creq[x]&seas==unireq$Season[x])[1]))
     unireq[which(!is.na(unireq$Chill_comp)),"Heat_on_CR"]<-
       as.numeric(sapply(unireq$Chill_comp[which(!is.na(unireq$Chill_comp))],function(x)
-        HourChillTable$GDH[x]))
+        HourChillTable[x,Heat_model]))
     unireq[which(!is.na(unireq$Chill_comp)),"Chill_comp"]<-
       as.numeric(sapply(unireq$Chill_comp[which(!is.na(unireq$Chill_comp))],function(x)
         HourChillTable$JDay[x]))
@@ -154,7 +154,7 @@ bloom_prediction2 <-
     heatstage<-reqs$Heat_on_stage
     reqseas<-reqs$Season
     reqs[,"Heat_comp"]<-as.numeric(sapply(1:nrow(reqs),function(x)
-      which(heat<heatstage[x]&heat2>heatstage[x]&seas==reqseas[x])))
+      which(heat<heatstage[x]&heat2>=heatstage[x]&seas==reqseas[x])[1]))
     reqs[which(!is.na(reqs$Heat_comp)),"Pheno_date"]<-
       as.numeric(sapply(reqs$Heat_comp[which(!is.na(reqs$Heat_comp))],function(x)
         HourChillTable$JDay[x]))

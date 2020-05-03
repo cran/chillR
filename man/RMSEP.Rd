@@ -4,13 +4,15 @@
 \alias{RMSEP}
 \title{Root Mean Square Error of Prediction (RMSEP)}
 \usage{
-RMSEP(predicted, observed)
+RMSEP(predicted, observed, na.rm = FALSE)
 }
 \arguments{
 \item{predicted}{a numeric vector containing predicted values.}
 
 \item{observed}{a numeric vector of the same length as ```predicted```
 containing observed values.}
+
+\item{na.rm}{Boolean parameter indicating whether NA values should be removed before the analysis}
 }
 \value{
 numeric value of the RMSEP.

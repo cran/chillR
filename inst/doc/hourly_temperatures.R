@@ -1,14 +1,14 @@
-## ----message=FALSE-------------------------------------------------------
+## ----message=FALSE------------------------------------------------------------
 require(chillR)
 
-## ----results='as.is'-----------------------------------------------------
+## ----results='as.is'----------------------------------------------------------
 daylength(latitude=50.4,JDay=15)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 all_daylengths<-cbind(JDay=1:365,sapply(daylength(latitude=50.5,JDay=1:365),cbind))
 knitr::kable(head(all_daylengths))
 
-## ----results='as.is'-----------------------------------------------------
+## ----results='as.is'----------------------------------------------------------
 
 weather<-make_all_day_table(KA_weather)
 
@@ -16,7 +16,7 @@ hourtemps<-stack_hourly_temps(weather, latitude=50.4)$hourtemps
 hourtemps$DATE<-ISOdate(hourtemps$Year,hourtemps$Month,hourtemps$Day,hourtemps$Hour)
 
 
-## ----echo=FALSE----------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 knitr::kable(hourtemps[20:30,],row.names = FALSE)
 
 ## ----ideal_temps,echo=FALSE, fig.height = 4, fig.width = 6, fig.align = "center"----
@@ -26,7 +26,7 @@ plot(hourtemps$Temp[10:250]~hourtemps$DATE[10:250],type="l",col="red",lwd=3,
      xlab="Date",ylab="Temperature (°C)",xaxs="i")
 
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 KA_weather_gaps<-KA_weather[1:100,]
 KA_weather_gaps[,"Tmin_original"]<-KA_weather_gaps[,"Tmin"]
 KA_weather_gaps[,"Tmax_original"]<-KA_weather_gaps[,"Tmax"]
@@ -34,7 +34,7 @@ KA_weather_gaps$Tmin[c(4:15,20:30,35:40,44:45,48,50:60)]<-NA
 KA_weather_gaps$Tmax[c(3:10,12:15,17:20,30:35,42:60,65:70)]<-NA
 
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 fixed<-fix_weather(KA_weather_gaps)
 
 ## ----interpolated_daily,echo=FALSE, fig.height = 4, fig.width = 6, fig.align = "center"----
@@ -47,28 +47,28 @@ lines(fixed$weather$Tmax_original~fixed$weather$DATE,type="l",lwd=4,col="red")
 lines(fixed$weather$Tmin~fixed$weather$DATE,type="l",lwd=2)
 lines(fixed$weather$Tmax~fixed$weather$DATE,type="l",lwd=2)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 
 # stations<-handle_gsod(action="list_stations",location=c(6.99,50.62),
 #                      time_interval = c(1998,1998))
 
-## ----echo=FALSE----------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 stations<-read.csv("KA_stations.csv")
 knitr::kable(stations[1:10,c(1:2,4:5,8)])
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 # patch_weather<-handle_gsod(action="download_weather",stations$chillR_code[4],
 #                      time_interval = c(1998,1998))
 # patch_weather<-handle_gsod(patch_weather)$weather
 
-## ----echo=FALSE----------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 patch_weather<-read.csv("KA_patch.csv")
 knitr::kable(patch_weather[1:5,])
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 patched_weather<-patch_daily_temperatures(KA_weather_gaps,patch_weather)
 
-## ----echo=FALSE----------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 knitr::kable(patched_weather$statistics)
 
 ## ----proxy_daily,echo=FALSE, fig.height = 4, fig.width = 6, fig.align = "center"----
@@ -91,18 +91,18 @@ lines(interpolate_gaps(Winters_hours_gaps$Temp_gaps)$interp[50:300]~Winters_hour
 lines(Winters_hours_gaps$Temp_gaps[50:300]~Winters_hours_gaps$DATE[50:300],type="l",lwd=2)
 
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 #stations<-handle_cimis("list_stations",location=c(-122,38.5))
 #downloaded_winters<-handle_cimis("download_weather",stations$chillR_code[2],
 #               time_interval = c(2008,2008))
 #winters_daily<-handle_cimis(downloaded_winters)$weather
 
 
-## ----echo=FALSE----------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 winters_daily<-read.csv("winters_daily.csv")
 knitr::kable(winters_daily[1:5,])
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 to_interp<-Winters_hours_gaps
 to_interp[,"Temp_recorded"]<-to_interp[,"Temp"]
 to_interp[,"Temp"]<-to_interp[,"Temp_gaps"]
@@ -110,10 +110,10 @@ interp<-interpolate_gaps_hourly(hourtemps=to_interp,latitude=38.5,
                                 daily_temps=list(Winters=winters_daily))
 
 
-## ----echo=FALSE----------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 knitr::kable(interp$daily_patch_report,row.names = FALSE,align="r")
 
-## ----echo=FALSE,results='as.is'------------------------------------------
+## ----echo=FALSE,results='as.is'-----------------------------------------------
 knitr::kable(interp$weather[30:45,c(1:5,10)],row.names = FALSE,
              align=c("r","r","r","r","r","r"))
 
@@ -128,16 +128,16 @@ lines(inter$Temp[50:300]~inter$DATE[50:300],col="red",lwd=2)
 lines(inter$Temp_gaps[50:300]~inter$DATE[50:300],type="l",lwd=2)
 
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 require(stats)
 y<-rnorm(100)
 IQ<-quantile(y)[4]-quantile(2)[2]
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 orchard_extremes<-make_all_day_table(inter,timestep="day",
                                      input_timestep = "hour")
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 winters_hours<-stack_hourly_temps(fix_weather(winters_daily),latitude=38)$hourtemps
 start_hour_winters<-which(winters_hours$Year==inter$Year[1]&
                     winters_hours$Month==inter$Month[1]&
@@ -188,7 +188,7 @@ eval_table_gaps[,"RPIQ"]<-round(c(RPIQ(option1_gaps,observed_gaps),
 
 knitr::kable(eval_table_gaps,row.names = FALSE)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 eval_table<-data.frame(Option=1:4,
                   Input_data=c("daily","daily","hourly","hourly"),
                   Interpolation_method=c("from proxy","local extremes",
@@ -204,7 +204,7 @@ eval_table[,"RPIQ"]<-round(c(RPIQ(option1,observed),RPIQ(option2,observed),
 knitr::kable(eval_table,row.names = FALSE)
 
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 option1_chill<-Dynamic_Model(option1)
 option2_chill<-Dynamic_Model(option2)
 option3_chill<-Dynamic_Model(option3)
@@ -232,7 +232,7 @@ mtext("Option 3 - linear interpolation of hourly data",3,adj=0.02,
 mtext("Option 4 - use of interpolate_gaps_hourly",3,adj=0.02,
       line=-4, cex=0.8,col="blue")
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 option1_heat<-GDH(option1)
 option2_heat<-GDH(option2)
 option3_heat<-GDH(option3)
@@ -260,7 +260,7 @@ mtext("Option 3 - linear interpolation of hourly data",3,adj=0.02,
 mtext("Option 4 - use of interpolate_gaps_hourly",3,adj=0.02,
       line=-4, cex=0.8,col="blue")
 
-## ----echo=FALSE,results='as.is'------------------------------------------
+## ----echo=FALSE,results='as.is'-----------------------------------------------
 
 chill_heat_eval<-rbind(data.frame(Option=0,Input_data="observed",
                                   Interpolation_method="none"),eval_table[,1:3])

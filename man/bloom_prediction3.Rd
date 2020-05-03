@@ -78,8 +78,10 @@ hourtemps<-stack_hourly_temps(fix_weather(KA_weather[which(KA_weather$Year>2007)
 
 bloom_prediction3(hourtemps,c(30,140,50),c(1000,1500,2000))
 
-bloom_prediction3(hourtemps,c(30,40,50),c(1000,1500,2000),permutations=TRUE)
+bloom_prediction3(hourtemps,c(30,40,50),c(1000,1500,2000),permutations=TRUE,Start_JDay=1)
 
+bloom_prediction3(hourtemps,c(300,400,600),c(100,150,200),permutations=TRUE,Start_JDay=1,
+    models=c(CH=Chilling_Hours,Heat=GDD),Chill_model = "CH", Heat_model="Heat")
 
 }
 \references{

@@ -25,7 +25,7 @@ database name with the database argument}
 
 \item{location}{either a vector of geographic coordinates (for the
 'list_stations' mode), or the 'chillRcode' of a weather station in the
-specified database (for the 'download_weather' mode. When running this
+specified database (for the 'download_weather' mode). When running this
 function for data cleaning only, this is not needed.}
 
 \item{time_interval}{numeric vector with two elements, specifying the start

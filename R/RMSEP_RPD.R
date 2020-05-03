@@ -7,6 +7,7 @@
 #' @param predicted a numeric vector containing predicted values.
 #' @param observed a numeric vector of the same length as ```predicted```
 #' containing observed values.
+#' @param na.rm Boolean parameter indicating whether NA values should be removed before the analysis
 #' @return numeric value of the RMSEP.
 #' @author Eike Luedeling
 #' @keywords model validation
@@ -18,9 +19,12 @@
 #' RMSEP(predicted,observed)
 #' 
 #' @export RMSEP
-RMSEP<-function(predicted,observed)
+RMSEP<-function(predicted,observed,na.rm=FALSE)
+{if(!na.rm)
+  if(!(length(which(is.na(predicted)))+length(which(is.na(observed))))==0)
+    stop("Datasets include NA values. This may indicate a serious prediction problem. To override this error, set na.rm=TRUE.")
   sqrt(sum((observed-predicted)^2,na.rm=TRUE)/
-         length(which(!is.na(observed-predicted))))
+         length(which(!is.na(observed-predicted))))}
 
 
 #' Residual Prediction Deviation (RPD)
@@ -42,6 +46,7 @@ RMSEP<-function(predicted,observed)
 #' @param predicted a numeric vector containing predicted values.
 #' @param observed a numeric vector of the same length as ```predicted```
 #' containing observed values.
+#' @param na.rm Boolean parameter indicating whether NA values should be removed before the analysis
 #' @return numeric value of the RDP.
 #' @author Eike Luedeling
 #' @keywords model validation
@@ -59,10 +64,13 @@ RMSEP<-function(predicted,observed)
 #' RPD(predicted,observed)
 #' 
 #' @export RPD
-RPD<-function(predicted,observed)
+RPD<-function(predicted,observed,na.rm=FALSE)
+{if(!na.rm)
+  if(!(length(which(is.na(predicted)))+length(which(is.na(observed))))==0)
+    stop("Datasets include NA values. This may indicate a serious prediction problem. To override this error, set na.rm=TRUE.")
   sd(observed,na.rm=TRUE)/
      sqrt(sum((observed-predicted)^2,na.rm=TRUE)/
-            length(which(!is.na(observed-predicted))))
+            length(which(!is.na(observed-predicted))))}
 
 #' Ratio of Performance to InterQuartile distance (RPIQ)
 #' 
@@ -85,6 +93,7 @@ RPD<-function(predicted,observed)
 #' @param predicted a numeric vector containing predicted values.
 #' @param observed a numeric vector of the same length as ```predicted```
 #' containing observed values.
+#' @param na.rm Boolean parameter indicating whether NA values should be removed before the analysis
 #' @return numeric value of the RPIQ
 #' @author Eike Luedeling
 #' @keywords model validation
@@ -103,7 +112,10 @@ RPD<-function(predicted,observed)
 #' RPD(predicted,observed)
 #' 
 #' @export RPIQ
-RPIQ<-function(predicted,observed)
-  as.numeric(quantile(observed)[4]-quantile(observed)[2])/
-     sqrt(sum((observed-predicted)^2,na.rm=TRUE)/
-         length(which(!is.na(observed-predicted))))
+RPIQ<-function(predicted,observed,na.rm=FALSE)
+  {if(!na.rm)
+    if(!(length(which(is.na(predicted)))+length(which(is.na(observed))))==0)
+      stop("Datasets include NA values. This may indicate a serious prediction problem. To override this error, set na.rm=TRUE.")
+  as.numeric(quantile(observed,na.rm=na.rm)[4]-quantile(observed,na.rm=na.rm)[2])/
+     sqrt(sum((observed-predicted)^2,na.rm=na.rm)/
+         length(which(!is.na(observed-predicted))))}
