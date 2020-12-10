@@ -4,9 +4,14 @@
 \alias{make_climate_scenario_from_files}
 \title{Make climate scenario from multiple saved csv files}
 \usage{
-make_climate_scenario_from_files(metric_folder, criteria_list,
-  caption = NULL, time_series = FALSE, labels = NULL,
-  historic_data = NULL)
+make_climate_scenario_from_files(
+  metric_folder,
+  criteria_list,
+  caption = NULL,
+  time_series = FALSE,
+  labels = NULL,
+  historic_data = NULL
+)
 }
 \arguments{
 \item{metric_folder}{character string specifying the folder holding the files, from which the 

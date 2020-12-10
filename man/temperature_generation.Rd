@@ -4,11 +4,18 @@
 \alias{temperature_generation}
 \title{Generation of synthetic temperature records}
 \usage{
-temperature_generation(weather, years, sim_years,
-  temperature_scenario = data.frame(Tmin = rep(0, 12), Tmax = rep(0,
-  12)), seed = 99, check_temperature_scenario_type = TRUE,
-  temperature_check_args = NULL, max_reference_year_difference = 5,
-  warn_me = TRUE, remove_NA_scenarios = TRUE)
+temperature_generation(
+  weather,
+  years,
+  sim_years,
+  temperature_scenario = data.frame(Tmin = rep(0, 12), Tmax = rep(0, 12)),
+  seed = 99,
+  check_temperature_scenario_type = TRUE,
+  temperature_check_args = NULL,
+  max_reference_year_difference = 5,
+  warn_me = TRUE,
+  remove_NA_scenarios = TRUE
+)
 }
 \arguments{
 \item{weather}{daily weather, as produced with the fix_weather

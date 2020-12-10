@@ -4,10 +4,16 @@
 \alias{filter_temperatures}
 \title{Quality filter for temperature records}
 \usage{
-filter_temperatures(temp_file, remove_value = NA,
-  running_mean_filter = NA, running_mean_length = 3,
-  min_extreme = NA, max_extreme = NA, max_missing_in_window = 1,
-  missing_window_size = 9)
+filter_temperatures(
+  temp_file,
+  remove_value = NA,
+  running_mean_filter = NA,
+  running_mean_length = 3,
+  min_extreme = NA,
+  max_extreme = NA,
+  max_missing_in_window = 1,
+  missing_window_size = 9
+)
 }
 \arguments{
 \item{temp_file}{file containing temperature data. Should have columns

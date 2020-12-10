@@ -4,9 +4,14 @@
 \alias{make_climate_scenario}
 \title{Make climate scenario}
 \usage{
-make_climate_scenario(metric_summary, caption = NULL,
-  labels = names(metric_summary), time_series = FALSE,
-  historic_data = NULL, add_to = NULL)
+make_climate_scenario(
+  metric_summary,
+  caption = NULL,
+  labels = names(metric_summary),
+  time_series = FALSE,
+  historic_data = NULL,
+  add_to = NULL
+)
 }
 \arguments{
 \item{metric_summary}{character string specifying the folder holding the files, from which the 

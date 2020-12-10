@@ -5,10 +5,17 @@
 \title{Bloom prediction from chilling and forcing requirements, assumed to be
 fulfilled strictly in sequence - version 3}
 \usage{
-bloom_prediction3(hourtemps, Chill_req, Heat_req,
+bloom_prediction3(
+  hourtemps,
+  Chill_req,
+  Heat_req,
   models = c(Chill_Portions = Dynamic_Model, GDH = GDH_model),
-  permutations = FALSE, Chill_model = "Chill_Portions",
-  Heat_model = "GDH", Start_JDay = 305, infocol = NULL)
+  permutations = FALSE,
+  Chill_model = "Chill_Portions",
+  Heat_model = "GDH",
+  Start_JDay = 305,
+  infocol = NULL
+)
 }
 \arguments{
 \item{hourtemps}{a data frame of hourly temperatures (e.g. resulting from

@@ -4,8 +4,15 @@
 \alias{runn_mean_pred}
 \title{Prediction based on a running mean}
 \usage{
-runn_mean_pred(indep, dep, pred, runn_mean = 11, na.rm = FALSE,
-  exclude_central_value = FALSE, FUN = mean)
+runn_mean_pred(
+  indep,
+  dep,
+  pred,
+  runn_mean = 11,
+  na.rm = FALSE,
+  exclude_central_value = FALSE,
+  FUN = mean
+)
 }
 \arguments{
 \item{indep}{numeric vector of independent variables, should be sequential}

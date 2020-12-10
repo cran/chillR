@@ -31,7 +31,7 @@
 #' @importFrom graphics arrows axis box grconvertX lines mtext par plot points barplot contour image layout rect text
 #' @importFrom stats aggregate coef sd median
 #' @importFrom utils stack write.csv download.file read.csv read.fwf read.table unzip
-
+#' @importFrom Rcpp evalCpp
 #' @examples
 #' 
 #' data(california_stations)
@@ -42,6 +42,8 @@ NULL
 
 
 
+#' chillR: Statistical Methods for Phenology Analysis in Temperate Fruit Trees
+#' 
 #' Statistical methods for phenology analysis in temperate fruit trees
 #' 
 #' The phenology of plants (i.e. the timing of their annual life
@@ -70,7 +72,7 @@ NULL
 #' @name chillR-package
 #' @aliases chillR-package chillR
 #' @docType package
-#' @author Eike Luedeling Maintainer: Eike Luedeling <eike@@eikeluedeling.com>
+#' @author \strong{Eike Luedeling} \email{eike@@eikeluedeling.com}
 #' @references Applications of some of the methods in the package:
 #' 
 #' Luedeling E, Zhang M, Luedeling V and Girvetz EH, 2009. Sensitivity of
@@ -107,8 +109,8 @@ NULL
 #' @keywords package
 #' @examples
 #' 
-#' weather<-fix_weather(KA_weather[which(KA_weather$Year>2004&!(
-#'    KA_weather$Year==2005&KA_weather$Month<6)),])
+#' weather<-fix_weather(
+#'  KA_weather[which(KA_weather$Year>2004&!(KA_weather$Year==2005&KA_weather$Month<6)),])
 #' 
 #' PLS_results<-PLS_pheno(
 #'   weather_data=KA_weather,

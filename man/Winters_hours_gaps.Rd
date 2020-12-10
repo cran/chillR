@@ -4,13 +4,15 @@
 \name{Winters_hours_gaps}
 \alias{Winters_hours_gaps}
 \title{Hourly temperature data sample}
-\format{A data frame with observations on the following 5 variables.
+\format{
+A data frame with observations on the following 5 variables.
 \describe{ \item{Year}{a numeric vector - the observation year}
 \item{Month}{a numeric vector - the observation month}
 \item{Day}{a numeric vector - the observation day}
 \item{Hour}{a numeric vector - the observation day}
 \item{Temp_gaps}{a numeric vector - daily maximum temperature}
-\item{Temp}{a numeric vector - daily minimum temperature} }}
+\item{Temp}{a numeric vector - daily minimum temperature} }
+}
 \source{
 data were collected by Eike Luedeling, at that time at the 
 University of California Davis (now University of Bonn) in a walnut orchard

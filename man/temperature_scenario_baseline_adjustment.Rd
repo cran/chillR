@@ -4,9 +4,13 @@
 \alias{temperature_scenario_baseline_adjustment}
 \title{Make temperature scenario relative to a particular baseline}
 \usage{
-temperature_scenario_baseline_adjustment(baseline_temperature_scenario,
-  temperature_scenario, temperature_check_args = NULL, warn_me = TRUE,
-  required_variables = c("Tmin", "Tmax"))
+temperature_scenario_baseline_adjustment(
+  baseline_temperature_scenario,
+  temperature_scenario,
+  temperature_check_args = NULL,
+  warn_me = TRUE,
+  required_variables = c("Tmin", "Tmax")
+)
 }
 \arguments{
 \item{baseline_temperature_scenario}{baseline temperature scenario (e.g. produced with

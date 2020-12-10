@@ -4,10 +4,21 @@
 \alias{make_chill_plot}
 \title{Plot climate metrics over time}
 \usage{
-make_chill_plot(chill, model, start_year = NA, end_year = NA,
-  metriclabel = NULL, yearlabel = "End_year", misstolerance = 10,
-  image_type = NA, outpath = NA, filename = NA, fonttype = "serif",
-  plotylim = NA, plottitle = NULL)
+make_chill_plot(
+  chill,
+  model,
+  start_year = NA,
+  end_year = NA,
+  metriclabel = NULL,
+  yearlabel = "End_year",
+  misstolerance = 10,
+  image_type = NA,
+  outpath = NA,
+  filename = NA,
+  fonttype = "serif",
+  plotylim = NA,
+  plottitle = NULL
+)
 }
 \arguments{
 \item{chill}{a chill object generated either with the chilling function or

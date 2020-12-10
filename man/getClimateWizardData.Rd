@@ -4,9 +4,16 @@
 \alias{getClimateWizardData}
 \title{Extract climate data from the ClimateWizard database}
 \usage{
-getClimateWizardData(coordinates, scenario, start_year, end_year,
-  baseline = c(1950, 2005), metric = "monthly_min_max_temps",
-  GCMs = "all", temperature_generation_scenarios = FALSE)
+getClimateWizardData(
+  coordinates,
+  scenario,
+  start_year,
+  end_year,
+  baseline = c(1950, 2005),
+  metric = "monthly_min_max_temps",
+  GCMs = "all",
+  temperature_generation_scenarios = FALSE
+)
 }
 \arguments{
 \item{coordinates}{position of the point of interest, specified by a vector
@@ -23,7 +30,8 @@ latitude=20)).}
 \item{baseline}{numeric vector of length 2 indicating the time interval to be used
 as baseline for the climate scenario. The function then returns projected values relative
 to this baseline. Defaults to c(1950,2005) for the standard
-baseline of the ClimateWizard dataset, but can also assume different values. Needs
+baseline of the ClimateWizard dataset. This can also assume different values, but it must
+span an interval of at least 20 years within the [1950; 2005] interval. Needs
 to be set to NA for the function to return absolute values.}
 
 \item{metric}{vector of metrics to output, from a list specified in the reference

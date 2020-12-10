@@ -4,11 +4,18 @@
 \alias{interpolate_gaps_hourly}
 \title{Interpolate gaps in hourly temperature records}
 \usage{
-interpolate_gaps_hourly(hourtemps, latitude = 50, daily_temps = NULL,
-  interpolate_remaining = TRUE, return_extremes = FALSE,
-  minimum_values_for_solving = 5, runn_mean_test_length = 5,
-  runn_mean_test_diff = 5, daily_patch_max_mean_bias = NA,
-  daily_patch_max_stdev_bias = NA)
+interpolate_gaps_hourly(
+  hourtemps,
+  latitude = 50,
+  daily_temps = NULL,
+  interpolate_remaining = TRUE,
+  return_extremes = FALSE,
+  minimum_values_for_solving = 5,
+  runn_mean_test_length = 5,
+  runn_mean_test_diff = 5,
+  daily_patch_max_mean_bias = NA,
+  daily_patch_max_stdev_bias = NA
+)
 }
 \arguments{
 \item{hourtemps}{data.frame containing hourly temperatures. This has to

@@ -4,9 +4,13 @@
 \alias{stage_transitions}
 \title{Compute what it takes to advance through development stages}
 \usage{
-stage_transitions(observations, hourtemps, stages,
+stage_transitions(
+  observations,
+  hourtemps,
+  stages,
   models = list(Chill_Portions = Dynamic_Model, GDH = GDH),
-  max_steps = length(stages))
+  max_steps = length(stages)
+)
 }
 \arguments{
 \item{observations}{data.frame containing observed developmental dates,

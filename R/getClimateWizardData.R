@@ -22,7 +22,8 @@
 #' @param baseline numeric vector of length 2 indicating the time interval to be used
 #' as baseline for the climate scenario. The function then returns projected values relative
 #' to this baseline. Defaults to c(1950,2005) for the standard
-#' baseline of the ClimateWizard dataset, but can also assume different values. Needs
+#' baseline of the ClimateWizard dataset. This can also assume different values, but it must
+#' span an interval of at least 20 years within the [1950; 2005] interval. Needs
 #' to be set to NA for the function to return absolute values.
 #' @param metric vector of metrics to output, from a list specified in the reference
 #' provided above. This can also be "monthly_min_max_temps", which returns all
@@ -57,6 +58,22 @@ getClimateWizardData<-function(coordinates,scenario,start_year,end_year,
                                baseline=c(1950,2005),metric="monthly_min_max_temps",GCMs="all",
                                temperature_generation_scenarios=FALSE)
 {
+  assertthat::assert_that(length(coordinates)==2,msg="coordinates not of length 2")
+  assertthat::assert_that(all(is.numeric(coordinates)),msg="not all coordinates are numeric")
+  assertthat::assert_that(all(scenario %in% c("historical","rcp45","rcp85")),
+                          msg="scenario must be 'historical', 'rcp45' or 'rcp85'") 
+  assertthat::assert_that(is.numeric(start_year),msg="Start year not numeric")
+  assertthat::assert_that(is.numeric(end_year),msg="End year not numeric")
+  assertthat::assert_that(length(start_year)==1 & length(end_year)==1,
+                          msg="Start or end year object has too many elements")
+  assertthat::assert_that(is.character(metric), msg="metric not a character vector")
+  assertthat::assert_that(is.character(GCMs), msg="metric not a character vector")
+  assertthat::assert_that(baseline[2]<=2005, msg="baseline period cannot end after 2005")
+  assertthat::assert_that(baseline[1]>=1950, msg="baseline period cannot begin before 1950")
+  assertthat::assert_that((baseline[2]-baseline[1])>=20, msg="baseline period must span at least 20 years")
+  
+  
+  
   coordinates_usable<-FALSE
   if(is.null(names(coordinates)))
     if(length(coordinates)==2) {longitude<-coordinates[1]

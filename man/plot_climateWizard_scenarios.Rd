@@ -4,8 +4,12 @@
 \alias{plot_climateWizard_scenarios}
 \title{Plot mutltiple ClimateWizard scenarios obtained with getClimateWizard_scenarios}
 \usage{
-plot_climateWizard_scenarios(getscenarios_element, low_filter = -1000,
-  high_filter = 1000, color = "cadetblue")
+plot_climateWizard_scenarios(
+  getscenarios_element,
+  low_filter = -1000,
+  high_filter = 1000,
+  color = "cadetblue"
+)
 }
 \arguments{
 \item{getscenarios_element}{outputs from the getClimateWizard_scenarios function}

@@ -4,8 +4,11 @@
 \alias{tempResponse_hourtable}
 \title{Add metric accumulation to table of hourly temperatures}
 \usage{
-tempResponse_hourtable(hourtemps, Start_JDay, models = c(Chill_Portions =
-  Dynamic_Model, GDH = GDH_model))
+tempResponse_hourtable(
+  hourtemps,
+  Start_JDay,
+  models = c(Chill_Portions = Dynamic_Model, GDH = GDH_model)
+)
 }
 \arguments{
 \item{hourtemps}{a dataframe of stacked hourly temperatures (e.g. produced

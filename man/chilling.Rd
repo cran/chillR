@@ -4,8 +4,13 @@
 \alias{chilling}
 \title{Calculation of chilling and heat from hourly temperature records}
 \usage{
-chilling(hourtemps = NULL, Start_JDay = 1, End_JDay = 366,
-  THourly = NULL, misstolerance = 50)
+chilling(
+  hourtemps = NULL,
+  Start_JDay = 1,
+  End_JDay = 366,
+  THourly = NULL,
+  misstolerance = 50
+)
 }
 \arguments{
 \item{hourtemps}{a list of two elements, with element 'hourtemps' being a

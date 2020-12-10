@@ -4,14 +4,16 @@
 \name{california_stations}
 \alias{california_stations}
 \title{Weather stations in California}
-\format{a data.frame containing stations from the California UC IPM database
+\format{
+a data.frame containing stations from the California UC IPM database
 (), with the following columns: "Name", "Code", "Interval", "Lat", "Long",
 "Elev".  \describe{ \item{list("Name")}{mame of the weather station}
 \item{list("Code")}{ code of the weather station, indicating the name and
 the database it comes from} \item{list("Interval")}{ period of available
 data (as character string)} \item{list("Lat")}{ latitude of the station}
 \item{list("Long")}{ longitude of the station} \item{list("Elev")}{
-elevation of the station} }}
+elevation of the station} }
+}
 \source{
 UC IPM website: http://www.ipm.ucdavis.edu/WEATHER/index.html
 }

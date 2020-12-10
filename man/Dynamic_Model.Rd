@@ -2,35 +2,57 @@
 % Please edit documentation in R/temp_models.R
 \name{Dynamic_Model}
 \alias{Dynamic_Model}
-\title{Calculation of cumulative chill according to the Dynamic Model}
+\title{Dynamic_Model}
 \usage{
-Dynamic_Model(HourTemp, summ = TRUE)
+Dynamic_Model(
+  HourTemp,
+  summ = TRUE,
+  E0 = 4153.5,
+  E1 = 12888.8,
+  A0 = 139500,
+  A1 = 2.567e+18,
+  slope = 1.6,
+  Tf = 277
+)
 }
 \arguments{
-\item{HourTemp}{Vector of hourly temperatures.}
+\item{HourTemp}{Vector of hourly temperatures in degree Celsius.}
 
 \item{summ}{Boolean parameter indicating whether calculated metrics should
 be provided as cumulative values over the entire record (TRUE) or as the
 actual accumulation for each hour (FALSE).}
+
+\item{E0}{numeric. Parameter \eqn{E_0}{E0} of the dynamic model}
+
+\item{E1}{numeric. Parameter \eqn{E_1}{E1} of the dynamic model}
+
+\item{A0}{numeric. Parameter \eqn{A_0}{A0} of the dynamic model}
+
+\item{A1}{numeric. Parameter \eqn{A_1}{A1} of the dynamic model}
+
+\item{slope}{numeric. Slope parameter for sigmoidal function}
+
+\item{Tf}{numeric. Transition temperature (in degree Kelvin) for the
+sigmoidal function.}
 }
 \value{
 Vector of length length(HourTemp) containing the cumulative Chill
 Portions over the entire duration of HourTemp.
 }
 \description{
+Calculation of cumulative chill according to the Dynamic Model
+
 This function calculates winter chill for temperate trees according to the
 Dynamic Model.
-}
-\details{
+
 Chill Portions are calculated as suggested by Erez et al. (1990).
 }
 \examples{
-
 weather<-fix_weather(KA_weather[which(KA_weather$Year>2006),])
 
 hourtemps<-stack_hourly_temps(weather,latitude=50.4)
 
-Dynamic_Model(hourtemps$hourtemps$Temp)
+res <- Dynamic_Model(hourtemps$hourtemps$Temp)
 
 }
 \references{

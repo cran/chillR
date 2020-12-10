@@ -4,9 +4,15 @@
 \alias{make_all_day_table}
 \title{Fill in missing days in incomplete time series}
 \usage{
-make_all_day_table(tab, timestep = "day", input_timestep = timestep,
-  tz = "GMT", add.DATE = TRUE, no_variable_check = FALSE,
-  aggregation_hours = NULL)
+make_all_day_table(
+  tab,
+  timestep = "day",
+  input_timestep = timestep,
+  tz = "GMT",
+  add.DATE = TRUE,
+  no_variable_check = FALSE,
+  aggregation_hours = NULL
+)
 }
 \arguments{
 \item{tab}{a data.frame containing a time series dataset. It should have

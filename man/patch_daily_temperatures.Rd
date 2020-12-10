@@ -4,8 +4,13 @@
 \alias{patch_daily_temperatures}
 \title{Patch gaps in daily weather records}
 \usage{
-patch_daily_temperatures(weather, patch_weather, vars = c("Tmin",
-  "Tmax"), max_mean_bias = NA, max_stdev_bias = NA)
+patch_daily_temperatures(
+  weather,
+  patch_weather,
+  vars = c("Tmin", "Tmax"),
+  max_mean_bias = NA,
+  max_stdev_bias = NA
+)
 }
 \arguments{
 \item{weather}{chillR-compatible weather record to be patched}

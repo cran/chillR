@@ -4,10 +4,15 @@
 \alias{check_temperature_scenario}
 \title{Check temperature scenario for consistency}
 \usage{
-check_temperature_scenario(temperature_scenario, n_intervals = 12,
-  check_scenario_type = TRUE, scenario_check_thresholds = c(-5, 10),
-  update_scenario_type = TRUE, warn_me = TRUE,
-  required_variables = c("Tmin", "Tmax"))
+check_temperature_scenario(
+  temperature_scenario,
+  n_intervals = 12,
+  check_scenario_type = TRUE,
+  scenario_check_thresholds = c(-5, 10),
+  update_scenario_type = TRUE,
+  warn_me = TRUE,
+  required_variables = c("Tmin", "Tmax")
+)
 }
 \arguments{
 \item{temperature_scenario}{can be one of two options:

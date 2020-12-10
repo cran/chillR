@@ -4,9 +4,17 @@
 \alias{make_daily_chill_plot2}
 \title{Plot daily climate metric accumulation throughout the year (2)}
 \usage{
-make_daily_chill_plot2(daily, metrics = NA, startdate = 1,
-  enddate = 366, useyears = NA, metriclabels = NA,
-  focusyears = "none", cumulative = FALSE, fix_leap = TRUE)
+make_daily_chill_plot2(
+  daily,
+  metrics = NA,
+  startdate = 1,
+  enddate = 366,
+  useyears = NA,
+  metriclabels = NA,
+  focusyears = "none",
+  cumulative = FALSE,
+  fix_leap = TRUE
+)
 }
 \arguments{
 \item{daily}{an object generated with the daily_chill

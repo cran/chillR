@@ -4,8 +4,14 @@
 \alias{temperature_scenario_from_records}
 \title{Make monthly temperature scenario from historic records}
 \usage{
-temperature_scenario_from_records(weather, year, weather_start = NA,
-  weather_end = NA, scen_type = "running_mean", runn_mean = 15)
+temperature_scenario_from_records(
+  weather,
+  year,
+  weather_start = NA,
+  weather_end = NA,
+  scen_type = "running_mean",
+  runn_mean = 15
+)
 }
 \arguments{
 \item{weather}{daily weather, as produced with the fix_weather

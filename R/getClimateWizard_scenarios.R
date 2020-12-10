@@ -23,7 +23,8 @@
 #' @param baseline numeric vector of length 2 indicating the time interval to be used
 #' as baseline for the climate scenario. The function then returns projected values relative
 #' to this baseline. Defaults to c(1950,2005) for the standard
-#' baseline of the ClimateWizard dataset, but can also assume different values. Needs
+#' baseline of the ClimateWizard dataset. This can also assume different values, but it must
+#' span an interval of at least 20 years within the [1950; 2005] interval. Needs
 #' to be set to NA for the function to return absolute values.
 #' @param metric vector of metrics to output, from a list specified in the reference
 #' provided above. This can also be "monthly_min_max_temps", which returns all
@@ -64,6 +65,9 @@ getClimateWizard_scenarios<-function(coordinates,scenarios,start_years,end_years
                           msg="Start and end year vectors have different lengths")
   assertthat::assert_that(is.character(metric), msg="metric not a character vector")
   assertthat::assert_that(is.character(GCMs), msg="metric not a character vector")
+  assertthat::assert_that(baseline[2]<=2005, msg="baseline period cannot end after 2005")
+  assertthat::assert_that(baseline[2]<=1950, msg="baseline period cannot begin before 1950")
+  assertthat::assert_that((baseline[2]-baseline[1])>=20, msg="baseline period must span at least 20 years")
   
   
   results<-list()
@@ -73,6 +77,7 @@ getClimateWizard_scenarios<-function(coordinates,scenarios,start_years,end_years
                                            scenario=scenarios[i],
                                            start_year=start_years[i],
                                            end_year=end_years[i],
+                                           baseline=baseline,
                                            metric=metric,
                                            GCMs=GCMs)
   return(results)

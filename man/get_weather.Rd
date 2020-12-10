@@ -4,9 +4,14 @@
 \alias{get_weather}
 \title{Download weather data from online database}
 \usage{
-get_weather(location, time_interval = NA, database = "UCIPM",
-  station_list = NULL, stations_to_choose_from = 25,
-  end_at_present = TRUE)
+get_weather(
+  location,
+  time_interval = NA,
+  database = "UCIPM",
+  station_list = NULL,
+  stations_to_choose_from = 25,
+  end_at_present = TRUE
+)
 }
 \arguments{
 \item{location}{either a vector of geographic coordinates, or the

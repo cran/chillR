@@ -4,12 +4,14 @@
 \name{KA_weather}
 \alias{KA_weather}
 \title{Weather data for Klein-Altendorf, Germany}
-\format{A data frame with observations on the following 5 variables.
+\format{
+A data frame with observations on the following 5 variables.
 \describe{ \item{Year}{a numeric vector - the observation year}
 \item{Month}{a numeric vector - the observation month}
 \item{Day}{a numeric vector - the observation day}
 \item{Tmax}{a numeric vector - daily maximum temperature}
-\item{Tmin}{a numeric vector - daily minimum temperature} }}
+\item{Tmin}{a numeric vector - daily minimum temperature} }
+}
 \source{
 data were collected by Achim Kunz and Michael Blanke, University of
 Bonn

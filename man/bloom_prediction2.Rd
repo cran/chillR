@@ -5,9 +5,16 @@
 \title{Bloom prediction from chilling and forcing requirements, assumed to be
 fulfilled strictly in sequence - version 2}
 \usage{
-bloom_prediction2(HourChillTable, Chill_req, Heat_req,
-  permutations = FALSE, Chill_model = "Chill_Portions",
-  Heat_model = "GDH", Start_JDay = 305, infocol = NULL)
+bloom_prediction2(
+  HourChillTable,
+  Chill_req,
+  Heat_req,
+  permutations = FALSE,
+  Chill_model = "Chill_Portions",
+  Heat_model = "GDH",
+  Start_JDay = 305,
+  infocol = NULL
+)
 }
 \arguments{
 \item{HourChillTable}{a data frame resulting from the chilling_hourtable

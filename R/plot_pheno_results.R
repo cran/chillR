@@ -140,7 +140,7 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
   {leg_SC<-x-leg[1]$yday
   if(leg_SC<0) leg_SC<-leg_SC+365
   return(leg[leg_SC])}
-
+  
   pheno<-suppressWarnings(as.numeric(as.character(PLS_output$pheno$pheno)))
   
   if (!"object_type" %in% names(PLS_output)) 
@@ -183,11 +183,11 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
     
     if (colorscheme == "bw") 
       color_bars_VIP <- color_bar_maker(VIPs[1:lc], VIPs[1:lc], 
-                                    threshold = VIP_threshold, col1 = "BLACK", col2 = "BLACK", 
-                                    col3 = "GREY")  else color_bars_VIP <- color_bar_maker(VIPs[1:lc], VIPs[1:lc], 
-                                       threshold = VIP_threshold, col1 = "DARK BLUE", col2 = "DARK BLUE", 
-                                       col3 = "DARK GREY")
-      plot(leg, VIPs[1:lc], main = "VIP", xlab = NA, ylab = NA, 
+                                        threshold = VIP_threshold, col1 = "BLACK", col2 = "BLACK", 
+                                        col3 = "GREY")  else color_bars_VIP <- color_bar_maker(VIPs[1:lc], VIPs[1:lc], 
+                                                                                               threshold = VIP_threshold, col1 = "DARK BLUE", col2 = "DARK BLUE", 
+                                                                                               col3 = "DARK GREY")
+    plot(leg, VIPs[1:lc], main = "VIP", xlab = NA, ylab = NA, 
          xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
          cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
          lwd = 6)
@@ -209,8 +209,8 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
       color_bars <- color_bar_maker(VIPs[1:lc], Coefs[1:lc], 
                                     threshold = VIP_threshold, col1 = "BLACK", col2 = "#CECECE", 
                                     col3 = "#7B7B7B") else color_bars <- color_bar_maker(VIPs[1:lc], Coefs[1:lc], 
-                                       threshold = VIP_threshold, col1 = "RED", col2 = "DARK GREEN", 
-                                       col3 = "DARK GREY")
+                                                                                         threshold = VIP_threshold, col1 = "RED", col2 = "DARK GREEN", 
+                                                                                         col3 = "DARK GREY")
     if(!is.na(add_chill[1])&!is.na(add_chill[2]))
       rect(get_leg(add_chill[1],leg),-10000,get_leg(add_chill[2],leg),10000,col = rgb(204/255,229/255,1,1/2),border=NA)
     if(!is.na(add_heat[1])&!is.na(add_heat[2]))
@@ -225,7 +225,7 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
          xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
          cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
          lwd = 6)
-
+    
     plot(leg, Coefs[1:lc], main = "Model coefficients", ylab = NA, 
          xlab = NA, xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
          cex.axis = 4, cex.main = 5, type = "h", col = color_bars, 
@@ -300,62 +300,62 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
     HM <- heat_models
     for (CM in chill_models)
       for(HM in heat_models)
-        { PLS_obj <- PLS_output[[CM]][[HM]]["PLS_summary"]
-          pnames <- colnames(PLS_obj$PLS_summary)
-          PLS_obj <- as.data.frame(PLS_obj)
-          colnames(PLS_obj) <- pnames
-          lc <- nrow(PLS_obj)/2
-          leg <- 1:(nrow(PLS_obj)/2)
-          yearswitch<-which(trunc(PLS_obj$Date/100)>trunc(PLS_obj$Date/100)[c(2:nrow(PLS_obj),1)])
-          if(length(yearswitch>0)) years<-c(rep("2001",yearswitch[1]),
-                                            rep("2002",lc-(yearswitch[1]+1)+1)) else years=rep("2001",lc)
-          leg<-strptime(paste(PLS_obj$Date%%100,"/",trunc(PLS_obj$Date/100),"/",years,sep=""),format = "%d/%m/%Y")[1:lc]
-          
-          tick_marks <- leg[sapply(strsplit(as.character(leg), 
-                                            "-"), "[", 3) == "01"]
-          tick_labels <- as.Date(tick_marks, origin = "1999-1-2")
-          tick_labels <- as.POSIXlt(tick_labels)$mon
-          tick_labels <- c("Jan", "Feb", "Mar", "Apr", "May", 
-                           "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")[tick_labels + 
-                                                                              1]
-          
-          mean_clim <- PLS_obj$CHmean
-          dev_clim <- PLS_obj$CHstdev
-          tick_label_pos <- leg[sapply(strsplit(as.character(leg), 
-                                                "-"), "[", 3) == "15"]
-          
-          png(paste(PLS_results_path, "_", CM, "_", HM, ".png", 
-                    sep = ""), width = 4000, height = 2000, pointsize = 20)
-          par(family=fonttype)  
-          par(mfcol = c(3, 2))
-          par(mar = c(6.1, 9.1, 6.1, 2.1))
-          par(mgp = c(4, 1.5, 0))
-          
-          if (chill_force_same_scale)
-          {ylims_VIP<-c(min(PLS_obj[, "VIP"]),max(PLS_obj[, "VIP"]))
-          ylims_coeff<-c(min(PLS_obj[, "Coef"]),max(PLS_obj[, "Coef"]))}
-          
-          
-          for (graph in c("Chill", "Heat")) {
-            if (graph == "Chill") {
-              VIPs <- PLS_obj[1:lc, "VIP"]
-              Coefs <- PLS_obj[1:lc, "Coef"]
-              mean_climg <- PLS_obj[1:lc, "MetricMean"]
-              dev_climg <- PLS_obj[1:lc, "MetricStdev"]
-            }
-            if (graph == "Heat") {
-              VIPs <- PLS_obj[-(1:lc), "VIP"]
-              Coefs <- PLS_obj[-(1:lc), "Coef"]
-              mean_climg <- PLS_obj[-(1:lc), "MetricMean"]
-              dev_climg <- PLS_obj[-(1:lc), "MetricStdev"]
-            }
-            if (colorscheme == "bw") 
-              color_bars_VIP <- color_bar_maker(VIPs, VIPs, threshold = VIP_threshold, 
+      { PLS_obj <- PLS_output[[CM]][[HM]]["PLS_summary"]
+      pnames <- colnames(PLS_obj$PLS_summary)
+      PLS_obj <- as.data.frame(PLS_obj)
+      colnames(PLS_obj) <- pnames
+      lc <- nrow(PLS_obj)/2
+      leg <- 1:(nrow(PLS_obj)/2)
+      yearswitch<-which(trunc(PLS_obj$Date/100)>trunc(PLS_obj$Date/100)[c(2:nrow(PLS_obj),1)])
+      if(length(yearswitch>0)) years<-c(rep("2001",yearswitch[1]),
+                                        rep("2002",lc-(yearswitch[1]+1)+1)) else years=rep("2001",lc)
+      leg<-strptime(paste(PLS_obj$Date%%100,"/",trunc(PLS_obj$Date/100),"/",years,sep=""),format = "%d/%m/%Y")[1:lc]
+      
+      tick_marks <- leg[sapply(strsplit(as.character(leg), 
+                                        "-"), "[", 3) == "01"]
+      tick_labels <- as.Date(tick_marks, origin = "1999-1-2")
+      tick_labels <- as.POSIXlt(tick_labels)$mon
+      tick_labels <- c("Jan", "Feb", "Mar", "Apr", "May", 
+                       "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")[tick_labels + 
+                                                                          1]
+      
+      mean_clim <- PLS_obj$CHmean
+      dev_clim <- PLS_obj$CHstdev
+      tick_label_pos <- leg[sapply(strsplit(as.character(leg), 
+                                            "-"), "[", 3) == "15"]
+      
+      png(paste(PLS_results_path, "_", CM, "_", HM, ".png", 
+                sep = ""), width = 4000, height = 2000, pointsize = 20)
+      par(family=fonttype)  
+      par(mfcol = c(3, 2))
+      par(mar = c(6.1, 9.1, 6.1, 2.1))
+      par(mgp = c(4, 1.5, 0))
+      
+      if (chill_force_same_scale)
+      {ylims_VIP<-c(min(PLS_obj[, "VIP"]),max(PLS_obj[, "VIP"]))
+      ylims_coeff<-c(min(PLS_obj[, "Coef"]),max(PLS_obj[, "Coef"]))}
+      
+      
+      for (graph in c("Chill", "Heat")) {
+        if (graph == "Chill") {
+          VIPs <- PLS_obj[1:lc, "VIP"]
+          Coefs <- PLS_obj[1:lc, "Coef"]
+          mean_climg <- PLS_obj[1:lc, "MetricMean"]
+          dev_climg <- PLS_obj[1:lc, "MetricStdev"]
+        }
+        if (graph == "Heat") {
+          VIPs <- PLS_obj[-(1:lc), "VIP"]
+          Coefs <- PLS_obj[-(1:lc), "Coef"]
+          mean_climg <- PLS_obj[-(1:lc), "MetricMean"]
+          dev_climg <- PLS_obj[-(1:lc), "MetricStdev"]
+        }
+        if (colorscheme == "bw") 
+          color_bars_VIP <- color_bar_maker(VIPs, VIPs, threshold = VIP_threshold, 
                                             col1 = "BLACK", col2 = "BLACK", col3 = "GREY") else
-                                     color_bars_VIP <- color_bar_maker(VIPs, VIPs, 
-                                                                            threshold = VIP_threshold, col1 = "DARK BLUE", 
-                                                                            col2 = "DARK BLUE", col3 = "DARK GREY")
-
+                                              color_bars_VIP <- color_bar_maker(VIPs, VIPs, 
+                                                                                threshold = VIP_threshold, col1 = "DARK BLUE", 
+                                                                                col2 = "DARK BLUE", col3 = "DARK GREY")
+                                            
                                             if(!chill_force_same_scale)
                                               plot(leg, VIPs, main = "VIP", xlab = NA, ylab = NA, 
                                                    xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
@@ -366,7 +366,7 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
                                                    xaxs = "i", xaxt = "n", yaxs = "i", cex.lab = 4, 
                                                    cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
                                                    lwd = 6,ylim=ylims_VIP)
-
+                                            
                                             tick_marks <- grconvertX(tick_marks, from = "user", 
                                                                      to = "user")
                                             X_coords <- grconvertX(leg, from = "user", to = "user")
@@ -386,8 +386,8 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
                                                                             threshold = VIP_threshold, col1 = "BLACK", 
                                                                             col2 = "#CECECE", col3 = "#7B7B7B") else
                                                                               color_bars <- color_bar_maker(VIPs, Coefs, 
-                                                                               threshold = VIP_threshold, col1 = "RED", col2 = "DARK GREEN", 
-                                                                               col3 = "DARK GREY")
+                                                                                                            threshold = VIP_threshold, col1 = "RED", col2 = "DARK GREEN", 
+                                                                                                            col3 = "DARK GREY")
                                             if(!is.na(add_chill[1])&!is.na(add_chill[2]))
                                               rect(get_leg(add_chill[1],leg),-10000,get_leg(add_chill[2],leg),10000,col = rgb(204/255,229/255,1,1/2),border=NA)
                                             if(!is.na(add_heat[1])&!is.na(add_chill[1]))
@@ -410,18 +410,18 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
                                                    cex.axis = 4, cex.main = 5, type = "h", col = color_bars_VIP, 
                                                    lwd = 6,ylim=ylims_VIP)
                                             
-                if(!chill_force_same_scale)
-                  plot(leg, Coefs, main = "Model coefficients", 
-                       ylab = NA, xlab = NA, xaxs = "i", xaxt = "n", 
-                       yaxs = "i", cex.lab = 4, cex.axis = 4, cex.main = 5, 
-                       type = "h", col = color_bars, lwd = 6)
-                if(chill_force_same_scale)
-                  plot(leg, Coefs, main = "Model coefficients", 
-                       ylab = NA, xlab = NA, xaxs = "i", xaxt = "n", 
-                       yaxs = "i", cex.lab = 4, cex.axis = 4, cex.main = 5, 
-                       type = "h", col = color_bars, lwd = 6,ylim=ylims_coeff)                
+                                            if(!chill_force_same_scale)
+                                              plot(leg, Coefs, main = "Model coefficients", 
+                                                   ylab = NA, xlab = NA, xaxs = "i", xaxt = "n", 
+                                                   yaxs = "i", cex.lab = 4, cex.axis = 4, cex.main = 5, 
+                                                   type = "h", col = color_bars, lwd = 6)
+                                            if(chill_force_same_scale)
+                                              plot(leg, Coefs, main = "Model coefficients", 
+                                                   ylab = NA, xlab = NA, xaxs = "i", xaxt = "n", 
+                                                   yaxs = "i", cex.lab = 4, cex.axis = 4, cex.main = 5, 
+                                                   type = "h", col = color_bars, lwd = 6,ylim=ylims_coeff)                
                                             
-
+                                            
                                             axis(1, lwd.ticks = 3, at = tick_marks, labels = FALSE, 
                                                  cex.axis = 4, padj = 1)
                                             axis(2, lwd.ticks = 3, labels = FALSE)
@@ -516,10 +516,10 @@ plot_PLS<-function (PLS_output, PLS_results_path, VIP_threshold = 0.8,
                                                    lwd = 6, length = 0, col = color_bars)
                                             lines(leg, mean_climg[1:lc], lwd = 3)
                                             
-          }
-          dev.off()
-          write.csv(PLS_obj, paste(PLS_results_path, "_", CM, 
-                                   "_", HM, ".csv", sep = ""), row.names = FALSE)
-        }
+      }
+      dev.off()
+      write.csv(PLS_obj, paste(PLS_results_path, "_", CM, 
+                               "_", HM, ".csv", sep = ""), row.names = FALSE)
+      }
   }
 }

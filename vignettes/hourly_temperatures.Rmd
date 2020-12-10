@@ -6,7 +6,7 @@ csl: elsevier-harvard.csl
 bibliography: Chilling_references.bib
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{chillR hourly_temperatures}
+  %\VignetteIndexEntry{Producing hourly temperature records for agroclimatic analysis}
   %\VignetteEngine{knitr::rmarkdown}
 
 ---

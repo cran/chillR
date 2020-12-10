@@ -4,10 +4,12 @@
 \name{KA_bloom}
 \alias{KA_bloom}
 \title{Cherry bloom data for Klein-Altendorf, Germany}
-\format{A data frame with the following 2 variables.  \describe{
+\format{
+A data frame with the following 2 variables.  \describe{
 \item{Year}{a numeric vector, indicating the observation year}
 \item{pheno}{ a vector that, when coerced by as.numeric, contains
-bloom data in Julian dates (day of the year)} }}
+bloom data in Julian dates (day of the year)} }
+}
 \source{
 data were collected by Achim Kunz and Michael Blanke, University of
 Bonn

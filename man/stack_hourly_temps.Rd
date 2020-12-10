@@ -4,8 +4,12 @@
 \alias{stack_hourly_temps}
 \title{Stacking of hourly temperatures}
 \usage{
-stack_hourly_temps(weather = NULL, latitude = 50, hour_file = NULL,
-  keep_sunrise_sunset = FALSE)
+stack_hourly_temps(
+  weather = NULL,
+  latitude = 50,
+  hour_file = NULL,
+  keep_sunrise_sunset = FALSE
+)
 }
 \arguments{
 \item{weather}{weather data frame containing either daily minimum ("Tmin")

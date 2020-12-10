@@ -5,14 +5,21 @@
 \title{Output of Partial Least Squares analysis results of phenology vs. daily mean
 temperatures}
 \usage{
-plot_PLS(PLS_output, PLS_results_path, VIP_threshold = 0.8,
-  colorscheme = "color", plot_bloom = TRUE, fonttype = "serif",
-  add_chill = c(NA, NA), add_heat = c(NA, NA),
+plot_PLS(
+  PLS_output,
+  PLS_results_path,
+  VIP_threshold = 0.8,
+  colorscheme = "color",
+  plot_bloom = TRUE,
+  fonttype = "serif",
+  add_chill = c(NA, NA),
+  add_heat = c(NA, NA),
   plot_titles_Temp = "Mean temperature",
   plot_titles_chill_force = c("Chill Accumulation", "Heat Accumulation"),
   axis_labels_Temp = expression("Mean temperature ("^"o" * "C)"),
   axis_labels_chill_force = c("Chill Portions per day", "GDH per day"),
-  chill_force_same_scale = TRUE)
+  chill_force_same_scale = TRUE
+)
 }
 \arguments{
 \item{PLS_output}{a PLS_output object - the output of the PLS_pheno

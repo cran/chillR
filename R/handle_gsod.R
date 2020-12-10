@@ -289,6 +289,8 @@ handle_gsod<-function(action,location=NA,time_interval=NA,station_list=NULL,stat
       if(drop_most) dw<-dw[,c("Year","Month","Day","Tmin","Tmax","Tmean","Prec")]
       for (cc in c("Year","Month","Day","Tmin","Tmax","Tmean","Prec"))
         dw[,cc]<-as.numeric(dw[,cc])
+      
+      dw<-make_all_day_table(dw,no_variable_check=TRUE)
       return(dw)}
 
 }

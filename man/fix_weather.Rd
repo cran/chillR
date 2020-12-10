@@ -4,8 +4,15 @@
 \alias{fix_weather}
 \title{Weather data fixer and quality checker}
 \usage{
-fix_weather(weather, start_year = 0, end_year = 3000, start_date = 1,
-  end_date = 366, columns = c("Tmin", "Tmax"), end_at_present = TRUE)
+fix_weather(
+  weather,
+  start_year = 0,
+  end_year = 3000,
+  start_date = 1,
+  end_date = 366,
+  columns = c("Tmin", "Tmax"),
+  end_at_present = TRUE
+)
 }
 \arguments{
 \item{weather}{a data.frame containing a daily time series dataset. It

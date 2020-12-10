@@ -4,8 +4,11 @@
 \name{chillR-package}
 \alias{chillR-package}
 \alias{chillR}
-\title{Statistical methods for phenology analysis in temperate fruit trees}
+\title{chillR: Statistical Methods for Phenology Analysis in Temperate Fruit Trees}
 \description{
+Statistical methods for phenology analysis in temperate fruit trees
+}
+\details{
 The phenology of plants (i.e. the timing of their annual life
 phases) depends on climatic cues. For temperate trees and many other plants,
 spring phases, such as leaf emergence and flowering, have been found to result
@@ -25,15 +28,14 @@ scenarios with a weather generator, for conducting climate change analyses
 for temperature-based climatic metrics and for plotting results from such
 analyses. Since version 0.70, 'chillR' contains a function for interpolating
 hourly temperature records.
-}
-\details{
+
 \tabular{ll}{ Package: \tab chillR\cr Type: \tab Package\cr License: \tab The "GNU General Public
 License" version 3\cr }
 }
 \examples{
 
-weather<-fix_weather(KA_weather[which(KA_weather$Year>2004&!(
-   KA_weather$Year==2005&KA_weather$Month<6)),])
+weather<-fix_weather(
+ KA_weather[which(KA_weather$Year>2004&!(KA_weather$Year==2005&KA_weather$Month<6)),])
 
 PLS_results<-PLS_pheno(
   weather_data=KA_weather,
@@ -84,6 +86,6 @@ requirements of cherry trees - a statistical approach. International Journal
 of Biometeorology 57,679-689.
 }
 \author{
-Eike Luedeling Maintainer: Eike Luedeling <eike@eikeluedeling.com>
+\strong{Eike Luedeling} \email{eike@eikeluedeling.com}
 }
 \keyword{package}

@@ -69,8 +69,8 @@ RPD<-function(predicted,observed,na.rm=FALSE)
   if(!(length(which(is.na(predicted)))+length(which(is.na(observed))))==0)
     stop("Datasets include NA values. This may indicate a serious prediction problem. To override this error, set na.rm=TRUE.")
   sd(observed,na.rm=TRUE)/
-     sqrt(sum((observed-predicted)^2,na.rm=TRUE)/
-            length(which(!is.na(observed-predicted))))}
+    sqrt(sum((observed-predicted)^2,na.rm=TRUE)/
+           length(which(!is.na(observed-predicted))))}
 
 #' Ratio of Performance to InterQuartile distance (RPIQ)
 #' 
@@ -113,9 +113,9 @@ RPD<-function(predicted,observed,na.rm=FALSE)
 #' 
 #' @export RPIQ
 RPIQ<-function(predicted,observed,na.rm=FALSE)
-  {if(!na.rm)
-    if(!(length(which(is.na(predicted)))+length(which(is.na(observed))))==0)
-      stop("Datasets include NA values. This may indicate a serious prediction problem. To override this error, set na.rm=TRUE.")
+{if(!na.rm)
+  if(!(length(which(is.na(predicted)))+length(which(is.na(observed))))==0)
+    stop("Datasets include NA values. This may indicate a serious prediction problem. To override this error, set na.rm=TRUE.")
   as.numeric(quantile(observed,na.rm=na.rm)[4]-quantile(observed,na.rm=na.rm)[2])/
-     sqrt(sum((observed-predicted)^2,na.rm=na.rm)/
-         length(which(!is.na(observed-predicted))))}
+    sqrt(sum((observed-predicted)^2,na.rm=na.rm)/
+           length(which(!is.na(observed-predicted))))}

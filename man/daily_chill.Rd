@@ -4,9 +4,13 @@
 \alias{daily_chill}
 \title{Calculation of daily chill and heat accumulation}
 \usage{
-daily_chill(hourtemps = NULL, running_mean = 1,
-  models = list(Chilling_Hours = Chilling_Hours, Utah_Chill_Units =
-  Utah_Model, Chill_Portions = Dynamic_Model, GDH = GDH), THourly = NULL)
+daily_chill(
+  hourtemps = NULL,
+  running_mean = 1,
+  models = list(Chilling_Hours = Chilling_Hours, Utah_Chill_Units = Utah_Model,
+    Chill_Portions = Dynamic_Model, GDH = GDH),
+  THourly = NULL
+)
 }
 \arguments{
 \item{hourtemps}{a dataframe of stacked hourly temperatures (e.g. produced

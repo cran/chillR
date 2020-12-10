@@ -4,8 +4,13 @@
 \alias{runn_mean}
 \title{Running mean of a vector}
 \usage{
-runn_mean(vec, runn_mean, na.rm = FALSE, exclude_central_value = FALSE,
-  FUN = mean)
+runn_mean(
+  vec,
+  runn_mean,
+  na.rm = FALSE,
+  exclude_central_value = FALSE,
+  FUN = mean
+)
 }
 \arguments{
 \item{vec}{numeric vector}
