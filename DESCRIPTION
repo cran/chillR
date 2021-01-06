@@ -2,19 +2,20 @@ Package: chillR
 Type: Package
 Title: Statistical Methods for Phenology Analysis in Temperate Fruit
         Trees
-Version: 0.72
-Date: 2020-12-08
+Version: 0.72.2
+Date: 2021-01-06
 Authors@R: 
     person(given = "Eike",
              family = "Luedeling",
              role = c("aut", "cre"),
-             email = "eike@eikeluedeling.com")
+             email = "eike@eikeluedeling.com",
+             comment = c(ORCID = "0000-0002-7316-3631"))
 Description: The phenology of plants (i.e. the timing of their annual life
     phases) depends on climatic cues. For temperate trees and many other plants,
     spring phases, such as leaf emergence and flowering, have been found to result
     from the effects of both cool (chilling) conditions and heat. Fruit tree
     scientists (pomologists) have developed some metrics to quantify chilling
-    and heat (e.g. see Luedeling (2012) <doi.org/10.1016/j.scienta.2012.07.011>).
+    and heat (e.g. see Luedeling (2012) <doi:10.1016/j.scienta.2012.07.011>).
     'chillR' contains functions for processing temperature records into
     chilling (Chilling Hours, Utah Chill Units and Chill Portions) and heat units
     (Growing Degree Hours). Regarding chilling metrics, Chill Portions are often
@@ -22,7 +23,7 @@ Description: The phenology of plants (i.e. the timing of their annual life
     makes it easy. 'chillR' also contains procedures for conducting a PLS analysis
     relating phenological dates (e.g. bloom dates) to either mean temperatures or
     mean chill and heat accumulation rates, based on long-term weather and phenology
-    records (Luedeling and Gassner (2012) <doi.org/10.1016/j.agrformet.2011.10.020>).
+    records (Luedeling and Gassner (2012) <doi:10.1016/j.agrformet.2011.10.020>).
     As of version 0.65, it also includes functions for generating weather
     scenarios with a weather generator, for conducting climate change analyses
     for temperature-based climatic metrics and for plotting results from such
@@ -32,7 +33,7 @@ Depends: R (>= 3.5.0)
 Imports: pls, dplyr, rlang, Kendall, fields, sp, readxl, XML, httr,
         grDevices, graphics, jsonlite, stats, utils, RMAWGEN, RCurl,
         R.utils, raster, ggplot2, assertthat, reshape2, plyr, Rcpp,
-        GenSA, methods
+        GenSA
 LinkingTo: Rcpp
 Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
@@ -41,8 +42,8 @@ LazyData: TRUE
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2020-12-10 19:15:30 UTC; EL
-Author: Eike Luedeling [aut, cre]
+Packaged: 2021-01-06 16:05:41 UTC; EL
+Author: Eike Luedeling [aut, cre] (<https://orcid.org/0000-0002-7316-3631>)
 Maintainer: Eike Luedeling <eike@eikeluedeling.com>
 Repository: CRAN
-Date/Publication: 2020-12-10 19:50:02 UTC
+Date/Publication: 2021-01-06 17:40:14 UTC

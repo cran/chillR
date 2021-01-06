@@ -1,4 +1,4 @@
-793f38b5537536b8c80e144ec038a4a4 *DESCRIPTION
+d457746386db93c0e82f36fbd9b3983e *DESCRIPTION
 629deffecf325076d77af6cae3a2b9e8 *NAMESPACE
 2c3732bcc5a9bf44dc8546b620067f2c *R/Date2YEARMODA.R
 bac838ea1d86125368b0203c4b34f774 *R/Empirical_temperature_curve.R
@@ -18,7 +18,7 @@ ef9498b9cbe939c145353da2748f9537 *R/bloom_prediction.R
 6e6dd2a15627eafe2e353c4f3a346606 *R/check_temperature_record.R
 f49f74cf0d2cc0ba04565513c430277a *R/check_temperature_scenario.R
 672fdc6cf7c3e334d78514eb781052f3 *R/chile_agromet2chillR.R
-ff8c28d9bbc2fae59d4acd13b3b8a65c *R/chillR-package.R
+296dca948acdb385074ba9ea3f6c458a *R/chillR-package.R
 932bb9fa08b6a7f29048907be98e5c52 *R/chillR.R
 b66f11dcf883dfa8310e5609943b6559 *R/chilling.R
 19ee4de9c0ebc9c6555f3826818cd9e1 *R/chilling_hourtable.R
@@ -81,10 +81,10 @@ bc6c01922610dd0c1f80f97a938f00ef *data/KA_bloom.rda
 dfe396905139e63e255d9049c1f8fc0d *data/california_stations.rda
 5dfd11770fd123f3c421f261115a32f2 *inst/doc/PhenoFlex.R
 abc91f336779baf8c88868f79a0bb963 *inst/doc/PhenoFlex.Rmd
-36065a83ad11e0cc3b37f8f04f20a088 *inst/doc/PhenoFlex.html
+4f5c32d38bc9a2bfd50af182fff6641e *inst/doc/PhenoFlex.html
 7c72a0fe6808552265f8f184891d8d74 *inst/doc/hourly_temperatures.R
 757c48876fdf0cae52e8196d2f46c3c7 *inst/doc/hourly_temperatures.Rmd
-acc738e3bf81074b8b333d50243f08f3 *inst/doc/hourly_temperatures.html
+df9ebf58f8c479c8ecfff057b1127054 *inst/doc/hourly_temperatures.html
 83fcf726305bc980f0d2c9779373c53d *man/Chilling_Hours.Rd
 f85216497c478b89bfe70c34c7d33f45 *man/ChuineCF.Rd
 47c058abb6819d8fb5d16de3a5805869 *man/ChuineFstar.Rd
@@ -130,7 +130,7 @@ eb17d2a060f6bc793c6a5588cd58e705 *man/check_temperature_record.Rd
 adcff674a7a3c05a5cfcb0cdd91c21d5 *man/check_temperature_scenario.Rd
 8adaf5a23c2217627d5f3e90eac1ba9a *man/chifull.Rd
 8d21edf45217f550aa405ec593dcca78 *man/chile_agromet2chillR.Rd
-236b5191d192c4c7bb67834e774f42e1 *man/chillR-package.Rd
+840b0658c55a14c647caa2be74cf26a5 *man/chillR-package.Rd
 e25855ffa6d98b2c30026519d8adbab1 *man/chilling.Rd
 7f67049f0b84ac4e43793af4854d7817 *man/chilling_hourtable.Rd
 af942cb8726d65637521c07eceb7d9b8 *man/color_bar_maker.Rd
