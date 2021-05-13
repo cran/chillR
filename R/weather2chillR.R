@@ -7,9 +7,6 @@
 #' Summary of the Day - "GSOD"
 #' (https://data.noaa.gov/dataset/global-surface-summary-of-the-day-gsod)
 #' 
-#' Weather Underground ("Wunderground") airport database - "Wunderground"
-#' (http://www.wunderground.com/)
-#' 
 #' California Irrigation Management Information System (CIMIS) - "CIMIS"
 #' (http://www.cimis.water.ca.gov/)
 #' 
@@ -70,11 +67,8 @@ if(is.list(dw)) if(names(dw)[1]=="database") database=dw$database
 if(database=="GSOD")  
   return(handle_gsod(dw,drop_most=drop_most))
  
-  if(database=="CIMIS")
-      return(handle_cimis(dw,drop_most=drop_most))
-
-if(database=="Wunderground")
-  return(handle_wunderground(dw,drop_most=drop_most))
+if(database=="CIMIS")
+  return(handle_cimis(dw,drop_most=drop_most))
 
 if(database=="UCIPM")
   return(handle_ucipm(dw,drop_most=drop_most))

@@ -131,7 +131,6 @@ handle_cimis<-function(action,location=NA,time_interval=NA,station_list=NULL,sta
     summary_file<-dir[grep("CIMIS Stations List",dir)]
     download.file(paste("ftp://ftpcimis.water.ca.gov/pub2/",summary_file,sep=""), "chillRtempdirectory/a.xlsx", mode="wb")
     cimis<-suppressWarnings(read_excel("chillRtempdirectory/a.xlsx"))
-    closeAllConnections()
     file.remove("chillRtempdirectory/a.xlsx")
     unlink("chillRtempdirectory",recursive=TRUE)
     
@@ -212,6 +211,7 @@ if(is.character(action)) if(action=="download_weather")
       if(ff==0)
       {gz <- gzfile(dest, open = "rt")
       ziplist<-unzip(dest,list=TRUE)
+      close(gz)
       if(numm %in% sapply(ziplist[,1],function(x) substr(x,nchar(x)-6,nchar(x)-4)))
       {if(!y==2016)
         {unzip(dest,files=paste(y,"daily",numm,".csv",sep=""),exdir="chillRtempdirectory")
@@ -221,7 +221,6 @@ if(is.character(action)) if(action=="download_weather")
         {unzip(dest,files=paste("dlymet",numm,".csv",sep=""),exdir="chillRtempdirectory")
           yweath<-read.csv(paste("chillRtempdirectory/","dlymet",numm,".csv",sep=""))
           file.remove(paste("chillRtempdirectory/","dlymet",numm,".csv",sep=""))}
-        closeAllConnections()
         file.remove(dest)
       } else yweath<-NA
       } else yweath<-NA

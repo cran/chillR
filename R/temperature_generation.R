@@ -40,6 +40,7 @@
 #' @param warn_me boolean variable specifying whether warnings should be shown. Defaults to TRUE.
 #' @param remove_NA_scenarios boolean parameter indicating whether temperature scenarios that
 #' contain NA values should be removed. Such scenarios would generate an error.
+#' @importFrom lubridate month
 #' 
 #' 
 #' @return list of data.frames containing the simulated weather, with columns c("YEARMODA",

@@ -36,9 +36,6 @@ weather databases, from which chillR can download data: NOAA NCDC Global
 Summary of the Day - "GSOD"
 (https://data.noaa.gov/dataset/global-surface-summary-of-the-day-gsod)
 
-Weather Underground ("Wunderground") airport database - "Wunderground"
-(http://www.wunderground.com/)
-
 California Irrigation Management Information System (CIMIS) - "CIMIS"
 (http://www.cimis.water.ca.gov/)
 

@@ -20,8 +20,8 @@ get_weather(
 \item{time_interval}{numeric vector with two elements, specifying the start
 and end date of the period of interest.}
 
-\item{database}{the database to be accessed. Must be "GSOD", "CIMIS",
-"Wunderground" or "UCIPM". Since among these, "UCIPM" is the most
+\item{database}{the database to be accessed. Must be "GSOD", "CIMIS"
+or "UCIPM". Since among these, "UCIPM" is the most
 comprehensive one for California, the initial area of interest, this is the
 default.}
 
@@ -58,9 +58,6 @@ weather databases, from which chillR can download data: NOAA NCDC Global
 Summary of the Day - "GSOD"
 (https://data.noaa.gov/dataset/global-surface-summary-of-the-day-gsod)
 
-Weather Underground ("Wunderground") airport database - "Wunderground"
-(http://www.wunderground.com/)
-
 California Irrigation Management Information System (CIMIS) - "CIMIS"
 (http://www.cimis.water.ca.gov/)
 
@@ -84,8 +81,7 @@ chillRCode.
 Many databases have data quality flags, which may sometimes indicate
 that data aren't reliable. These are not considered by this function!
 
-see the documentation of the handler functions (e.g. handle_wunderground,
-handle_ucipm) for details.
+see the documentation of the handler functions (e.g. handle_ucipm) for details.
 }
 \examples{
 

@@ -384,7 +384,7 @@ make_daily_chill_plot2 <-function(daily,metrics=NA,startdate=1,enddate=366,useye
          geom_line(data=foci,aes_(x=~Date,y=~value,colour=~Year),lwd=2) +
          ylab(ylabe) + xlab("Date") +
          theme_gray(base_size=22) +
-         scale_x_date(breaks=griddatelist,labels=gridlabels,expand=expand_scale(add=0),minor_breaks=NULL)
+         scale_x_date(breaks=griddatelist,labels=gridlabels,expand=expansion(add=0),minor_breaks=NULL)
        )
      
      if(length(focusyears)==0)
@@ -393,7 +393,7 @@ make_daily_chill_plot2 <-function(daily,metrics=NA,startdate=1,enddate=366,useye
                geom_line(colour="black",lwd=1) +
                ylab(ylabe) + xlab("Date") +
                theme_gray(base_size=22) +
-               scale_x_date(breaks=griddatelist,labels=gridlabels,expand=expand_scale(add=0),minor_breaks=NULL) 
+               scale_x_date(breaks=griddatelist,labels=gridlabels,expand=expansion(add=0),minor_breaks=NULL) 
        )
 
           output[[met]]<-dc_summ[,1:ncol(dc_summ)-1]

@@ -207,10 +207,10 @@ handle_gsod<-function(action,location=NA,time_interval=NA,station_list=NULL,stat
    STN<-strsplit(location,"_")[[1]][1]
    WBAN<-strsplit(location,"_")[[1]][2]
    startlisting<-TRUE
+   suppressWarnings(dir.create("chillRtempdirectory"))
    for(y in c(time_interval[1]:time_interval[2]))
    {
      URL<-paste("ftp://ftp.ncdc.noaa.gov/pub/data/gsod/",y,"/",STN,"-",WBAN,"-",y,".op.gz",sep="")
-     suppressWarnings(dir.create("chillRtempdirectory"))
      dest<-"chillRtempdirectory/weather.op.gz"
      ff<-suppressWarnings(try(download.file(URL, dest),silent = TRUE))
      if(ff==0)
@@ -241,6 +241,8 @@ handle_gsod<-function(action,location=NA,time_interval=NA,station_list=NULL,stat
      if(startlisting) record<-out else record<-rbind(record,out)
      startlisting<-FALSE}
    }
+   unlink("chillRtempdirectory",recursive=TRUE)
+   
    if(startlisting) {record<-NA
    warning("No weather data found for the time interval of interest.")
    return(record)}

@@ -8,9 +8,6 @@
 #' Summary of the Day - "GSOD"
 #' (https://data.noaa.gov/dataset/global-surface-summary-of-the-day-gsod)
 #' 
-#' Weather Underground ("Wunderground") airport database - "Wunderground"
-#' (http://www.wunderground.com/)
-#' 
 #' California Irrigation Management Information System (CIMIS) - "CIMIS"
 #' (http://www.cimis.water.ca.gov/)
 #' 
@@ -34,8 +31,8 @@
 #' 'chillRcode' of a weather station in the specified database. See details.
 #' @param time_interval numeric vector with two elements, specifying the start
 #' and end date of the period of interest.
-#' @param database the database to be accessed. Must be "GSOD", "CIMIS",
-#' "Wunderground" or "UCIPM". Since among these, "UCIPM" is the most
+#' @param database the database to be accessed. Must be "GSOD", "CIMIS"
+#' or "UCIPM". Since among these, "UCIPM" is the most
 #' comprehensive one for California, the initial area of interest, this is the
 #' default.
 #' @param station_list if the list of weather stations has already been
@@ -59,8 +56,7 @@
 #' @note Many databases have data quality flags, which may sometimes indicate
 #' that data aren't reliable. These are not considered by this function!
 #' 
-#' see the documentation of the handler functions (e.g. handle_wunderground,
-#' handle_ucipm) for details.
+#' see the documentation of the handler functions (e.g. handle_ucipm) for details.
 #' @author Eike Luedeling
 #' @references The chillR package:
 #' 
@@ -104,8 +100,6 @@ get_weather<-function(location,time_interval=NA,database="UCIPM",station_list=NU
                                              stations_to_choose_from=stations_to_choose_from,end_at_present=end_at_present),
                           CIMIS = handle_cimis("list_stations",location=location,time_interval=time_interval,station_list=station_list,
                                                stations_to_choose_from=stations_to_choose_from,end_at_present=end_at_present),
-                          Wunderground = handle_wunderground("list_stations",location=location,time_interval=time_interval,station_list=station_list,
-                                                             stations_to_choose_from=stations_to_choose_from,end_at_present=end_at_present),
                           UCIPM = handle_ucipm("list_stations",location=location,time_interval=time_interval,station_list=station_list,
                                                stations_to_choose_from=stations_to_choose_from,end_at_present=end_at_present))
       if(is.null(sorted_list)) warning("No valid database specified") else
@@ -122,8 +116,6 @@ get_weather<-function(location,time_interval=NA,database="UCIPM",station_list=NU
                                            end_at_present=end_at_present),
                         CIMIS = handle_cimis("download_weather",location=location,time_interval=time_interval,station_list=station_list,
                                              end_at_present=end_at_present),
-                        Wunderground = handle_wunderground("download_weather",location=location,time_interval=time_interval,station_list=station_list,
-                                                           end_at_present=end_at_present),
                         UCIPM = handle_ucipm("download_weather",location=location,time_interval=time_interval,station_list=station_list,
                                              end_at_present=end_at_present))
     if(is.null(weather)) warning("No valid database specified")
