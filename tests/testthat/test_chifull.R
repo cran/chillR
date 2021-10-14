@@ -10,5 +10,5 @@ test_that('chifull_1', {
                         bloomJDays=KA_bloom$pheno[c(24,25)],
                         SeasonList=SeasonList
                         )
-  expect_equal(object=x, expected=2.3767361111111, tolerance = 0.0000001)
+  expect_equal(object=x, expected=2.3767361111111, tolerance = 1)
 })

@@ -1,5 +1,5 @@
-e3727273e33106d1f6433bbdae5c013d *DESCRIPTION
-d49b6d1efd4ce5c1bd5cab77ee2ae013 *NAMESPACE
+9578ac4654785d4aa1db3def2caf49cf *DESCRIPTION
+c1c9528c586dfbff3668ac4cff2301c1 *NAMESPACE
 2c3732bcc5a9bf44dc8546b620067f2c *R/Date2YEARMODA.R
 bac838ea1d86125368b0203c4b34f774 *R/Empirical_temperature_curve.R
 db123cd9bd4773547581d011bc5140ba *R/PLS_chill_force.R
@@ -24,7 +24,7 @@ b66f11dcf883dfa8310e5609943b6559 *R/chilling.R
 19ee4de9c0ebc9c6555f3826818cd9e1 *R/chilling_hourtable.R
 88323f7f7f9e4d50ccc7e701ef34114d *R/color_bar_maker.R
 7c62e53c6248383fb04323e66aa59c01 *R/daily_chill.R
-fac28e8efbeeb9afb144a3483478de72 *R/daylength.R
+01f2dbb8d6f038753877ee459c761a8e *R/daylength.R
 d044d3321eaf9b2542d767057ce570df *R/extract_differences_between_characters.R
 b569a581c8a8bd34331ec9a429956fc2 *R/extract_temperatures_from_grids.R
 dc97e072c946637d8f9fc95b9e9aa61b *R/filter_temperatures.R
@@ -68,7 +68,7 @@ fecac721becb450fc819054b064b546a *R/select_by_file_extension.R
 ee68a99d334dae5298f1999d9d8bf231 *R/tempResponse_daily_list.R
 2a16036b51396e4331498268b1b25f97 *R/tempResponse_hourtable.R
 5202ac8baf40991b771c4263c4fada1a *R/temp_models.R
-63be99d652799938f449d4818770cee5 *R/temperature_generation.R
+a3141773af4567ed9fe2770c850b6b31 *R/temperature_generation.R
 4fdfa9e62cbe2a48c7d68d7db87e224e *R/temperature_scenario_baseline_adjustment.R
 7d64a33b5fe00024ed52175ec25f315a *R/temperature_scenario_from_records.R
 58b01a0c11e9051037d667f14a32442b *R/test_if_equal.R
@@ -80,10 +80,10 @@ bc6c01922610dd0c1f80f97a938f00ef *data/KA_bloom.rda
 dfe396905139e63e255d9049c1f8fc0d *data/california_stations.rda
 5dfd11770fd123f3c421f261115a32f2 *inst/doc/PhenoFlex.R
 abc91f336779baf8c88868f79a0bb963 *inst/doc/PhenoFlex.Rmd
-e93f62d189c45d16040ec6ab581f8282 *inst/doc/PhenoFlex.html
+a6384f55f533356305fe383a075e7409 *inst/doc/PhenoFlex.html
 7c72a0fe6808552265f8f184891d8d74 *inst/doc/hourly_temperatures.R
 757c48876fdf0cae52e8196d2f46c3c7 *inst/doc/hourly_temperatures.Rmd
-3d6239c52949646deeabb2f3888a8520 *inst/doc/hourly_temperatures.html
+91b00e4865ed6e38439c03c0ec039345 *inst/doc/hourly_temperatures.html
 83fcf726305bc980f0d2c9779373c53d *man/Chilling_Hours.Rd
 f85216497c478b89bfe70c34c7d33f45 *man/ChuineCF.Rd
 47c058abb6819d8fb5d16de3a5805869 *man/ChuineFstar.Rd
@@ -200,11 +200,11 @@ cdc95ca5b9335d37fa11d6ac6dae81da *man/temperature_scenario_from_records.Rd
 cfebf637248c5bee7ac1337c01eb40c3 *man/test_if_equal.Rd
 c11a17ce09ec2a891164ed808cdb91b0 *man/weather2chillR.Rd
 ba3eedd7d0c69cbd2cf4ae7e04968de5 *src/PhenoFlex.cpp
-f8c18a21932b45f82cd095c2fb383e85 *src/RcppExports.cpp
+c4cb81f5226fa31518e7ed850523c6f4 *src/RcppExports.cpp
 67d4d5b7b77d8735d8dd272ce64e8d01 *tests/testthat.R
-8da2a046ff5f2de93c1dd775b9c1d465 *tests/testthat/test_PhenoFlex.R
-2dc050fc64ac68a4f1aa64b7650fdabd *tests/testthat/test_chifull.R
-fba112640f52d73b3b6528b5c6d3abfe *vignettes/Chilling_references.bib
+566f6afd7eb8365df47350bffb98e61b *tests/testthat/test_PhenoFlex.R
+fa510128e040da13ddf16779cd7ecee3 *tests/testthat/test_chifull.R
+ee5715c653fd1fcb40c72def26b26d3e *vignettes/Chilling_references.bib
 8abbae257c4ea1335f5962794a5662db *vignettes/KA_patch.csv
 b03efecf6185bbc5ab9ee26fe5574d30 *vignettes/KA_stations.csv
 abc91f336779baf8c88868f79a0bb963 *vignettes/PhenoFlex.Rmd

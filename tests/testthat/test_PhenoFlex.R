@@ -10,5 +10,5 @@ test_that('PhenoFlex_1', {
                          times=c(1: length(hourtemps$hourtemps$Temp[iSeason[[1]]])),
                          zc=zc, stopatzc=TRUE, yc=yc, basic_output=FALSE)
   DBreakDay <- x$bloomindex
-  expect_equal(DBreakDay, 6170)
+  expect_equal(DBreakDay, 6170, tolerance=1)
 })

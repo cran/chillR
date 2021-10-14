@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // PhenoFlex
 List PhenoFlex(NumericVector temp, NumericVector times, const double A0, const double A1, const double E0, const double E1, const double slope, const double Tf, const double s1, const double Tu, const double Tb, const double Tc, const double yc, const double Delta, const int Imodel, const double zc, bool stopatzc, bool deg_celsius, bool basic_output);
 RcppExport SEXP _chillR_PhenoFlex(SEXP tempSEXP, SEXP timesSEXP, SEXP A0SEXP, SEXP A1SEXP, SEXP E0SEXP, SEXP E1SEXP, SEXP slopeSEXP, SEXP TfSEXP, SEXP s1SEXP, SEXP TuSEXP, SEXP TbSEXP, SEXP TcSEXP, SEXP ycSEXP, SEXP DeltaSEXP, SEXP ImodelSEXP, SEXP zcSEXP, SEXP stopatzcSEXP, SEXP deg_celsiusSEXP, SEXP basic_outputSEXP) {
