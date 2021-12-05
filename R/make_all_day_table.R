@@ -67,8 +67,13 @@
 #'                                aggregation_hours=c(3,3,2))
 #' 
 #' @export make_all_day_table
-make_all_day_table<-function(tab,timestep="day",input_timestep=timestep,tz="GMT",
-                             add.DATE=TRUE,no_variable_check=FALSE,aggregation_hours=NULL) #tab should have columns named Year, Month and Day (or YEAR, MONTH, DAY; or YEARMODA)
+make_all_day_table <- function(tab,
+                               timestep = "day",
+                               input_timestep = timestep,
+                               tz = "GMT",
+                               add.DATE = TRUE,
+                               no_variable_check = FALSE,
+                               aggregation_hours = NULL) #tab should have columns named Year, Month and Day (or YEAR, MONTH, DAY; or YEARMODA)
 {
   only_numeric_mean<-function(x) if(is.numeric(x)) mean(x) else x[1]
   
@@ -110,14 +115,16 @@ make_all_day_table<-function(tab,timestep="day",input_timestep=timestep,tz="GMT"
     if(!convert_hour_to_day)
       if(check$chillR_compliant&
          check$completeness_check$missing_records==0&
-         check$completeness_check$repeated_records==0)
-      {if((!"DATE" %in% colnames(tab))&add.DATE) 
-        if(timestep=="hour")
-          tab[,"DATE"]<-ISOdatetime(tab$Year,tab$Month,tab$Day,tab$Hour,0,0,tz=tz) else
-            tab[,"DATE"]<-ISOdate(tab$Year,tab$Month,tab$Day)
-          tab<-tab[,c("DATE",colnames(tab)[which(!colnames(tab)=="DATE")])]
-          return(tab) #maybe some format changes?
+         check$completeness_check$repeated_records==0){
+        if((!"DATE" %in% colnames(tab))&add.DATE){
+          if(timestep=="hour"){
+            tab[,"DATE"]<-ISOdatetime(tab$Year,tab$Month,tab$Day,tab$Hour,0,0,tz=tz)} else {
+              tab[,"DATE"]<-ISOdate(tab$Year,tab$Month,tab$Day)}
+          tab<-tab[,c("DATE",colnames(tab)[which(!colnames(tab)=="DATE")])]}
+        
+        return(tab) #maybe some format changes?
       }
+    
     
     if(input_timestep=="hour")
     {alltimes<-ISOdatetime(tab$Year,tab$Month,tab$Day,tab$Hour,0,0,tz=tz)
@@ -144,46 +151,46 @@ make_all_day_table<-function(tab,timestep="day",input_timestep=timestep,tz="GMT"
     if(convert_hour_to_day)
     {
       alltimes<-ISOdate(tab$Year,tab$Month,tab$Day)
-    tab$Alltime<-alltimes
-    datevec<-seq(min(alltimes),max(alltimes),"DSTday")      
-    
-    if(!is.null(aggregation_hours))
+      tab$Alltime<-alltimes
+      datevec<-seq(min(alltimes),max(alltimes),"DSTday")      
+      
+      if(!is.null(aggregation_hours))
       {
         if(length(aggregation_hours)==3)
-          {if("min_hours" %in% names(aggregation_hours)&"max_hours" %in% names(aggregation_hours)&"hours_needed" %in% names(aggregation_hours))
-          {min_hours<-as.numeric(aggregation_hours["min_hours"])
-           max_hours<-as.numeric(aggregation_hours["max_hours"])
-           hours_needed<-as.numeric(aggregation_hours["hours_needed"])
-          } else
-          {min_hours<-aggregation_hours[1]
-          max_hours<-aggregation_hours[2]
-          hours_needed<-aggregation_hours[3]
-          }} else return(warning("not clear how many values need to be present for deriving temperature extremes from incomplete hourly records"))
-
-      mean_hour_temps<-aggregate(tab,by=list(tab$Hour,tab$Month),function(x) mean(x,na.rm=TRUE))[,c("Month","Hour","Temp")]
-      month_min_hours<-list()
-      month_max_hours<-list()
-      for(m in 1:12)
-        {month_min_hours[[m]]<-mean_hour_temps$Hour[which(mean_hour_temps$Month==m)][order(mean_hour_temps$Temp[which(mean_hour_temps$Month==m)])][1:min_hours]
-         month_max_hours[[m]]<-mean_hour_temps$Hour[which(mean_hour_temps$Month==m)][order(mean_hour_temps$Temp[which(mean_hour_temps$Month==m)],decreasing = TRUE)][1:max_hours]}
+        {if("min_hours" %in% names(aggregation_hours)&"max_hours" %in% names(aggregation_hours)&"hours_needed" %in% names(aggregation_hours))
+        {min_hours<-as.numeric(aggregation_hours["min_hours"])
+        max_hours<-as.numeric(aggregation_hours["max_hours"])
+        hours_needed<-as.numeric(aggregation_hours["hours_needed"])
+        } else
+        {min_hours<-aggregation_hours[1]
+        max_hours<-aggregation_hours[2]
+        hours_needed<-aggregation_hours[3]
+        }} else return(warning("not clear how many values need to be present for deriving temperature extremes from incomplete hourly records"))
         
-      means<-aggregate(tab,by=list(tab$Alltime),FUN=mean)
-      colnames(means)[which(colnames(means)=="Temp")]<-"Tmean"
-      means[,"Tmin"]<-do.call(rbind,lapply(split(tab,tab$Alltime),function(chunk) if(length(which(chunk$Hour[which(!is.na(chunk$Temp))] %in% month_min_hours[[mean(chunk$Month)]]))>=hours_needed)
-        min(chunk$Temp,na.rm=TRUE) else (NA)))
-      means[,"Tmax"]<-do.call(rbind,lapply(split(tab,tab$Alltime),function(chunk) if(length(which(chunk$Hour[which(!is.na(chunk$Temp))] %in% month_max_hours[[mean(chunk$Month)]]))>=hours_needed)
-        max(chunk$Temp,na.rm=TRUE) else (NA)))
-    }
- 
-    if(is.null(aggregation_hours))
+        mean_hour_temps<-aggregate(tab,by=list(tab$Hour,tab$Month),function(x) mean(x,na.rm=TRUE))[,c("Month","Hour","Temp")]
+        month_min_hours<-list()
+        month_max_hours<-list()
+        for(m in 1:12)
+        {month_min_hours[[m]]<-mean_hour_temps$Hour[which(mean_hour_temps$Month==m)][order(mean_hour_temps$Temp[which(mean_hour_temps$Month==m)])][1:min_hours]
+        month_max_hours[[m]]<-mean_hour_temps$Hour[which(mean_hour_temps$Month==m)][order(mean_hour_temps$Temp[which(mean_hour_temps$Month==m)],decreasing = TRUE)][1:max_hours]}
+        
+        means<-aggregate(tab,by=list(tab$Alltime),FUN=mean)
+        colnames(means)[which(colnames(means)=="Temp")]<-"Tmean"
+        means[,"Tmin"]<-do.call(rbind,lapply(split(tab,tab$Alltime),function(chunk) if(length(which(chunk$Hour[which(!is.na(chunk$Temp))] %in% month_min_hours[[mean(chunk$Month)]]))>=hours_needed)
+          min(chunk$Temp,na.rm=TRUE) else (NA)))
+        means[,"Tmax"]<-do.call(rbind,lapply(split(tab,tab$Alltime),function(chunk) if(length(which(chunk$Hour[which(!is.na(chunk$Temp))] %in% month_max_hours[[mean(chunk$Month)]]))>=hours_needed)
+          max(chunk$Temp,na.rm=TRUE) else (NA)))
+      }
+      
+      if(is.null(aggregation_hours))
       {means<-aggregate(tab,by=list(tab$Alltime),FUN=only_numeric_mean)
       colnames(means)[which(colnames(means)=="Temp")]<-"Tmean"
       means[,"Tmin"]<-aggregate(tab[,c("Alltime","Temp")],by=list(tab$Alltime),FUN=min)[,"Temp"]
       means[,"Tmax"]<-aggregate(tab[,c("Alltime","Temp")],by=list(tab$Alltime),FUN=max)[,"Temp"]}
-
-    outcols<-c(outcols[which(!outcols %in% c("Tmin","Tmean","Tmax","Temp","Hour"))],"Tmin","Tmean","Tmax")
-    tab<-means
-    alltimes<-tab$Alltime
+      
+      outcols<-c(outcols[which(!outcols %in% c("Tmin","Tmean","Tmax","Temp","Hour"))],"Tmin","Tmean","Tmax")
+      tab<-means
+      alltimes<-tab$Alltime
     }
     
     

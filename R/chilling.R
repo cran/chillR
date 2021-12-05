@@ -148,13 +148,12 @@
 #' @keywords chill and heat calculation
 #' @examples
 #' 
+#' # weather <- fix_weather(KA_weather[which(KA_weather$Year > 2006), ])
+#' # hourtemps <- stack_hourly_temps(weather, latitude = 50.4)
+#' # chilling(hourtemps, 305, 60)
 #' 
-#' 
-#' #weather<-fix_weather(KA_weather[which(KA_weather$Year>2006),])
-#' #hourtemps<-stack_hourly_temps(weather,latitude=50.4)
-#' #chilling(hourtemps,305,60)
-#' 
-#' chilling(stack_hourly_temps(fix_weather(KA_weather[which(KA_weather$Year>2006),]),latitude=50.4))
+#' chilling(stack_hourly_temps(fix_weather(KA_weather[which(KA_weather$Year > 2006), ]),
+#'          latitude = 50.4))
 #' 
 #' @export chilling
 chilling <-

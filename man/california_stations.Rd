@@ -6,8 +6,8 @@
 \title{Weather stations in California}
 \format{
 a data.frame containing stations from the California UC IPM database
-(), with the following columns: "Name", "Code", "Interval", "Lat", "Long",
-"Elev".  \describe{ \item{list("Name")}{mame of the weather station}
+(), with the columns: "Name", "Code", "Interval", "Lat", "Long",
+"Elev".  \describe{ \item{list("Name")}{name of the weather station}
 \item{list("Code")}{ code of the weather station, indicating the name and
 the database it comes from} \item{list("Interval")}{ period of available
 data (as character string)} \item{list("Lat")}{ latitude of the station}

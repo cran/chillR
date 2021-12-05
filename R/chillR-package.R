@@ -11,8 +11,8 @@
 #' @name california_stations
 #' @docType data
 #' @format a data.frame containing stations from the California UC IPM database
-#' (), with the following columns: "Name", "Code", "Interval", "Lat", "Long",
-#' "Elev".  \describe{ \item{list("Name")}{mame of the weather station}
+#' (), with the columns: "Name", "Code", "Interval", "Lat", "Long",
+#' "Elev".  \describe{ \item{list("Name")}{name of the weather station}
 #' \item{list("Code")}{ code of the weather station, indicating the name and
 #' the database it comes from} \item{list("Interval")}{ period of available
 #' data (as character string)} \item{list("Lat")}{ latitude of the station}
@@ -42,90 +42,40 @@ NULL
 
 
 
-#' chillR: Statistical Methods for Phenology Analysis in Temperate Fruit Trees
+#' \if{html}{\figure{chillR.png}{options: align='right' width='25\%' alt='chillR logo'}}
+#' chillR: statistical methods for phenology analysis in temperate fruit trees
 #' 
-#' Statistical methods for phenology analysis in temperate fruit trees
+#' @description 
 #' 
-#' The phenology of plants (i.e. the timing of their annual life
-#' phases) depends on climatic cues. For temperate trees and many other plants,
-#' spring phases, such as leaf emergence and flowering, have been found to result
-#' from the effects of both cool (chilling) conditions and heat. Fruit tree
-#' scientists (pomologists) have developed some metrics to quantify chilling
-#' and heat (e.g. see Luedeling (2012) <doi:10.1016/j.scienta.2012.07.011>).
-#' 'chillR' contains functions for processing temperature records into
-#' chilling (Chilling Hours, Utah Chill Units and Chill Portions) and heat units
-#' (Growing Degree Hours). Regarding chilling metrics, Chill Portions are often
-#' considered the most promising, but they are difficult to calculate. This package
-#' makes it easy. 'chillR' also contains procedures for conducting a PLS analysis
-#' relating phenological dates (e.g. bloom dates) to either mean temperatures or
-#' mean chill and heat accumulation rates, based on long-term weather and phenology
-#' records (Luedeling and Gassner (2012) <doi:10.1016/j.agrformet.2011.10.020>).
-#' As of version 0.65, it also includes functions for generating weather
-#' scenarios with a weather generator, for conducting climate change analyses
-#' for temperature-based climatic metrics and for plotting results from such
-#' analyses. Since version 0.70, 'chillR' contains a function for interpolating
-#' hourly temperature records.
+#' \if{latex}{\figure{chillR.png}{options: width=1in}}
 #' 
-#' \tabular{ll}{ Package: \tab chillR\cr Type: \tab Package\cr License: \tab The "GNU General Public
-#' License" version 3\cr }
+#' \code{chillR} contains functions for processing temperature records into chilling (Chilling Hours, Utah Chill Units
+#' and Chill Portions) and heat units (Growing Degree Hours). Regarding chilling metrics, Chill Portions are often
+#' considered the most promising, but they are difficult to calculate. This package makes it easy.
+#' \code{chillR} also contains procedures for conducting a Partial Least Square regression analysis relating
+#' phenological dates (e.g. bloom dates) to either mean temperatures or mean chill and heat accumulation rates,
+#' based on long-term weather and phenology records (Luedeling and Gassner 2012).
+#' As of version 0.65, it also includes functions for generating weather scenarios with a weather generator,
+#' for conducting climate change analyses for temperature-based climatic metrics and for plotting results from such
+#' analyses. Since version 0.70, \code{chillR} contains a function for interpolating hourly temperature records.
+#' As of version 0.72.6, the package contains functions to design elegant plots using the \code{\link{ggplot2}} package.
 #' 
-#' @name chillR-package
-#' @aliases chillR-package chillR
 #' @docType package
-#' @author \strong{Eike Luedeling} \email{eike@@eikeluedeling.com}
-#' @references Applications of some of the methods in the package:
+#' @name chillR-package
 #' 
-#' Luedeling E, Zhang M, Luedeling V and Girvetz EH, 2009. Sensitivity of
-#' winter chill models for fruit and nut trees to climatic changes expected in
-#' California's Central Valley. Agriculture, Ecosystems and Environment 133,
-#' 23-31
+#' @references
+#' Luedeling E and Gassner A, 2012. Partial Least Squares Regression for
+#' analyzing walnut phenology in California. Agricultural and Forest
+#' Meteorology 158, 43-52. \doi{10.1016/j.agrformet.2011.10.020}
 #' 
-#' Luedeling E, Zhang M, McGranahan G and Leslie C, 2009. Validation of winter
-#' chill models using historic records of walnut phenology. Agricultural and
-#' Forest Meteorology 149, 1854-1864
-#' 
-#' Luedeling E and Brown PH, 2011. A global analysis of the comparability of
-#' winter chill models for fruit and nut trees. International Journal of
-#' Biometeorology 55, 411-421
-#' 
-#' Luedeling E, Kunz A and Blanke M, 2011. Mehr Chilling fuer Obstbaeume in
-#' waermeren Wintern? (More winter chill for fruit trees in warmer winters?).
-#' Erwerbs-Obstbau 53, 145-155
-#' 
-#' Luedeling E, Guo L, Dai J, Leslie C, Blanke M, 2013. Differential responses
-#' of trees to temperature variation during the chilling and forcing phases.
-#' Agricultural and Forest Meteorology 181, 33-42.
-#' 
-#' Review on chilling models in a climate change context:
-#' 
-#' Luedeling E, 2012. Climate change impacts on winter chill for temperate
-#' fruit and nut production: a review. Scientia Horticulturae 144, 218-229
-#' 
-#' The chillR package:
-#' 
-#' Luedeling E, Kunz A and Blanke M, 2013. Identification of chilling and heat
-#' requirements of cherry trees - a statistical approach. International Journal
-#' of Biometeorology 57,679-689.
-#' @keywords package
-#' @examples
-#' 
-#' weather<-fix_weather(
-#'  KA_weather[which(KA_weather$Year>2004&!(KA_weather$Year==2005&KA_weather$Month<6)),])
-#' 
-#' PLS_results<-PLS_pheno(
-#'   weather_data=KA_weather,
-#'   split_month=6,   #last month in same year
-#'   bio_data=KA_bloom)
-#'   
-#' PLS_results_path<-paste(getwd(),"/PLS_output",sep="")
-#'   
-#' # plot_PLS(PLS_results,PLS_results_path)
-#' 
-#' # stack<-stack_hourly_temps(weather,latitude=50.4)
-#' # cc<-chilling(stack,305,60)
-#' 
+#' @author \tabular{ll}{
+#' \strong{Prof. Dr. Eike Luedeling} (creator)   \tab   \strong{Dr. Eduardo Fernández} (contributor)\cr
+#' \email{eike@@eikeluedeling.com}   \tab   \email{efernand@@uni-bonn.de}\cr
+#' \href{https://orcid.org/0000-0002-7316-3631}{ORCID}   \tab   \href{https://orcid.org/0000-0002-6949-9685}{ORCID}\cr
+#' \href{https://twitter.com/EikeLuedeling}{@@EikeLuedeling}   \tab   \href{https://twitter.com/eduormancy}{@@eduormancy}\cr
+#' \href{https://github.com/eikeluedeling}{eikeluedeling}   \tab   \href{https://github.com/EduardoFernandezC}{EduardoFernandezC}
+#' }
 NULL
-
 
 
 

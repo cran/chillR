@@ -1,19 +1,19 @@
 #' Make climate scenario
 #' 
 #' Function to make climate scenarios for plotting from a list of climate metric data, e.g.
-#' produced by tempResponse_daily_list.
+#' produced by \code{\link[chillR:tempResponse_daily_list]{tempResponse_daily_list}}.
 #' 
 #' @param metric_summary character string specifying the folder holding the files, from which the 
 #' scenario is to be built.
 #' @param caption vector of up to three character strings indicating the caption to be displayed
 #' in the respective plot panel; the elements of this vector are displayed on different lines.
-#' If caption_above==TRUE in plot_climate_scenario, only the first element is displayed.
+#' If \code{caption_above == TRUE} in \code{plot_climate_scenario}, only the first element is displayed.
 #' @param labels numeric vector containing labels for the scenarios. This defaults to the names
-#' of elements in metric_summary.
+#' of elements in \code{metric_summary}.
 #' @param time_series Boolean, indicating if the scenario contains a time series.
 #' @param historic_data a data.frame containing a dataset of historic observations that is similar
 #' in structure to metric_summary (should have column indicating the year and the metric to be
-#' plotted, with identical names to metric_summary). Defaults to NULL, which means that no
+#' plotted, with identical names to \code{metric_summary}). Defaults to \code{NULL}, which means that no
 #' historic data is included.
 #' @param add_to list of climate scenarios that the newly created one is to be added to.
 #' 

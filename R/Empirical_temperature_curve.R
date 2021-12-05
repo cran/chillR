@@ -83,7 +83,7 @@ Empirical_daily_temperature_curve<-function(Thourly)
 #' This function generates hourly temperatures from daily minimum and maximum
 #' temperatures, based on an empirical relationship of these two daily 
 #' temperature extremes with the hourly temperature. Usually, this relationship
-#' will have been determined with the
+#' will have been determined with the \cr
 #' \code{\link[=Empirical_daily_temperature_curve]{Empirical_daily_temperature_curve}}
 #' function.
 #' 

@@ -153,7 +153,7 @@ temperature_generation<-function(weather,years,sim_years,temperature_scenario=da
     if(is.na(temperature_scenario[[ts]]$reference_year))
       {if (warn_me) warning("Reference year missing - can't check if relative temperature scenario is valid",call. = FALSE)} else
        if(!temperature_scenario[[ts]]$reference_year==median(c(year_min,year_max)))
-         stop("weather data used for calibration not valid as a baseline for this scenario",
+         stop("weather data used for calibration not valid as a baseline for this scenario ",
               "the reference year of the scenario must correspond to the median year of the weather record ",
               "(specified by c(year_min,year_max). At the moment, this is ",median(c(year_min,year_max)),
               " but it should be ",temperature_scenario[[ts]]$reference_year,", so that it works for this scenario",

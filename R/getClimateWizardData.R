@@ -4,37 +4,45 @@
 #' Center for Tropical Agriculture (CIAT) to access climate scenario
 #' data for a location of interest. Climate model runs are queried
 #' and data returned and summarized according to the specified parameters.
-#' A number of metrics are available for several climate models, which are listed in
-#' https://github.com/CIAT-DAPA/climate_wizard_api.
+#' A number of metrics are available for several climate models, which are listed in the
+#' \href{https://github.com/CIAT-DAPA/climate_wizard_api}{API repository}.
 #' Refer to this document for details on what can be downloaded. This function
 #' provides the additional option of automatically retrieving all data referring to changes
 #' in daily temperature extremes (by month), by setting the ```metric``` parameter to
 #' "monthly_min_max_temps". It also offers the option to automatically obtain data for
 #' all climate models included in the database (as of January 2018).
-#' #' 
+#'  
 #' @param coordinates position of the point of interest, specified by a vector
-#' with two elements that are called longitude and latitude (e.g. c(longitude=10,
-#' latitude=20)).
+#' with two elements that are called longitude and latitude (e.g. \code{c(longitude = 10,
+#' latitude = 20)}).
+#' 
 #' @param scenario representative concentration pathway scenario. Can only be
 #' "historical", "rcp45" or "rcp85".
+#' 
 #' @param start_year start year of the interval, for which data is to be summarized.
+#' 
 #' @param end_year end year of the interval, for which data is to be summarized.
+#' 
 #' @param baseline numeric vector of length 2 indicating the time interval to be used
 #' as baseline for the climate scenario. The function then returns projected values relative
-#' to this baseline. Defaults to c(1950,2005) for the standard
+#' to this baseline. Defaults to \code{c(1950, 2005)} for the standard
 #' baseline of the ClimateWizard dataset. This can also assume different values, but it must
 #' span an interval of at least 20 years within the [1950; 2005] interval. Needs
 #' to be set to NA for the function to return absolute values.
+#' 
 #' @param metric vector of metrics to output, from a list specified in the reference
 #' provided above. This can also be "monthly_min_max_temps", which returns all
 #' mean monthly minimum and maximum temperatures, or "precipitation" for precipitation
 #' data for all months, or "monthly_tmean" for the mean monthly temperatures of all months.
+#' 
 #' @param GCMs vector of GCMs to be accessed, from a list specified in the above
 #' reference. This can also be "all" for all available GCMs (as of January 2018).
+#' 
 #' @param temperature_generation_scenarios parameter to indicate whether the scenarios to be
-#' generated should be formatted in such a way that they are direclty usable by
-#' chillR's temperature_generation function. This is only applicable, when metric==
-#' 'monthly_min_max_temps'.
+#' generated should be formatted in such a way that they are directly usable by
+#' chillR's temperature_generation function. This is only applicable, when \code{metric ==
+#' 'monthly_min_max_temps'}.
+#' 
 #' @return data.frame containing the requested information.
 #' 
 #' @references Girvetz E, Ramirez-Villegas J, Navarro C, Rodriguez C, Tarapues J, undated.

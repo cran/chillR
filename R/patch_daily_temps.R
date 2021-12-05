@@ -1,6 +1,6 @@
 #' Patch gaps in daily weather records - updated
 #' 
-#' This is the successor function of [chillR::patch_daily_temperatures], which will no
+#' This is the successor function of \code{\link{patch_daily_temperatures}}, which will no
 #' longer be updated.
 #' 
 #' The patch_daily_temps function uses auxiliary data sources to fill gaps in daily weather data.

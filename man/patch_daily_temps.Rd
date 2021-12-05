@@ -47,7 +47,7 @@ number of values that were filled from this source and the number of missing rec
 that remained after exhausting this auxiliary data source.)
 }
 \description{
-This is the successor function of [chillR::patch_daily_temperatures], which will no
+This is the successor function of \code{\link{patch_daily_temperatures}}, which will no
 longer be updated.
 }
 \details{

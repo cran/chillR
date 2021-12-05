@@ -12,31 +12,42 @@ handle_gsod(
   station_list = NULL,
   stations_to_choose_from = 25,
   drop_most = TRUE,
-  end_at_present = TRUE
+  end_at_present = TRUE,
+  add.DATE = TRUE,
+  quiet = FALSE,
+  add_station_name = FALSE
 )
 }
 \arguments{
-\item{action}{if this is the character string "list_stations", the function
+\item{action}{accepts 3 types of inputs to decide on the mode of action for the function.\itemize{
+
+\item{if this is the character string \code{"list_stations"}, the function
 will return a list of the weather stations from the database that are
-closest to the geographic coordinates specified by location.  if this is the
-character string "download_weather", the function will attempt to download
+closest to the geographic coordinates specified by location.}
+
+\item{if this is the character string \code{"download_weather"}, the function will attempt to download
 weather data from the database for the station named by the location
 argument, which should then be a character string corresponding to the
-chillRcode of the station (which you can get by running this function in
-'list_stations mode) if this is a downloaded weather file (downloaded by
-running this function in 'download weather' mode), the function cleans the
-file and makes it ready for use in chillR. If the input is just a dataframe
+\code{chillRcode} of the station (which you can get by running this function in
+\code{'list_stations'} mode).}
+
+\item{if this is a collection of outputs obtained by
+running this function in the \code{'download weather'} mode), the function cleans the
+weather files and make them ready for use in \code{chillR}. If the input is just a dataframe
 (not a list, as produced with this function), you have to specify the
-database name with the database argument}
+database name with the database argument.}}}
 
 \item{location}{either a vector of geographic coordinates (for the
-'list_stations' mode), or the 'chillRcode' of a weather station in the
-specified database (for the 'download_weather' mode). When running this
-function for data cleaning only, this is not needed.}
+\code{'list_stations'} mode), or the 'chillRcode' of a weather station in the
+specified database (for the \code{'download_weather'} mode). When running this
+function for data cleaning only, this is not needed. For the
+\code{'download_weather'} mode, this can also be a vector of 'chillRcodes',
+in which case records for all stations will be downloaded. The data cleaning
+mode can also handle a list of downloaded weather datasets.}
 
 \item{time_interval}{numeric vector with two elements, specifying the start
 and end date of the period of interest. Only required when running in
-'list_stations' or 'download weather' mode}
+\code{'list_stations'} or \code{'download_weather'} mode.}
 
 \item{station_list}{if the list of weather stations has already been
 downloaded, the list can be passed to the function through this argument.
@@ -48,50 +59,67 @@ coordinates, this argument determines the number of nearby stations in the
 list that is returned.}
 
 \item{drop_most}{boolean variable indicating if most columns should be
-dropped from the file. If set to TRUE (default), only essential columns for
+dropped from the file. If set to \code{TRUE} (default), only essential columns for
 running chillR functions are retained.}
 
 \item{end_at_present}{boolean variable indicating whether the interval of
 interest should end on the present day, rather than extending until the end
-of the year specified under time_interval[2] (if time_interval[2] is the
+of the year specified under \code{time_interval[2]} (if \code{time_interval[2]} is the
 current year).}
+
+\item{add.DATE}{is a boolean parameter to be passed to \code{\link{make_all_day_table}} if \code{action} is 
+a collection of outputs (in the form of list) from the function in the downloading format.}
+
+\item{quiet}{is a boolean parameter to be passed to \code{\link[utils:download.file]{download.file}} if
+\code{action = "download_weather"}.}
+
+\item{add_station_name}{is a boolean parameter to include the name of the respective weather station in
+the resulting data frame in case the function is used in the downloading or formatting mode.}
 }
 \value{
-The output depends on the action argument. If it is 'list_stations',
-the function returns a list of station_to_choose_from weather stations that
+The output depends on the action argument. If it is \code{'list_stations'},
+the function returns a list of \code{station_to_choose_from} weather stations that
 are close to the specified location. This list also contains information
 about how far away these stations are (in km), how much the elevation
 difference is (if elevation is specified; in m) and how much overlap there
 is between the data contained in the database and the time period specified
-by time_interval. If action is 'download_weather' the output is a list of
-two elements: 1. database="GSOD" 2. the downloaded weather record, extended
-to the full duration of the specified time interval. If action is a weather
-data.frame or a weather record downloaded with this function (in
-'download_weather' mode), the output is the same data in a format that is
-easy to use in chillR. If drop_most was set to TRUE, most columns are
-dropped.
+by \code{time_interval}. If action is \code{'download_weather'} the output is a list of
+two elements: 1. \code{database="GSOD"} 2. the downloaded weather record, extended
+to the full duration of the specified time interval. If the \code{location} input
+was a vector of stations, the output will be a list of such objects.
+If action is a weather \code{data.frame} or a weather record downloaded with
+this function (in \code{'download_weather'} mode), the output is the same
+data in a format that is easy to use in chillR. If drop_most was set to
+\code{TRUE}, most columns are dropped. If the \code{location} input was a
+list of weather datasets, all elements of the list will be processed.
 }
 \description{
 This function can do three things related to the Global Summary of the Day
 ("GSOD") database from the National Climatic Data Centre (NCDC) of the
-National Oceanic and Atmospheric Administration (NOAA): 1. it can list
-stations that are close to a specified position (geographic coordinates) 2.
-it can retrieve weather data for a named weather station 3. it can 'clean'
-downloaded data, so that they can easily be used in chillR Which of these
-functions is carried out depends on the action argument.
+National Oceanic and Atmospheric Administration (NOAA): \itemize{
+
+\item{1. It can list stations that are close to a specified position (geographic coordinates).}
+
+\item{2. It can retrieve weather data for a named weather station (or a vector of multiple stations).
+For the name, the chillRcode from the list returned by the \code{list_stations} operation
+should be used.}
+
+\item{3. It can 'clean' downloaded data (for one or multiple stations), so that they can easily be used in chillR
+
+Which of these functions is carried out depends on the action argument.}}
+ 
+This function can run independently, but it is also called by the
+\code{\link{get_weather}} and \code{\link{weather2chillR}} functions, which some users might find a bit
+easier to handle.
 }
 \details{
-This function can run independently, but it is also called by the
-get_weather and weather2chillR functions, which some users might find a bit
-easier to handle.
+The GSOD database is described here:
+\url{https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ncdc:C00516}
 
-the GSOD database is described here:
-https://data.noaa.gov/dataset/global-surface-summary-of-the-day-gsod
-
-under the 'list_stations' mode, several formats are possible for specifying
+under the \code{'list_stations'} mode, several formats are possible for specifying
 the location vector, which can consist of either two or three coordinates
-(it can include elevation). Possible formats include c(1,2,3), c(1,2),
-c(x=1,y=2,z=3), c(lat=2,long=1,elev=3). If elements of the vector are not
+(it can include elevation). Possible formats include \code{c(1, 2, 3)}, \code{c(1, 2)},
+\code{c(x = 1, y = 2, z = 3)}, \code{c(lat = 2, long = 1, elev = 3)}. If elements of the vector are not
 names, they are interpreted as c(Longitude, Latitude, Elevation).
 
 The 'chillRCode' is generated by this function, when it is run with
@@ -112,19 +140,38 @@ by year, so if we specify a long interval, this may take a bit of time.
 }
 \examples{
 
-#stat_list<-handle_gsod(action="list_stations",location=c(x=-122,y=38.5),
-#  time_interval=c(2002,2002))
-#the line above takes longer to run than CRAN allows for examples. The line below therefore
-#generates an abbreviated stat_list that allows running the code.
-# stat_list<-data.frame(chillR_code=c("724828_99999","724828_93241","720576_174"),
-#   Lat=c(38.383,38.378,38.533),Long=c(-121.967,-121.958,-121.783),
-#   BEGIN=c(20010811,20060101,20130101),END=c(20051231,20160110,20160109))
+# List the near weather stations
+# stat_list <- handle_gsod(action = "list_stations",
+#                          location = c(x = -122, y = 38.5),
+#                          time_interval = c(2002, 2002))
 
-# gw<-handle_gsod(action="download_weather",location="724828_93241",time_interval=c(2012,2012),
-#  station_list = stat_list)
-# weather<-handle_gsod(gw)$weather
-# make_chill_plot(tempResponse(stack_hourly_temps(fix_weather(weather)),Start_JDay=300,End_JDay=50),
-#                "Chill_Portions",start_year=2010,end_year=2012,metriclabel="Chill Portions",
+# the line above takes longer to run than CRAN allows for examples.
+# The line below therefore
+# generates an abbreviated stat_list that allows running the code.
+
+# stat_list <- data.frame(chillR_code = c("724828_99999",
+#                                         "724828_93241",
+#                                         "720576_174"),
+#                         STATION.NAME = c("NUT TREE",
+#                                          "NUT TREE AIRPORT",
+#                                          "UNIVERSITY AIRPORT"),
+#                         Lat = c(38.383, 38.378, 38.533),
+#                         Long = c(-121.967, -121.958, -121.783),
+#                         BEGIN = c(20010811, 20060101, 20130101),
+#                         END = c(20051231, 20160110, 20160109))
+
+# gw <- handle_gsod(action = "download_weather",
+#                   location = "724828_93241",
+#                   time_interval = c(2010, 2012),
+#                   station_list = stat_list,
+#                   quiet = TRUE)
+
+# weather <- handle_gsod(gw, add.DATE = FALSE)[[1]]$weather
+
+# make_chill_plot(tempResponse(stack_hourly_temps(fix_weather(weather)),
+#                              Start_JDay = 300, End_JDay = 50),
+#                 "Chill_Portions", start_year = 2010,
+#                 end_year = 2012, metriclabel = "Chill Portions",
 #                 misstolerance = 50)
 
 }
@@ -136,6 +183,6 @@ requirements of cherry trees - a statistical approach. International Journal
 of Biometeorology 57,679-689.
 }
 \author{
-Eike Luedeling
+Eike Luedeling and Eduardo Fernandez
 }
 \keyword{utilities}

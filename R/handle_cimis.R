@@ -11,9 +11,9 @@
 #' get_weather and weather2chillR functions, which some users might find a bit
 #' easier to handle.
 #' 
-#' the CIMIS dataset is described here: http://www.cimis.water.ca.gov/
+#' The CIMIS dataset is described here: http://www.cimis.water.ca.gov/
 #' 
-#' under the 'list_stations' mode, several formats are possible for specifying
+#' Under the 'list_stations' mode, several formats are possible for specifying
 #' the location vector, which can consist of either two or three coordinates
 #' (it can include elevation). Possible formats include c(1,2,3), c(1,2),
 #' c(x=1,y=2,z=3), c(lat=2,long=1,elev=3). If elements of the vector are not
@@ -99,19 +99,27 @@
 #' # the example is #d out, since the download request sometimes times out, and that
 #' # causes problems with CRAN approval of the package
 #' 
-#' # handle_cimis(action="list_stations",location=c(x=-122,y=38.5),time_interval=c(2012,2012))
+#' # handle_cimis(action = "list_stations",
+#' #              location = c(x = -122, y = 38.5),
+#' #              time_interval = c(2012, 2012))
 #' 
-#' # stat_list<-data.frame("Station Number"=c("119","139","6"),
-#' #    Latitude=c(38.49500,38.50126,38.53569),Longitude=c(-122.0040,-121.9785,-121.7764),
-#' #    Start_date=c("1993-08-21 UTC","1998-06-15 UTC","1982-07-17 UTC"),End_date=c("1995-01-25",
-#' #      "2016-03-06","2016-03-06"))
+#' # stat_list <- data.frame("Station Number" = c("119", "139", "6"),
+#' #                         Latitude = c(38.49500, 38.50126, 38.53569),
+#' #                         Longitude = c(-122.0040, -121.9785, -121.7764),
+#' #                         Start_date =c("1993-08-21 UTC", "1998-06-15 UTC", "1982-07-17 UTC"),
+#' #                         End_date = c("1995-01-25", "2016-03-06", "2016-03-06"))
 #' 
-#' # gw<-handle_cimis(action="download_weather",location="6",time_interval=c(1982,1982),
-#' #    station_list=stat_list)
-#' # weather<-handle_cimis(gw)
-#' # make_chill_plot(tempResponse(stack_hourly_temps(fix_weather(weather)),Start_JDay=300,End_JDay=50),
-#' #                "Chill_Portions",start_year=2010,end_year=2012,metriclabel="Chill Portions",
-#' # misstolerance = 50)
+#' # gw <- handle_cimis(action = "download_weather",
+#' #                    location = "6",
+#' #                    time_interval = c(1982, 1982), 
+#' #                    station_list = stat_list)
+#'  
+#' # weather <- handle_cimis(gw)
+#' 
+#' # make_chill_plot(tempResponse(stack_hourly_temps(fix_weather(weather)),
+#' #                 Start_JDay = 300, End_JDay = 50), 
+#' #                 "Chill_Portions", start_year = 2010, end_year = 2012,
+#' #                 metriclabel = "Chill Portions", misstolerance = 50)
 #' 
 #' @export handle_cimis
 handle_cimis<-function(action,location=NA,time_interval=NA,station_list=NULL,stations_to_choose_from=25,drop_most=TRUE,

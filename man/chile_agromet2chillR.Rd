@@ -9,7 +9,7 @@ chile_agromet2chillR(downloaded_weather_file, drop_most = TRUE)
 }
 \arguments{
 \item{downloaded_weather_file}{full path of a weather file downloaded from
-the Chilean Agromet website (http://agromet.inia.cl/) as an alleged Excel
+the \href{http://agromet.inia.cl/}{Chilean Agromet website} as an alleged Excel
 file (it has some formatting issues).}
 
 \item{drop_most}{boolean variable indicating if most columns should be
@@ -41,7 +41,8 @@ that data aren't reliable. These are not considered by this function!
 weather<-fix_weather(KA_weather[which(KA_weather$Year>2005),])  # this line is
 #only here to make the example run, even without downloading a file
 
-# FOLLOW THE INSTRUCTIONS IN THE LINE BELOW THIS; AND THEN  RUN THE LINE AFTER THAT (without the #)
+# FOLLOW THE INSTRUCTIONS IN THE LINE BELOW THIS; AND THEN  RUN THE LINE
+# AFTER THAT (without the #)
 # download an Excel file from the website and save it to disk (path: {X}) 
 #weather<-fix_weather(chile_agromet2chillR({x}))
 

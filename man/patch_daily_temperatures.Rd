@@ -40,7 +40,7 @@ number of values that were filled from this source and the number of missing rec
 that remained after exhausting this auxiliary data source.)
 }
 \description{
-This function is deprecated. Better use [chillR::patch_daily_temperatures]!
+This function is deprecated. Better use \code{\link{patch_daily_temps}}!
 }
 \details{
 This function uses auxiliary data sources to fill gaps in daily weather data.

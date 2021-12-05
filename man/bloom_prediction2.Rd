@@ -77,13 +77,13 @@ indicated by the Chill_model and Heat_model parameters.
 }
 \examples{
 
+hourtemps <- stack_hourly_temps(fix_weather(KA_weather[which(KA_weather$Year > 2008), ]),
+                                latitude = 50.4)
 
-hourtemps<-stack_hourly_temps(fix_weather(KA_weather[which(KA_weather$Year>2008),]),latitude=50.4)
+CT <- chilling_hourtable(hourtemps, Start_JDay = 305)
 
-CT<-chilling_hourtable(hourtemps,Start_JDay=305)
-
-bloom_prediction2(CT,c(30,40,50),c(1000,1500,2000))
-bloom_prediction2(CT,c(30,40,50),c(1000,1500,2000),permutations=TRUE)
+bloom_prediction2(CT, c(30, 40, 50), c(1000, 1500, 2000))
+bloom_prediction2(CT, c(30, 40, 50), c(1000, 1500, 2000), permutations = TRUE)
 
 
 }

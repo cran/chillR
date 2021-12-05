@@ -1,0 +1,728 @@
+#' List, download or convert to chillR format data from the Deutscher Wetterdienst database
+#' 
+#' This function accesses the
+#' \href{https://www.dwd.de/EN/climate_environment/cdc/cdc_node_en.html}{Deutscher
+#' Wetterdienst database} and allows to:\itemize{\item{1) list a number of weather
+#' stations that are close to a specific position (geographic coordinates)} \item{2) obtain
+#' weather data for one or more weather stations through the station ID} \item{3) 'clean' and
+#' 'format' downloaded data, so the records can easily be used in other chillR functions}}
+#'    
+#' @param action is a character string to decide on 3 modes of action for the function.\itemize{
+#' 
+#'  \item{\emph{'list_stations'} returns a data frame with the information on weather stations that
+#'  are to the location defined by \code{number_of_stations} and \code{location} parameters.}
+#'        
+#'  \item{\emph{'download_weather'} retrieves the records for one or more weather stations defined
+#'  in the \code{location} parameter.}
+#'  
+#'  \item{If the input is a data frame previously downloaded with the mode \emph{'download_weather'},
+#'  the function will format the data frame using the chillR structure.}}
+#' 
+#' @param location accepts a numeric vector with two or three elements representing the longitude,
+#' latitude, and elevation of a given place or a vector of character strings representing the ID
+#' of the weather stations of interest.
+#' If \code{action = 'list_stations'}, \code{location} requires the coordinates of the place and
+#' optionally the elevation. This vector can be named or not. Valid names are:
+#' \code{'y'}, \code{'Y'}, \code{'latitude'}, \code{'lat'}, \code{'Latitude'}, \code{'Lat'},
+#' \code{'LATITUDE'}, \code{'LAT'} for latitude, \code{'x'},
+#' \code{'X'}, \code{'longitude'}, \code{'long'}, \code{'Longitude'}, \code{'Long'},
+#' \code{'LONGITUDE'}, \code{'LONG'} for longitude, and \code{'z'}, \code{'Z'}, \code{'elevation'},
+#' \code{'elev'}, \code{'Elevation'}, \code{'Elev'}, \code{'ELEVATION'},
+#' \code{'ELEV'} for elevation. If \code{action = 'download_weather'}, \code{location} accepts
+#' the ID of the station as character string.
+#' 
+#' @param time_interval numeric vector with two elements, specifying the start and end date
+#' of the period of interest. Only required when running in \code{'list_stations'} or
+#' \code{'download_weather'} mode. Unlike other functions from the handle family,
+#' \code{handle_dwd} allows specifying the date in \code{YEARMODA} format. Default is set to
+#' \code{19160101} (the earliest date on record) and the current date.
+#' 
+#' @param station_list accepts a data frame if the list of weather stations has already been
+#' downloaded. The list can be passed to the function through this argument. This can save a bit
+#' of time, since it can take a bit of time to download the list, which can have several
+#' \code{MB}. 
+#' 
+#' @param stations_to_choose_from if the location is specified by geographic coordinates,
+#' this argument 
+#' determines the number of nearby stations in the list that is returned.
+#' 
+#' @param drop_most boolean variable indicating if most columns should be dropped from the
+#' file if a list of data frames is provided to the \code{action} argument. If set to
+#' \code{TRUE} (the default), only essential columns for running \code{chillR} functions are
+#' retained.
+#' 
+#' @param end_at_present boolean variable indicating whether the interval of interest
+#' should end on the present day, rather than extending until the end of the year specified
+#' under \code{time_interval[2]} (if \code{time_interval[2]} is the current year).
+#' \strong{DEPRECATED} in this function since \code{time_interval} already allows specifying
+#' the present day.
+#' 
+#' @param add.DATE is a boolean parameter to be passed to \code{\link{make_all_day_table}}
+#' if \code{action} is a collection of outputs (in the form of list) from the function in the
+#' downloading format.
+#' 
+#' @param quiet is a boolean parameter to be passed to
+#' \code{\link[utils:download.file]{download.file}} if \code{action = "download_weather"}.
+#' 
+#' @param add_station_name is a boolean parameter to include the name of the respective weather
+#' station in the resulting data frame in case the function is used in the downloading or
+#' formatting mode.
+#' 
+#' @return 
+#' If \code{action = 'list_stations'}, the function returns a data frame with
+#' \code{'stations_to_choose_from'} rows and 9 columns. This data frame contains information
+#' about the weather stations (Latitude, Longitude, among others). If
+#' \code{action = 'download_weather'}, the function returns a list of length according to the
+#' length of the \code{location} parameter. Each list, is a list of two elements; a data frame
+#' containing the data downloaded from the database and character string representing the
+#' respective database ('dwd'). If the \code{action} is provided with the list generated by
+#' the function in the downloading mode, the function will return a list of data frames structured
+#' according to the chillR format. If \code{drop_most} is set to \code{TRUE}, the function will
+#' keep only the relevant variables.
+#'  
+#' @note
+#' Many databases have data quality flags, which may sometimes indicate that data aren't reliable.
+#' These are not considered by this function!
+#' 
+#' @author Eduardo Fernandez and Eike Luedeling
+#' 
+#' @references 
+#' Fernandez, E., Whitney, C., and Luedeling, E. 2020. The importance of chill model selection
+#' - A multi-site analysis. European Journal Of Agronomy 119: 126103
+#' 
+#' @keywords utilities weather-data 
+#' 
+#' @examples 
+#' 
+#' # The following lines may take longer than required to pass the
+#' # CRAN checks. Please, un-comment them to run the example
+#' 
+#' # stations <- handle_dwd(action = "list_stations", 
+#' #                        location = c(latitude = 53.5373, longitude = 9.6397),
+#' #                        time_interval = c(20000101, 20101231),
+#' #                        stations_to_choose_from = 25)
+#'                      
+#' # data <- handle_dwd(action = "download_weather",
+#' #                     location = stations[1 : 3, "Station_ID"],
+#' #                     time_interval = c(20000101, 20020601),
+#' #                     stations_to_choose_from = 25,
+#' #                     station_list = stations,
+#' #                     drop_most = TRUE, 
+#' #                     add.DATE = FALSE,
+#' #                     quiet = TRUE,
+#' #                     add_station_name = FALSE)
+#'
+#' # data_modified <- handle_dwd(data, add.DATE = TRUE, drop_most = TRUE)
+#'            
+#' @export handle_dwd
+
+handle_dwd <- function(action,
+                       location = NA,
+                       time_interval = c(19160101, Date2YEARMODA(Sys.Date())),
+                       station_list = NULL,
+                       stations_to_choose_from = 25,
+                       drop_most = TRUE,
+                       end_at_present = TRUE,
+                       add.DATE = FALSE, 
+                       quiet = FALSE,
+                       add_station_name = FALSE){
+  
+  # Add some parameter check
+  
+  # Action
+  
+  assertthat::assert_that(is.character(action) | is.list(action),
+              msg = paste("'action' should be either a character string",
+                          "('list_actions' or 'download_weather') or a list",
+                          "of two elements ('weather' and 'database').",
+                          "Please provide a valid input."))
+  
+  if (is.character(action))
+    assertthat::assert_that(action %in% c("list_stations", "download_weather"),
+              msg = paste("Valid inputs for 'action' are 'list_stations'",
+                          "or 'download_weather'. Please select one of these."))
+  
+  if (is.list(action))
+    assertthat::assert_that(
+      all(unlist(lapply(
+        action, function(x) 
+          names(x) %in% c("weather", "database")))),
+      msg = paste("The list provided in the 'action' argument does not comply",
+                  "with the required format. The list should contain the",
+                  "elements 'weather' and 'database'."))
+  
+  # Location
+  
+  if (!is.null(names(location)))
+    assertthat::assert_that(
+      all(names(location) %in%
+            c("x", "y", "X", "Y", "longitude", "latitude", "long", "lat",
+              "Longitude", "Latitude", "Long", "Lat", "LONGITUDE",
+              "LATITUDE", "LONG", "LAT",
+              "z", "Z", "elevation", "elev", "Elevation", "Elev",
+              "ELEVATION", "ELEV")),
+      msg = paste("Please provide valid names for the elements in the location",
+                  "argument. Valid names are: 'x', 'X', 'longitude', 'long',",
+                  "'Longitude', 'Long', 'LONGITUDE', 'LONG' for longitude;",
+                  "'y', 'Y', 'latitude', 'lat', 'Latitude', 'Lat', 'LATITUDE',",
+                  "'LAT' for latitude; and 'z', 'Z', 'elevation', 'elev',",
+                  "'Elevation', 'Elev', 'ELEVATION', 'ELEV' for elevation."))
+  
+  
+  if (all(!is.na(location))){
+    if (is.numeric(location))
+      assertthat::assert_that(length(location) %in% c(2, 3),
+          msg = paste("'location' should be a numeric vector of 2",
+                      "(longitude and latitude) or 3 elements (longitude,",
+                      "latitude, and elevation). Please provide a valid input."))
+    
+    if (!is.numeric(location))
+      assertthat::assert_that(is.character(location),
+          msg = paste("If 'location' is not numeric, please provide a vector of",
+          "character strings representing the station ID for the stations of",
+          "interest."))
+  }
+  
+  # Action and location
+  
+  if (!is.list(action))
+    if (action == "list_stations"){
+      
+      assertthat::assert_that(length(location) %in% c(2, 3),
+              msg = paste("'action' set to 'list_stations'. Please provide a",
+                          "valid input for this action or change the input for",
+                          "this parameter. 'location' should be a vector of",
+                          "two or three elements: longitude, latitude,",
+                          "and elevation."))
+      
+      assertthat::assert_that(all(is.numeric(location)),
+              msg = paste("'action' set to 'list_stations'. Please provide a",
+                          "valid input for this action or change the input for",
+                          "this parameter. 'location' should be a numeric",
+                          "vector."))
+    }
+  
+  if (!is.list(action))
+    if (action == "download_weather"){
+      
+      assertthat::assert_that(all(is.character(location)),
+              msg = paste("'action' set to 'download_weather'. Please provide",
+                          "a valid input for this action or change the input",
+                          "for this parameter. 'location' should be one or",
+                          "more character string representing the ID of the",
+                          "stations of interest."))
+    }
+  
+  # Time interval
+  
+  if (nchar(time_interval[1]) != 8 | nchar(time_interval[2]) != 8)
+    stop(paste("Invalid input for the 'time_interval' parameter. Please",
+               "introduce a vector of dates in YEARMODA format"),
+         call. = FALSE)
+  
+  # Stop parameter checking
+  
+  
+  
+  
+  # Main block to list the available weather stations (action = 'list_stations')
+  
+  if (all(action == 'list_stations')){
+    
+    # Assign the latitude, longitude, and elevation according to the named
+    # location argument 
+    if (!is.null(names(location))){
+      
+      latitude <- location[[which(names(location) %in%
+                                    c("y", "Y", "latitude", "lat",
+                                      "Latitude", "Lat", "LATITUDE", "LAT"))]]
+      
+      longitude <- location[[which(names(location) %in%
+                                     c("x", "X", "longitude", "long",
+                                       "Longitude", "Long", "LONGITUDE", "LONG"))]]
+      
+    } else {
+      
+      # Define the coordinates based on the vector without names
+      longitude <- location[1]
+      
+      latitude <- location[2]
+      
+    }
+    
+    
+    # Get the information of the weather stations.
+    
+    stations <- utils::read.csv(
+      paste0("https://opendata.dwd.de/climate_environment/CDC/",
+             "observations_germany/climate/daily/kl/historical/",
+             "KL_Tageswerte_Beschreibung_Stationen.txt"),
+      skip = 2, header = F, colClasses = "character")[, 1]
+    
+    # Delete the extra white spaces at the end of the characters
+    
+    stations <- trimws(stations)
+    
+    # Identify the mistakes while importing the data. Those rows starting with
+    # numbers instead of letters are the correct rows. This is because the
+    # information of the state was passed to the row n+1
+    
+    wrong_rows <- which(substr(stations, 2, 2) %in% c(LETTERS, letters))
+    
+    # Take back such information to the row n
+    
+    stations[wrong_rows - 1] <- paste(stations[wrong_rows - 1],
+                                      stations[wrong_rows], sep = "")
+    
+    # Remove the extra values due to these mistakes
+    
+    stations <- stations[-wrong_rows]
+    
+    # Encode the german umlauts
+    
+    stations <- stringr::str_conv(stations, "ISO-8859-1")
+    
+    # Make a dataframe of the information about the stations in Germany
+    
+    stations <- data.frame(
+      Station_name = as.character(trimws(substr(stations, 62, 100))),
+      Region = as.character(trimws(substr(stations, 101, nchar(stations)))),
+      Station_ID = as.character(trimws(substr(stations, 1, 5))),
+      Elevation = as.numeric(trimws(substr(stations, 24, 39))),
+      Latitude = as.numeric(trimws(substr(stations, 40, 51))),
+      Longitude = as.numeric(trimws(substr(stations, 51, 61))))
+    
+    stations$Station_ID <- as.character(stations$Station_ID)
+    
+    # As the total number of zip files (containing data) is different from the
+    # number given in the station overview list, I had get retrieve the list
+    # of zip files in order to identify those stations that have data
+    
+    zip_files <- utils::read.csv(
+      paste0("https://opendata.dwd.de/climate_environment/CDC/",
+             "observations_germany/climate/daily/kl/historical/"),
+      skip = 7, colClasses = "character", header = FALSE)
+    
+    # Remove extra rows by reading an html file as csv
+    
+    zip_files <- zip_files[c(1 : (length(zip_files$V1) - 2)),]
+    
+    # Make a dataframe of the information of the zip files to facilitate the
+    # downloading process
+    
+    zip_files <- data.frame(Station_ID = as.character(substr(zip_files, 23, 27)),
+                            Begin = as.character(substr(zip_files, 29, 36)),
+                            End = as.character(substr(zip_files, 38, 45)))
+    
+    
+    zip_files$Station_ID <- as.character(zip_files$Station_ID)
+    zip_files$Begin <- as.character(zip_files$Begin)
+    zip_files$End <- as.character(zip_files$End)
+    
+    # Merge the dataframes on the information of the stations and the dataframe
+    # on the zip file information by Station_ID. This keep the rows in both
+    # dataframes.
+    
+    stations <- dplyr::inner_join(stations, zip_files, by = "Station_ID")
+    
+    
+    # Remove those stations which end the record before the begin or those
+    # which start after the end defined in the call of the function 
+    
+    station_in_period <- stations[-which(stations$End < time_interval[1] |
+                                           stations$Begin > time_interval[1]), ]
+    
+    # If the procedure above results in no station selected just return the
+    # sorted list
+    
+    if (nrow(station_in_period) == 0){
+      
+      station_in_period <- stations
+      warning(paste("No stations selected for the period of interest. The",
+                    "complete list will be provided"))}
+    
+    
+    # Add the distance to the location of interest
+    
+    myPoint <- c(longitude, latitude)
+    
+    station_in_period[, "Distance"] <- round(sp::spDistsN1(
+      as.matrix(station_in_period[, c("Longitude", "Latitude")]), myPoint,
+      longlat = TRUE), 2) 
+    
+    # Order the station according to the distance to the point
+    
+    stations_sorted <- station_in_period[order(station_in_period$Distance), ]
+    
+    
+    # If the elevation is provided, this step will compute the difference between
+    # stations
+    
+    if (length(location) == 3){
+      
+      # Get the elevation from the location vector
+      if (!is.null(names(location))){
+        
+        # In case the location vector is named, use this
+        elevation <- location[[which(names(location) %in%
+                                c("z", "Z", "elevation", "elev",
+                                  "Elevation", "Elev", "ELEVATION", "ELEV"))]]
+      } else {
+        
+        # In case the location vector is not named, use this
+        elevation <- location[3]
+        
+      }
+      
+      # Add the difference in elevation between stations
+      stations_sorted["Elevation_diff"] <- elevation - stations_sorted$Elevation
+    }
+    
+    
+    # Return of the function
+    return(stations_sorted[c(1 : stations_to_choose_from), ])
+    
+  } # Close main bracket of the if block action = 'list_stations'
+  
+  
+  
+  # Main block to download the weather data from the selected weather stations
+  
+  if (all(action == "download_weather")){
+    
+    # Define the station ID based on the location argument
+    station_ID <- as.character(location)
+    
+    # Check if the user provides the list of weather stations generated with
+    # list_stations
+    if (is.data.frame(station_list)) station_in_period <- station_list
+    
+    # If the list is not provided, this will generate the station_in_period df
+    # as above
+    if (is.null(station_list)){
+      
+      # Get the information of the weather stations.
+      stations <- utils::read.csv(
+        paste0("https://opendata.dwd.de/climate_environment/CDC/",
+               "observations_germany/climate/daily/kl/historical/",
+               "KL_Tageswerte_Beschreibung_Stationen.txt"),
+        skip = 2, header = F, colClasses = "character")[, 1]
+      
+      # Delete the extra white spaces at the end of the characters
+      stations <- trimws(stations)
+      
+      # Identify the mistakes while importing the data. Those rows starting
+      # with numbers instead of letters are the correct rows. This is because
+      # the information of the state was passed to the row n+1
+      wrong_rows <- which(substr(stations, 2, 2) %in% c(LETTERS, letters))
+      
+      # Take back such information to the row n
+      stations[wrong_rows - 1] <- paste(stations[wrong_rows - 1],
+                                        stations[wrong_rows], sep = "")
+      
+      # Remove the extra values due to these mistakes
+      stations <- stations[-wrong_rows]
+      
+      # Encode the german umlauts
+      stations <- stringr::str_conv(stations, "ISO-8859-1")
+      
+      # Make a dataframe of the information about the stations in Germany
+      stations <- data.frame(
+        Station_name = as.character(trimws(substr(stations, 62, 100))),
+        Region = as.character(trimws(substr(stations, 101, nchar(stations)))),
+        Station_ID = as.character(trimws(substr(stations, 1, 5))),
+        Elevation = as.numeric(trimws(substr(stations, 24, 39))),
+        Latitude = as.numeric(trimws(substr(stations, 40, 51))),
+        Longitude = as.numeric(trimws(substr(stations, 51, 61))))
+      
+      stations$Station_ID <- as.character(stations$Station_ID)
+      
+      # As the total number of zip files (containing data) is different from the
+      # number given in the station overview list, I had get retrieve the list
+      # of zip files in order to identify those stations that have data
+      zip_files <- utils::read.csv(
+        paste0("https://opendata.dwd.de/climate_environment/CDC/observations_germany",
+               "/climate/daily/kl/historical/"),
+        skip = 7, colClasses = "character", header = FALSE)
+      
+      # Remove extra rows by reading an html file as csv
+      zip_files <- zip_files[c(1 : (length(zip_files$V1) - 2)), ]
+      
+      # Make a dataframe of the information of the zip files to facilitate the
+      # downloading process
+      zip_files <- data.frame(Station_ID = as.character(substr(zip_files, 23, 27)),
+                              Begin = as.character(substr(zip_files, 29, 36)),
+                              End = as.character(substr(zip_files, 38, 45)))
+      
+      
+      zip_files$Station_ID <- as.character(zip_files$Station_ID)
+      zip_files$Begin <- as.character(zip_files$Begin)
+      zip_files$End <- as.character(zip_files$End)
+      
+      # Merge the dataframes on the information of the stations and the
+      # dataframe on the zip file information by Station_ID. This keep the rows
+      # in both dataframes.
+      stations <- dplyr::inner_join(stations, zip_files, by = "Station_ID")
+      
+      
+      # Remove those stations which end the record before the begin or those
+      # which start after the end defined in the call of the function 
+      station_in_period <- stations[-which(stations$End < time_interval[1] |
+                                             stations$Begin > time_interval[2]), ]
+      
+      # If the procedure above results in no station selected just return the
+      # sorted list
+      if (nrow(station_in_period) == 0){
+        
+        station_in_period <- stations
+        warning(paste("No stations selected for the period of interest.",
+                      "The complete list will be provided"))}
+    }
+    
+    
+    # primer dataframe to include the complete period of interest
+    primer <- data.frame(YEARMODA = c(time_interval[1], time_interval[2]),
+                         Year = c(as.numeric(substr(time_interval[1], 1, 4)),
+                                  as.numeric(substr(time_interval[2], 1, 4))),
+                         Month = c(as.numeric(substr(time_interval[1], 5, 6)),
+                                   as.numeric(substr(time_interval[2], 5, 6))),
+                         Day = c(as.numeric(substr(time_interval[1], 7, 8)),
+                                 as.numeric(substr(time_interval[2], 7, 8))),
+                         Tmin = as.numeric(NA),
+                         Tmax = as.numeric(NA),
+                         Tmean = as.numeric(NA))
+    
+    # Add all rows for the period
+    primer <- make_all_day_table(primer, add.DATE = add.DATE)
+    
+    # Add YEARMODA value for future use in merging dataframes
+    primer["YEARMODA"] <- primer$Year * 10000 + primer$Month * 100 + primer$Day
+    
+    # Remove Tmin, Tmax and Tmean from the primer dataframe to make it clearer
+    if (add.DATE){
+      
+      primer <- primer[, c("DATE", "YEARMODA", "Year", "Month", "Day")]} else {
+        
+        primer <- primer[, c("YEARMODA", "Year", "Month", "Day")]}
+    
+    
+    # Downloading the data. Specify the URL where the data is 
+    master_URL <- paste0("https://opendata.dwd.de/climate_environment/CDC/",
+                         "observations_germany/climate/daily/kl/historical/")
+    
+    # Create a temporary directory for saving the downloaded data
+    if(!dir.exists("tempdir")) dir.create("tempdir")
+    
+    # Depending on the number of elements in the station_ID parameter, this
+    # will download the data as a list or a data frame
+    stations_to_download <- as.character(station_ID)
+    
+    # Make sure all stations_ID are correctly addressed
+    stations_to_download <- stations_to_download[stations_to_download %in%
+                                                   station_in_period$Station_ID]
+    
+    # Make sure at least 1 ID is correctly provided
+    assertthat::assert_that(length(stations_to_download) > 0,
+                msg = paste("No available weather stations for the period of",
+                            "interest according to the IDs provided. Please",
+                            "make sure the IDs were obtained from this",
+                            "function in the mode 'list_stations'."))
+    
+    # Missing IDs
+    missing_ids <- station_ID[which(!(station_ID %in% stations_to_download))]
+    
+    # Produce a very customized warning if there are wrong or missing stations ID
+    if (length(missing_ids) > 0){
+      
+      if (length(missing_ids) == 1){ collap <-
+        "" ; id <- "id" ; is <- "is" ; it <- "It"}
+      if (length(missing_ids) == 2){ collap <-
+        " and " ; id <- "ids" ; is <- "are" ; it <- "They"}
+      if (length(missing_ids) >= 3){ collap <-
+        ", " ; id <- "ids" ; is <- "are" ; it <- "They"}
+      
+      warning(paste("Station", id,
+                    paste(missing_ids, collapse = collap),
+                    is, "not among the available weather stations.", it,
+                    "will be removed from the list."),
+              call. = FALSE)
+    }
+    
+    
+    # Define variable names in the original dataframe before starting the loop
+    variables_gers <- c("FM", "FX", "PM", "RSK", "SHK_TAG", "TGK", "TMK",
+                        "TNK", "TXK", "UPM", "VPM")
+    
+    # Get the data for the number of stations used by calling the function
+    # (location argument)
+    download_weather_list <- list()
+    
+    for (i in 1 : length(stations_to_download)) {
+      
+      # URL of the individual station
+      URL <- paste(master_URL,
+                   "tageswerte_KL_",
+                   stations_to_download[i],
+                   "_",
+                   station_in_period[which(station_in_period$Station_ID ==
+                                             stations_to_download[i]), "Begin"],
+                   "_",
+                   station_in_period[which(station_in_period$Station_ID ==
+                                             stations_to_download[i]), "End"],
+                   "_hist.zip",
+                   sep = "")
+      
+      # Download the zip file
+      utils::download.file(URL, destfile = "tempdir/data.zip", quiet = quiet)
+      
+      # Extract, in the temporary directory, just the file containing the data
+      utils::unzip(
+        "tempdir/data.zip",
+        files = paste("produkt_klima_tag_",
+                      station_in_period[
+                        which(station_in_period$Station_ID == stations_to_download[i]),
+                        "Begin"],
+                      "_",
+                      station_in_period[
+                        which(station_in_period$Station_ID == stations_to_download[i]),
+                        "End"],
+                      "_",
+                      stations_to_download[i],
+                      ".txt",
+                      sep = ""),
+        exdir = "tempdir")
+      
+      # Import such file. It keeps all the columns
+      data <- utils::read.csv(
+        paste("tempdir/produkt_klima_tag_",
+              station_in_period[
+                which(station_in_period$Station_ID == stations_to_download[i]),
+                "Begin"],
+              "_",
+              station_in_period[
+                which(station_in_period$Station_ID == stations_to_download[i]),
+                "End"],
+              "_",
+              stations_to_download[i],
+              ".txt", sep = ""), sep = ";",
+        colClasses = c("numeric", "numeric",
+                       rep("character", length(variables_gers))), 
+        na.strings = "-999")[c("STATIONS_ID", "MESS_DATUM", variables_gers)]
+      
+      # Remove the empty spaces across columns
+      data <- as.data.frame(sapply(data, trimws))
+      
+      # Remove possible missings remaining due to empty spaces
+      data <- as.data.frame(
+        sapply(data, function(x) ifelse(x == "-999", "NA", x)))
+      
+      # In the step above, data were imported as character to remove missing
+      # values (-999) automatically. This step set all the variables as numeric
+      # vectors
+      for (variables_ger in c("MESS_DATUM", variables_gers)){
+        data[, variables_ger] <-
+          suppressWarnings(as.numeric(data[, variables_ger]))}
+      
+      # Add colnames in a more or less understandable format
+      colnames(data) <- c("Station_ID", "YEARMODA", "Wind_speed",
+                          "Wind_speed_max", "ATM_pressure", "Rainfall", "Snow",
+                          "Tmin_5cm", "Tmean", "Tmin", "Tmax", "RH", "VPD")
+      
+      
+      # Merge weather data with primer data by YEARMODA column 
+      data <- dplyr::left_join(primer, data, by = "YEARMODA")
+      
+      if (add_station_name){
+        
+        # Add station name and station ID to the data
+        data["Station_name"] <-
+          as.character(station_in_period[
+            which(station_in_period$Station_ID == stations_to_download[i]),
+            "Station_name"])}
+      
+      data["Station_ID"] <- stations_to_download[i]
+      
+      # Collect the outputs for a number of stations
+      download_weather_list[[i]] <- list(weather = data,
+                                         database = "dwd")
+      
+      # Define the name of the element i in the collection list
+      names(download_weather_list)[i] <-
+        as.character(station_in_period[
+          which(station_in_period$Station_ID == stations_to_download[i]),
+          "Station_name"])
+      
+    }
+    
+    # Remove the temporary directory
+    unlink("tempdir", recursive = TRUE, force = TRUE)
+    
+    # Return the downloaded data 
+    return(download_weather_list)
+    
+  } # Close the main if block for action = 'download_weather'
+  
+  
+  
+  # Main block to handle weather data already downloaded
+  
+  if (is.list(action) & all(unlist(lapply(action,
+                                          function(x) x[["database"]] == "dwd")))){
+    
+    # Define the vars depending on the different inputs
+    
+    if (drop_most){
+      
+      weather_vars <- c("Tmin", "Tmean", "Tmax", "Rainfall")} else {
+        
+        weather_vars <- c("Wind_speed", "Wind_speed_max", "ATM_pressure", "Rainfall",
+                          "Snow", "Tmin_5cm", "Tmean", "Tmin", "Tmax", "RH", "VPD")}
+    
+    if (add.DATE){
+      
+      time_vars <- c("DATE", "YEARMODA", "Year", "Month", "Day")} else {
+        
+        time_vars <- c("YEARMODA", "Year", "Month", "Day")}
+    
+    
+    if (add_station_name){
+      
+      station_vars <- c("Station_name", "Station_ID")} else {
+        
+        station_vars <- c("Station_ID")}
+    
+    
+    # Create a list to collect the modified dataframes
+    modified_dataframes <- list()
+    
+    # Implement a for loop to modify all data frames inside the list
+    for (i in 1 : length(action)){
+      
+      # add the missing columns
+      if (!("DATE" %in% colnames(action[[i]][["weather"]])) & add.DATE){
+        
+        action[[i]][["weather"]] <- 
+          make_all_day_table(action[[i]][["weather"]], 
+                             add.DATE = TRUE, no_variable_check = TRUE)
+        
+      }
+      
+      if (!("Station_name" %in% colnames(action[[i]][["weather"]])) & add_station_name){
+        
+        action[[i]][["weather"]]["Station_name"] <- names(action)[i]
+      }
+      
+      # Select the columns 
+      modified_dataframes[[i]] <- action[[i]][["weather"]][, c(station_vars,
+                                                               time_vars, weather_vars)]
+      
+    }
+    
+    # Name the elements of the list
+    names(modified_dataframes) <- names(action)
+    
+    return(modified_dataframes)
+    
+  } # Close main if block for action = is.list(action)
+  
+}

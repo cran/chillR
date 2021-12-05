@@ -1,6 +1,6 @@
 #' Patch gaps in daily weather records
 #' 
-#' This function is deprecated. Better use [chillR::patch_daily_temperatures]!
+#' This function is deprecated. Better use \code{\link{patch_daily_temps}}!
 #' 
 #' This function uses auxiliary data sources to fill gaps in daily weather data.
 #' It can accommodate multiple sources of auxiliary information, which are used
