@@ -83,8 +83,8 @@
 #' #chillRcode<-stat_list[which(stat_list$Perc_interval_covered==
 #' #max(stat_list$Perc_interval_covered)),"chillR_code"][1]
 #'   #after the first few lines here, the code should be "CEDARVIL.C"
-#' #gw<-get_weather(location="CEDARVIL.C",time_interval=c(2001,2001),database="UCIPM")
-#' #weather<-weather2chillR(gw,"GSOD")
+#' #gw<-get_weather(location="CEDARVIL.C",time_interval=c(2001,2010),database="UCIPM")
+#' #weather<-weather2chillR(gw,"UCIPM")
 #' #make_chill_plot(tempResponse(stack_hourly_temps(fix_weather(weather))),
 #' #                "Chill_Portions",start_year=2005,end_year=2011,metriclabel="Chill Portions")
 #' 
