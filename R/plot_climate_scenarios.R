@@ -52,7 +52,6 @@
 #' 
 #' The function generates errors, when problems arise.
 #' 
-#' @importFrom raster raster extract
 #' 
 #' @author Eike Luedeling
 #' @keywords utility

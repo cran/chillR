@@ -14,6 +14,7 @@
 #' day/night behavior. It may therefore be that the curves aren't very realistic
 #' for very short or very long days, or especially for polar days and nights.
 #' 
+#' 
 #' @param latitude the geographic latitude (in decimal degrees) of the location
 #' of interest
 #' @param year_file a data frame containing data on daily minimum temperature
@@ -129,7 +130,7 @@ make_hourly_temps <-
       year_file[c_morn,colnum+hour]<-
         year_file$prev_Tsunset[c_morn]-  #prev temp at sunset
         ((year_file$prev_Tsunset[c_morn]-year_file$Tmin[c_morn])/
-           log(max(1,24-(year_file$prev_Sunset[c_morn]-year_file$Sunrise[c_morn])))*
+           log(pmax(1,24-(year_file$prev_Sunset[c_morn]-year_file$Sunrise[c_morn])))*
            log(hour+24-year_file$prev_Sunset[c_morn]+1))
       
       year_file[c_day,colnum+hour]<-

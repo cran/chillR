@@ -41,8 +41,6 @@
 #' 
 #' The function generates errors, when problems arise.
 #' 
-#' @importFrom raster raster extract
-#' 
 #' @author Eike Luedeling
 #' @keywords utility
 #' @examples
@@ -124,8 +122,8 @@ extract_temperatures_from_grids<-function(coordinates,grid_format,grid_specifica
     
     temperatures<-data.frame(Tmin=rep(NA,12),Tmax=rep(NA,12))
     for (i in 1:12)
-    {temperatures[i,"Tmin"]<-extract(raster(Tmin[i]),as.matrix(data.frame(x=longitude,y=latitude)))/10
-    temperatures[i,"Tmax"]<-extract(raster(Tmax[i]),as.matrix(data.frame(x=longitude,y=latitude)))/10}
+    {temperatures[i,"Tmin"]<-raster::extract(raster::raster(Tmin[i]),as.matrix(data.frame(x=longitude,y=latitude)))/10
+    temperatures[i,"Tmax"]<-raster::extract(raster::raster(Tmax[i]),as.matrix(data.frame(x=longitude,y=latitude)))/10}
     file.remove(Tmin_files)
     file.remove(Tmax_files)
     if(grid_format=="CCAFS") {unlink(dir_name_max,recursive=TRUE);unlink(dir_name_min,recursive=TRUE)}
