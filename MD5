@@ -1,4 +1,4 @@
-3ed36620c1f0d79fadf3bb973ab0786d *DESCRIPTION
+d98d007f473c81ce70b8058a06b09f72 *DESCRIPTION
 bed49904c90181a25c8828c4d2626ce2 *NAMESPACE
 2c3732bcc5a9bf44dc8546b620067f2c *R/Date2YEARMODA.R
 dc47d95ec5f6f07698b94fc6a92af863 *R/Empirical_temperature_curve.R
@@ -18,7 +18,7 @@ a6a98ca4647c824c53a0d303c3f5a4f5 *R/bloom_prediction3.R
 6e6dd2a15627eafe2e353c4f3a346606 *R/check_temperature_record.R
 ab19d1a5f21fe78ae8a0489f40512b05 *R/check_temperature_scenario.R
 0514bfbbd9a9617f4f55da2322d6523f *R/chile_agromet2chillR.R
-e0ef9b889ced9dfc51d73382a798f13f *R/chillR-package.R
+11a2b3a27f6d41a28e6b7366340ad661 *R/chillR-package.R
 bd60f5c45f44574acefa55470be7b742 *R/chilling.R
 19ee4de9c0ebc9c6555f3826818cd9e1 *R/chilling_hourtable.R
 88323f7f7f9e4d50ccc7e701ef34114d *R/color_bar_maker.R
@@ -59,8 +59,8 @@ e0d87dbc0ab779dc7d4e4f307997e7b8 *R/patch_daily_temperatures.R
 028e7c246ca0213c6fdfbaa6d52e5a96 *R/phenologyFitter.R
 1eeed936a6524cbb8170521ec1b97023 *R/plot_climate_scenarios.R
 b03f11972bbae36d66c08199eea57a04 *R/plot_pheno_results.R
-0c617c1c561374d76b75ee02794a3203 *R/plot_phenology_trends.R
-89884e8d113696a9251bd827257bc647 *R/plot_scenarios.R
+d3be9a8e76234035206781766412e590 *R/plot_phenology_trends.R
+abcd0bfee8d39147075987db04264b55 *R/plot_scenarios.R
 60fb19c7ff050f84f345c3f3bf4fec27 *R/read_tab.R
 afdcfc71c26ec4339ad3215e7dcc9ad4 *R/runn_mean.R
 ea06afd2e98c36daf99dc7da66d47705 *R/save_temperature_scenarios.R
@@ -77,7 +77,7 @@ a6a8798bdc87aebf0289eee163b17192 *R/temperature_generation.R
 58b01a0c11e9051037d667f14a32442b *R/test_if_equal.R
 adad21e8a31582947f71f435b537534e *R/weather2chillR.R
 391383a3a749b80454b32173c77bf148 *README.md
-362c781614820ed681cfc191f671f38c *build/partial.rdb
+5b354c7122c95a2b91107d4830f751c9 *build/partial.rdb
 4773bcc17b68f0e60ae5c3ee008f561d *build/vignette.rds
 bc6c01922610dd0c1f80f97a938f00ef *data/KA_bloom.rda
 1242aa70ce0b9b8f354f4e28db4ccfc9 *data/KA_weather.rda
@@ -85,10 +85,10 @@ bc6c01922610dd0c1f80f97a938f00ef *data/KA_bloom.rda
 dfe396905139e63e255d9049c1f8fc0d *data/california_stations.rda
 5dfd11770fd123f3c421f261115a32f2 *inst/doc/PhenoFlex.R
 abc91f336779baf8c88868f79a0bb963 *inst/doc/PhenoFlex.Rmd
-6e69f0f5ffe88e6b6f6be9e203f2c4eb *inst/doc/PhenoFlex.html
+6b521c008cf9599fba7e9f7577f5598a *inst/doc/PhenoFlex.html
 7c72a0fe6808552265f8f184891d8d74 *inst/doc/hourly_temperatures.R
 757c48876fdf0cae52e8196d2f46c3c7 *inst/doc/hourly_temperatures.Rmd
-7c5db9401a64fbf423566fbf2ec29da3 *inst/doc/hourly_temperatures.html
+1b6173d0ef46207009acf55380e1f591 *inst/doc/hourly_temperatures.html
 83fcf726305bc980f0d2c9779373c53d *man/Chilling_Hours.Rd
 f85216497c478b89bfe70c34c7d33f45 *man/ChuineCF.Rd
 47c058abb6819d8fb5d16de3a5805869 *man/ChuineFstar.Rd
@@ -134,7 +134,7 @@ eb17d2a060f6bc793c6a5588cd58e705 *man/check_temperature_record.Rd
 5def5a44f02c444eb4e073a67f805da9 *man/check_temperature_scenario.Rd
 8adaf5a23c2217627d5f3e90eac1ba9a *man/chifull.Rd
 d7b06ce10a6b70be4fc1b32c6079b229 *man/chile_agromet2chillR.Rd
-c671cd313a9d4e59801e2beaea9e9a82 *man/chillR-package.Rd
+ef7703dcc4e08b87c7af143f6bfd46a0 *man/chillR-package.Rd
 7c71fe412cfd10637bb3e99c880d7d4f *man/chilling.Rd
 7f67049f0b84ac4e43793af4854d7817 *man/chilling_hourtable.Rd
 af942cb8726d65637521c07eceb7d9b8 *man/color_bar_maker.Rd
@@ -180,14 +180,14 @@ b4e391850a093b56e00ae75797304d9a *man/make_multi_pheno_trend_plot.Rd
 9dc9f24a509072390ae30a7cef247f4a *man/patch_daily_temperatures.Rd
 2def01b1121fab937d215abdf4738016 *man/patch_daily_temps.Rd
 b4a56087eef174f460d88238e0745ba1 *man/phenologyFit.Rd
-5e02249b39862254bb2438c7e6b716e4 *man/phenologyFitter.Rd
+e6fa4e09dd9c346b30f5964248f27784 *man/phenologyFitter.Rd
 a5c8377acbe4cefccda24e5b975b8d0f *man/plot.bootstrap_phenologyFit.Rd
 24aab3a445e623a4b671644a9eebb019 *man/plot.phenologyFit.Rd
 dd55d65c339dd1f2d44b8ee0343c0a97 *man/plot_PLS.Rd
 aab9d142088634771a7cd21dbc40c1e8 *man/plot_climateWizard_scenarios.Rd
 a48eac3817531801a2cb7f4f0fa55400 *man/plot_climate_scenarios.Rd
-4be0a0c720bb603d23154365050a4a29 *man/plot_phenology_trends.Rd
-e004745ce2b70b84d27bbe77a7381cce *man/plot_scenarios.Rd
+115ca5c6254f2ec6d6dc00751d4b97c2 *man/plot_phenology_trends.Rd
+50a22597c0b174de4e0857090109584a *man/plot_scenarios.Rd
 c0d17aa3f3c0df6c96e0dd49b1a4b93a *man/predict.bootstrap_phenologyFit.Rd
 8ab6aa6ceccc41516e276e51aefce9cf *man/predict.phenologyFit.Rd
 1ec01dc665d3123324df0a25b7c623cf *man/print.phenologyFit.Rd

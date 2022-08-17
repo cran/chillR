@@ -3,7 +3,7 @@
 \docType{package}
 \name{chillR-package}
 \alias{chillR-package}
-\title{\if{html}{\figure{chillR.png}{options: align='right' width='25\%' alt='chillR logo'}}
+\title{\if{html}{\figure{chillR.png}{options: width='25\%' alt='chillR logo'}}
 chillR: statistical methods for phenology analysis in temperate fruit trees}
 \description{
 \if{latex}{\figure{chillR.png}{options: width=1in}}

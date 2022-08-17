@@ -9,8 +9,7 @@ phenologyFitter(
   modelfn = PhenoFlex_GDHwrapper,
   bloomJDays,
   SeasonList,
-  control = list(smooth = FALSE, verbose = TRUE, maxit = 1000, nb.stop.improvement =
-    250),
+  control = list(smooth = FALSE, verbose = TRUE, maxit = 1000, nb.stop.improvement = 250),
   lower,
   upper,
   seed = 1235433,

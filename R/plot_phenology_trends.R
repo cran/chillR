@@ -65,7 +65,7 @@
 #' means that the plot can be later modified by using the syntax \code{'+'} from the
 #' \code{\link{ggplot2}} package (see examples). The plot returned in the function should look as the following:
 #' 
-#' \if{html}{\figure{rainbowplotexample.png}{options: align='bottom' width='100\%' alt='rainbow_plot example'}}
+#' \if{html}{\figure{rainbowplotexample.png}{options: width='100\%' alt='rainbow_plot example'}}
 #' \if{latex}{\figure{rainbowplotexample.png}{options: width=5.5in}}
 #' 
 #' @examples 

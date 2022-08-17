@@ -105,7 +105,7 @@ A plot of classes \code{'patchwork'}, \code{'gg'}, and \code{'ggplot'}. This all
 continue editing some features of the plots through the syntax (i.e. \code{'&'},
 and \code{'+'}) from both libraries (see examples).
 
-\if{html}{\figure{plotscenariosexample.png}{options: align='bottom' width='100\%' alt='plot_scenarios example'}}
+\if{html}{\figure{plotscenariosexample.png}{options: width='100\%' alt='plot_scenarios example'}}
 \if{latex}{\figure{plotscenariosexample.png}{options: width=5.5in}}
 }
 \description{
