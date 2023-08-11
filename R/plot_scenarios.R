@@ -393,7 +393,7 @@ plot_scenarios <- function(scenario_list, metric, add_historic = TRUE, ..., outl
     
     past_plot <- past_plot + ggplot2::geom_point(ggplot2::aes(as.character(End_year),
                                                               !!ggplot2::ensym(metric)),
-                                                 data = past_observed)
+                                                 data = past_observed, ...)
   
   
   # Plots for future scenarios

@@ -7,19 +7,23 @@ the Day database}
 \usage{
 handle_gsod(
   action,
-  location = NA,
-  time_interval = NA,
-  station_list = NULL,
+  location = NULL,
+  time_interval = c(1950, 2020),
   stations_to_choose_from = 25,
-  drop_most = TRUE,
-  end_at_present = TRUE,
-  add.DATE = TRUE,
-  quiet = FALSE,
-  add_station_name = FALSE
+  end_at_present = FALSE,
+  add.DATE = FALSE,
+  update_station_list = FALSE,
+  path = "climate_data",
+  update_all = FALSE,
+  clean_up = NULL,
+  override_confirm_delete = FALSE,
+  max_distance = 150,
+  min_overlap = 0,
+  verbose = "normal"
 )
 }
 \arguments{
-\item{action}{accepts 3 types of inputs to decide on the mode of action for the function.\itemize{
+\item{action}{accepts 4 types of inputs to decide on the mode of action for the function.\itemize{
 
 \item{if this is the character string \code{"list_stations"}, the function
 will return a list of the weather stations from the database that are
@@ -30,6 +34,9 @@ weather data from the database for the station named by the location
 argument, which should then be a character string corresponding to the
 \code{chillRcode} of the station (which you can get by running this function in
 \code{'list_stations'} mode).}
+
+\item{if this is the character string \code{"delete"}, the function will attempt to remove
+the intermediate downloaded weather data, which was saved in the folder specified by \code{"path"} argument.}
 
 \item{if this is a collection of outputs obtained by
 running this function in the \code{'download weather'} mode), the function cleans the
@@ -47,20 +54,11 @@ mode can also handle a list of downloaded weather datasets.}
 
 \item{time_interval}{numeric vector with two elements, specifying the start
 and end date of the period of interest. Only required when running in
-\code{'list_stations'} or \code{'download_weather'} mode.}
-
-\item{station_list}{if the list of weather stations has already been
-downloaded, the list can be passed to the function through this argument.
-This can save a bit of time, since it can take a bit of time to download the
-list, which can have several MB.}
+\code{'list_stations'} or \code{'download_weather'} mode. The default is c(1950,2020).}
 
 \item{stations_to_choose_from}{if the location is specified by geographic
 coordinates, this argument determines the number of nearby stations in the
 list that is returned.}
-
-\item{drop_most}{boolean variable indicating if most columns should be
-dropped from the file. If set to \code{TRUE} (default), only essential columns for
-running chillR functions are retained.}
 
 \item{end_at_present}{boolean variable indicating whether the interval of
 interest should end on the present day, rather than extending until the end
@@ -70,11 +68,29 @@ current year).}
 \item{add.DATE}{is a boolean parameter to be passed to \code{\link{make_all_day_table}} if \code{action} is 
 a collection of outputs (in the form of list) from the function in the downloading format.}
 
-\item{quiet}{is a boolean parameter to be passed to \code{\link[utils:download.file]{download.file}} if
-\code{action = "download_weather"}.}
+\item{update_station_list}{boolean, by default set FALSE. Decides if the weather station list is read from the disk (if present) or if it is newly downloaded in case of action = list_stations.}
 
-\item{add_station_name}{is a boolean parameter to include the name of the respective weather station in
-the resulting data frame in case the function is used in the downloading or formatting mode.}
+\item{path}{character, by default "climate_data". Specifies the folder, relative to the working directory where the weather data is downloaded to.}
+
+\item{update_all}{boolean, by default set to FALSE. If set TRUE, it will download every stations data, even if previously downloaded and 
+still present in the temporary folder, specifief by the function argument \code{path}. If set FALSE, already downloaded years of a station will be skipped
+when download action is carried out again.}
+
+\item{clean_up}{character, by default set to NULL. In combination with 'action = delete', this can be set to 'all' to delete all weather data, or 'station' if only data from specific stations ('location') should be deleted}
+
+\item{override_confirm_delete}{Boolean, request whether the delete function needs user confirmation to run. Defaults to \code{FALSE}, and
+Should be set to \code{TRUE} if the function needs to be run without user intervention.}
+
+\item{max_distance}{numeric, by default 150. Expresses the distance in kilometers how far away
+weather stations can be located from the original location, when searching for weather stations}
+
+\item{min_overlap}{numeric, by default set to 0. Expresses in percent how much of the specified period needs to be covered by weather station to be 
+included in the list, when searching for stations.}
+
+\item{verbose}{is a character, deciding how much information is returned while downloading
+the weather data. By default set to "normal". If set to "detailed" the function
+will say how many years of data have been successfully downloaded for each station. If set "quiet" no
+information is printed during download.}
 }
 \value{
 The output depends on the action argument. If it is \code{'list_stations'},
@@ -84,17 +100,32 @@ about how far away these stations are (in km), how much the elevation
 difference is (if elevation is specified; in m) and how much overlap there
 is between the data contained in the database and the time period specified
 by \code{time_interval}. If action is \code{'download_weather'} the output is a list of
-two elements: 1. \code{database="GSOD"} 2. the downloaded weather record, extended
+the downloaded weather record, extended
 to the full duration of the specified time interval. If the \code{location} input
 was a vector of stations, the output will be a list of such objects.
 If action is a weather \code{data.frame} or a weather record downloaded with
-this function (in \code{'download_weather'} mode), the output is the same
-data in a format that is easy to use in chillR. If drop_most was set to
-\code{TRUE}, most columns are dropped. If the \code{location} input was a
-list of weather datasets, all elements of the list will be processed.
+this function (in \code{'download_weather'} mode), the data structure remains
+in the same, but the data are processed for easy use with \code{chillR}.
+If drop_most was set to \code{TRUE}, most columns are dropped. If the
+\code{location} input was a list of weather datasets, all elements of the
+list will be processed.
+**IMPORTANT NOTE:** as of \code{chillR} version 0.73, the output format no
+longer contains a list element that specifies the database name, because this
+has been considered confusing (and annoying) by various users. This means,
+however, that some earlier calls to results from the \code{handle_gsod} function
+may produce errors now. 
+Also note that a few parameters, \code{station_list}, \code{drop_most},
+\code{quiet}, \code{add_station_name} are no longer needed due to some
+reworking of the function's mechanisms. After careful consideration, we
+decided to drop these parameters entirely, which may lead to some downward
+compatibility problems.
+Apologies for any inconvenience caused by this transition. If you want to
+keep using the previous function (which is much slower), feel free to adopt
+the deprecated \code{handle_gsod_old} function - but note that this will no
+longer be updated and may disappear eventually.
 }
 \description{
-This function can do three things related to the Global Summary of the Day
+This function can do four things related to the Global Summary of the Day
 ("GSOD") database from the National Climatic Data Centre (NCDC) of the
 National Oceanic and Atmospheric Administration (NOAA): \itemize{
 
@@ -104,9 +135,13 @@ National Oceanic and Atmospheric Administration (NOAA): \itemize{
 For the name, the chillRcode from the list returned by the \code{list_stations} operation
 should be used.}
 
-\item{3. It can 'clean' downloaded data (for one or multiple stations), so that they can easily be used in chillR
+\item{3. It can 'clean' downloaded data (for one or multiple stations), so that they can easily be used in chillR}
 
-Which of these functions is carried out depends on the action argument.}}
+\item{4. It can delete the downloaded intermediate weather files from the machine
+
+Which of these functions is carried out depends on the \code{action} argument.}
+
+}
  
 This function can run independently, but it is also called by the
 \code{\link{get_weather}} and \code{\link{weather2chillR}} functions, which some users might find a bit
@@ -140,39 +175,33 @@ by year, so if we specify a long interval, this may take a bit of time.
 }
 \examples{
 
-# List the near weather stations
-# stat_list <- handle_gsod(action = "list_stations",
-#                          location = c(x = -122, y = 38.5),
-#                          time_interval = c(2002, 2002))
+#coordinates of Bonn
+long <- 7.0871843
+lat <- 50.7341602
 
-# the line above takes longer to run than CRAN allows for examples.
-# The line below therefore
-# generates an abbreviated stat_list that allows running the code.
+#get a list of close-by weather stations
+# stationlist <-
+#   handle_gsod(action = "list_stations",
+#               time_interval = c(1995,2000),
+#               location = c(long,lat))
 
-# stat_list <- data.frame(chillR_code = c("724828_99999",
-#                                         "724828_93241",
-#                                         "720576_174"),
-#                         STATION.NAME = c("NUT TREE",
-#                                          "NUT TREE AIRPORT",
-#                                          "UNIVERSITY AIRPORT"),
-#                         Lat = c(38.383, 38.378, 38.533),
-#                         Long = c(-121.967, -121.958, -121.783),
-#                         BEGIN = c(20010811, 20060101, 20130101),
-#                         END = c(20051231, 20160110, 20160109))
+#download data
+# test_data <-
+#   handle_gsod(action = "download_weather",
+#               time_interval = c(1995,2000),
+#               location = stationlist$chillR_code[c(1,2)])
+# 
+# format downloaded data
+# test_data_clean <- handle_gsod(action = test_data)
 
-# gw <- handle_gsod(action = "download_weather",
-#                   location = "724828_93241",
-#                   time_interval = c(2010, 2012),
-#                   station_list = stat_list,
-#                   quiet = TRUE)
+## data deletion on disk for clean_up
 
-# weather <- handle_gsod(gw, add.DATE = FALSE)[[1]]$weather
+# functions will ask for confirmation in the console - 'y' for yes to
+# confirm deletion, anything else cancels the deletion
 
-# make_chill_plot(tempResponse(stack_hourly_temps(fix_weather(weather)),
-#                              Start_JDay = 300, End_JDay = 50),
-#                 "Chill_Portions", start_year = 2010,
-#                 end_year = 2012, metriclabel = "Chill Portions",
-#                 misstolerance = 50)
+# handle_gsod(action = "delete",
+#             clean_up = "all",
+#             override_confirm_delete = TRUE)
 
 }
 \references{
@@ -183,6 +212,6 @@ requirements of cherry trees - a statistical approach. International Journal
 of Biometeorology 57,679-689.
 }
 \author{
-Eike Luedeling and Eduardo Fernandez
+Adrian Fülle, Lars Caspersen, Eike Luedeling
 }
 \keyword{utilities}

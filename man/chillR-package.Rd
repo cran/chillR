@@ -26,10 +26,19 @@ Meteorology 158, 43-52. \doi{10.1016/j.agrformet.2011.10.020}
 }
 \author{
 \tabular{ll}{
-\strong{Prof. Dr. Eike Luedeling} (creator)   \tab   \strong{Dr. Eduardo Fernández} (contributor)\cr
-\email{eike@eikeluedeling.com}   \tab   \email{efernand@uni-bonn.de}\cr
-\href{https://orcid.org/0000-0002-7316-3631}{ORCID}   \tab   \href{https://orcid.org/0000-0002-6949-9685}{ORCID}\cr
-\href{https://twitter.com/EikeLuedeling}{@EikeLuedeling}   \tab   \href{https://twitter.com/eduormancy}{@eduormancy}\cr
-\href{https://github.com/eikeluedeling}{eikeluedeling}   \tab   \href{https://github.com/EduardoFernandezC}{EduardoFernandezC}
+\strong{Prof. Dr. Eike Luedeling} (creator)\cr
+\email{eike@eikeluedeling.com}\cr   
+\href{https://orcid.org/0000-0002-7316-3631}{ORCID}\cr
+\href{https://github.com/eikeluedeling}{eikeluedeling on GitHub}\cr   
+ \cr
+\strong{Lars Caspersen} (contributor)\cr
+\email{lcaspers@uni-bonn.de}\cr
+\href{https://orcid.org/0009-0000-3057-7327}{ORCID}\cr
+\href{https://github.com/larscaspersen}{larscaspersen on GitHub}\cr
+ \cr
+\strong{Dr. Eduardo Fernández} (contributor)\cr
+\email{eduardo.fernandez.c@pucv.cl}\cr
+\href{https://orcid.org/0000-0002-6949-9685}{ORCID}\cr
+\href{https://github.com/EduardoFernandezC}{EduardoFernandezC on GitHub}
 }
 }

@@ -8,7 +8,7 @@
 #' remainder of this package.
 #' 
 #' @param downloaded_weather_file full path of a weather file downloaded from
-#' the \href{http://agromet.inia.cl/}{Chilean Agromet website} as an alleged Excel
+#' the \href{https://agromet.inia.cl/}{Chilean Agromet website} as an alleged Excel
 #' file (it has some formatting issues).
 #' @param drop_most boolean variable indicating if most columns should be
 #' dropped from the file. If set to TRUE (default), only essential columns for

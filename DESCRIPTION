@@ -2,18 +2,23 @@ Package: chillR
 Type: Package
 Title: Statistical Methods for Phenology Analysis in Temperate Fruit
         Trees
-Version: 0.72.8
-Date: 2022-08-17
+Version: 0.73.1
+Date: 2023-08-11
 Authors@R: 
     c(person(given = "Eike",
              family = "Luedeling",
              role = c("aut", "cre"),
              email = "eike@eikeluedeling.com",
              comment = c(ORCID = "0000-0002-7316-3631")),
+    person(given = "Lars",
+             family = "Caspersen",
+             role = c("aut"),
+             email = "lcaspers@uni-bonn.de",
+             comment = c(ORCID = "0009-0000-3057-7327")),  
     person(given = "Eduardo",
              family = "Fernandez",
              role = c("aut"),
-             email = "efernand@uni-bonn.de",
+             email = "eduardo.fernandez.c@pucv.cl",
              comment = c(ORCID = "0000-0002-6949-9685")))
 Description: The phenology of plants (i.e. the timing of their annual life
     phases) depends on climatic cues. For temperate trees and many other plants,
@@ -37,19 +42,20 @@ Description: The phenology of plants (i.e. the timing of their annual life
 Depends: R (>= 3.5.0)
 Imports: assertthat, dplyr, fields, GenSA, ggplot2, graphics,
         grDevices, httr, jsonlite, Kendall, metR, patchwork, pls, plyr,
-        R.utils, raster, Rcpp, RCurl, readxl, reshape2, rlang, RMAWGEN,
-        scales, sp, stats, stringr, tidyr, utils, XML
+        progress, R.utils, raster, Rcpp, RCurl, readxl, reshape2,
+        rlang, RMAWGEN, scales, sp, stats, stringr, tidyr, utils, XML
 LinkingTo: Rcpp
 Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2022-08-17 21:40:39 UTC; Eike
+Packaged: 2023-08-11 22:29:36 UTC; Eike
 Author: Eike Luedeling [aut, cre] (<https://orcid.org/0000-0002-7316-3631>),
+  Lars Caspersen [aut] (<https://orcid.org/0009-0000-3057-7327>),
   Eduardo Fernandez [aut] (<https://orcid.org/0000-0002-6949-9685>)
 Maintainer: Eike Luedeling <eike@eikeluedeling.com>
 Repository: CRAN
-Date/Publication: 2022-08-17 22:10:15 UTC
+Date/Publication: 2023-08-11 23:00:02 UTC

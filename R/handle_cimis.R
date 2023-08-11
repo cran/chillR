@@ -137,7 +137,8 @@ handle_cimis<-function(action,location=NA,time_interval=NA,station_list=NULL,sta
                                                            ftp.use.epsv = FALSE,
                                                            dirlistonly = TRUE),"\n")),function(x)strsplit(x,"\r"))))
     summary_file<-dir[grep("CIMIS Stations List",dir)]
-    download.file(paste("ftp://ftpcimis.water.ca.gov/pub2/",summary_file,sep=""), "chillRtempdirectory/a.xlsx", mode="wb")
+    download.file(paste("ftp://ftpcimis.water.ca.gov/pub2/",summary_file,sep=""),
+                  "chillRtempdirectory/a.xlsx", mode="wb", method="libcurl")
     cimis<-suppressWarnings(read_excel("chillRtempdirectory/a.xlsx"))
     file.remove("chillRtempdirectory/a.xlsx")
     unlink("chillRtempdirectory",recursive=TRUE)
@@ -215,7 +216,7 @@ if(is.character(action)) if(action=="download_weather")
     if(!is.data.frame(sixdays))
      {
       dest<-"chillRtempdirectory/weather.zip"
-      ff<-suppressWarnings(try(download.file(URL, dest),silent = TRUE))
+      ff<-suppressWarnings(try(download.file(URL, dest, method="libcurl"),silent = TRUE))
       if(ff==0)
       {gz <- gzfile(dest, open = "rt")
       ziplist<-unzip(dest,list=TRUE)

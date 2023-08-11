@@ -96,7 +96,7 @@ get_weather<-function(location,time_interval=NA,database="UCIPM",station_list=NU
     if(is.numeric(location[1])&is.numeric(location[2]))
     {
       sorted_list<-switch(database,
-                          GSOD = handle_gsod("list_stations",location=location,time_interval=time_interval,station_list=station_list,
+                          GSOD = handle_gsod("list_stations",location=location,time_interval=time_interval,
                                              stations_to_choose_from=stations_to_choose_from,end_at_present=end_at_present),
                           CIMIS = handle_cimis("list_stations",location=location,time_interval=time_interval,station_list=station_list,
                                                stations_to_choose_from=stations_to_choose_from,end_at_present=end_at_present),
@@ -112,7 +112,7 @@ get_weather<-function(location,time_interval=NA,database="UCIPM",station_list=NU
   if(length(location)==1&is.character(location))
   {
     weather<-switch(database,
-                        GSOD = handle_gsod("download_weather",location=location,time_interval=time_interval,station_list=station_list,
+                        GSOD = handle_gsod("download_weather",location=location,time_interval=time_interval,
                                            end_at_present=end_at_present),
                         CIMIS = handle_cimis("download_weather",location=location,time_interval=time_interval,station_list=station_list,
                                              end_at_present=end_at_present),

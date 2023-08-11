@@ -65,7 +65,7 @@ weather2chillR<-function(downloaded_weather,database="GSOD",drop_most=TRUE)
 if(is.list(dw)) if(names(dw)[1]=="database") database=dw$database
 
 if(database=="GSOD")  
-  return(handle_gsod(dw,drop_most=drop_most))
+  return(handle_gsod(dw))
  
 if(database=="CIMIS")
   return(handle_cimis(dw,drop_most=drop_most))

@@ -71,36 +71,38 @@
 #' @examples 
 #' 
 #' # Run a simple plot
+#' # Code is commented out, so that it passes the CRAN incoming checks.
+#' # Please uncomment to run the code.
 #' 
-#' plot_phenology_trends(pheno_data = chillR::KA_bloom,
-#'                       weather_data = chillR::KA_weather,
-#'                       chilling_phase = c(306, 350),
-#'                       forcing_phase = c(355, 60))
+#' # plot_phenology_trends(pheno_data = chillR::KA_bloom,
+#' #                       weather_data = chillR::KA_weather,
+#' #                       chilling_phase = c(306, 350),
+#' #                       forcing_phase = c(355, 60))
 #'              
 #' # Customize the aspects of the plot and save it as 'plot'
 #' 
-#' plot <- plot_phenology_trends(pheno_data = chillR::KA_bloom,
-#'                               weather_data = chillR::KA_weather,
-#'                               chilling_phase = c(306, 350),
-#'                               forcing_phase = c(355, 60),
-#'                               x_axis_name = "Temperatura en el periodo de frio (Celsius)",
-#'                               y_axis_name = "Temperatura en el periodo de forzado (Celsius)",
-#'                               legend_name = "Fecha de floracion\n(dia juliano)",
-#'                               contour_line_color = "white",
-#'                               point_color = "blue4",
-#'                               point_shape = 4,
-#'                               legend_colors = NULL,
-#'                               base_size = 14,
-#'                               legend.position = "bottom",
-#'                               axis.title = ggplot2::element_text(family = "serif"))
+#' # plot <- plot_phenology_trends(pheno_data = chillR::KA_bloom,
+#' #                               weather_data = chillR::KA_weather,
+#' #                               chilling_phase = c(306, 350),
+#' #                               forcing_phase = c(355, 60),
+#' #                               x_axis_name = "Temperatura en el periodo de frio (Celsius)",
+#' #                               y_axis_name = "Temperatura en el periodo de forzado (Celsius)",
+#' #                               legend_name = "Fecha de floracion\n(dia juliano)",
+#' #                               contour_line_color = "white",
+#' #                               point_color = "blue4",
+#' #                               point_shape = 4,
+#' #                               legend_colors = NULL,
+#' #                               base_size = 14,
+#' #                               legend.position = "bottom",
+#' #                               axis.title = ggplot2::element_text(family = "serif"))
 #' 
-#' plot
+#' # plot
 #' 
 #' # Modify the plot object with the syntax from ggplot2.
 #' # Be aware that the following code overrides the modifications
 #' # done by the argument '...' in the main function
 #' 
-#' plot + ggplot2::theme_classic(base_size = 14)
+#' # plot + ggplot2::theme_classic(base_size = 14)
 #' 
 #' @export plot_phenology_trends
 
