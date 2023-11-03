@@ -1,5 +1,5 @@
-2c7384203c348f6f69f7e6193ca5ce0e *DESCRIPTION
-8b0e1cccd0948ec62b5b443c1c5766b5 *NAMESPACE
+f1407ab93da45bef91a24f506e23cae1 *DESCRIPTION
+75b479ba086795cf53fbde94acb66d00 *NAMESPACE
 2c3732bcc5a9bf44dc8546b620067f2c *R/Date2YEARMODA.R
 dc47d95ec5f6f07698b94fc6a92af863 *R/Empirical_temperature_curve.R
 db123cd9bd4773547581d011bc5140ba *R/PLS_chill_force.R
@@ -24,11 +24,14 @@ bd60f5c45f44574acefa55470be7b742 *R/chilling.R
 88323f7f7f9e4d50ccc7e701ef34114d *R/color_bar_maker.R
 7c62e53c6248383fb04323e66aa59c01 *R/daily_chill.R
 01f2dbb8d6f038753877ee459c761a8e *R/daylength.R
+0b74c454ac66b773ea0427fe0bfb0838 *R/download_cmip6_ecmwfr.R
+299cfbef63015d66cf349cf6254722c7 *R/extract_cmip6_data.R
 d044d3321eaf9b2542d767057ce570df *R/extract_differences_between_characters.R
 7178d1f814c9bc75d45130b717f10597 *R/extract_temperatures_from_grids.R
 dc97e072c946637d8f9fc95b9e9aa61b *R/filter_temperatures.R
 79d56651b6f4f66c8f90d253b9742da5 *R/fix_weather.R
 4dc38ab0e31b0486d7248607ff23cb79 *R/genSeason.R
+a2023f6c3fee1cc673c0707a953faec0 *R/gen_rel_change_scenario.R
 4b8834bf2198495d8780cb01e93eec79 *R/getClimateWizardData.R
 d8f660643b617b2dec1617172c363004 *R/getClimateWizard_scenarios.R
 4deec0fee446626e2151a3f3aed3d2b4 *R/get_last_date.R
@@ -37,7 +40,7 @@ d8f660643b617b2dec1617172c363004 *R/getClimateWizard_scenarios.R
 7c64b84b9597d3194e407bd8dc64d9d7 *R/handle_cimis.R
 7000aa1bd030821421b6cdb5594897cc *R/handle_dwd.R
 062fa4ae583956a559d9f3474d3cfc34 *R/handle_dwd_old.R
-9d6133c589834b51090b506a0f14a5f6 *R/handle_gsod.R
+777f7f4b6ec1456db4f29dc26cc8a946 *R/handle_gsod.R
 e25adb433ed7db31936147ebc15dc15b *R/handle_gsod_old.R
 7d872170a6f9bacc1a3715ddafa9671b *R/handle_ucipm.R
 0b3c267a80549ee4d494ae6c667fc5a0 *R/identify_common_string.R
@@ -85,12 +88,12 @@ bc6c01922610dd0c1f80f97a938f00ef *data/KA_bloom.rda
 1242aa70ce0b9b8f354f4e28db4ccfc9 *data/KA_weather.rda
 3739b578469f1b842feb2eb018b72304 *data/Winters_hours_gaps.rda
 dfe396905139e63e255d9049c1f8fc0d *data/california_stations.rda
-5dfd11770fd123f3c421f261115a32f2 *inst/doc/PhenoFlex.R
+b50772f46446143207b929f9aa0a0c0d *inst/doc/PhenoFlex.R
 abc91f336779baf8c88868f79a0bb963 *inst/doc/PhenoFlex.Rmd
-7ca50fc920986505ebcafdc2c3a02e57 *inst/doc/PhenoFlex.html
+9321b1f6c02592452dbb9895a9abb849 *inst/doc/PhenoFlex.html
 7c72a0fe6808552265f8f184891d8d74 *inst/doc/hourly_temperatures.R
 757c48876fdf0cae52e8196d2f46c3c7 *inst/doc/hourly_temperatures.Rmd
-31bb4e4ade9559e360c8dc9f2feec860 *inst/doc/hourly_temperatures.html
+61b3ebb0ff59859ca4c05d94c1755d84 *inst/doc/hourly_temperatures.html
 83fcf726305bc980f0d2c9779373c53d *man/Chilling_Hours.Rd
 f85216497c478b89bfe70c34c7d33f45 *man/ChuineCF.Rd
 47c058abb6819d8fb5d16de3a5805869 *man/ChuineFstar.Rd
@@ -142,6 +145,8 @@ eb17d2a060f6bc793c6a5588cd58e705 *man/check_temperature_record.Rd
 af942cb8726d65637521c07eceb7d9b8 *man/color_bar_maker.Rd
 9e57bb521c55fbb32d6980225e089e3d *man/daily_chill.Rd
 9f44ee1fc4214bd7488ee3c2b39614a6 *man/daylength.Rd
+53e4c8152f48d5ae1a3de4ac77cba484 *man/download_cmip6_ecmwfr.Rd
+783a7112e46718a045eda75c274aa40f *man/extract_cmip6_data.Rd
 e0894396e9cab9660fc643dc0bde8ae9 *man/extract_differences_between_characters.Rd
 8c5ea0af0779998fc6de144238de74a1 *man/extract_temperatures_from_grids.Rd
 bb68a3992fb89655e3015ae73411a6f9 *man/figures/chillR.png
@@ -152,6 +157,7 @@ bb68a3992fb89655e3015ae73411a6f9 *man/figures/chillR_hexSticker.png
 a799d5f224f32ea7939a9ab2f0861bd1 *man/fix_weather.Rd
 11c6b1c530b06b63c8cbabac8fa07a15 *man/genSeason.Rd
 c6102179f537357be111df59428bdfe3 *man/genSeasonList.Rd
+192a02a9cedf9fc37c10e8b4190aa774 *man/gen_rel_change_scenario.Rd
 6a1fd5c4f6bebc7c75ecccacea96f8e1 *man/getClimateWizardData.Rd
 9c2bf12d74a17ded902b97d1d2262b49 *man/getClimateWizard_scenarios.Rd
 f81935e7d4e4f39f91824910e76a63fe *man/get_last_date.Rd

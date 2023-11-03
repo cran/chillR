@@ -1,4 +1,4 @@
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 library(chillR)
 
 ## -----------------------------------------------------------------------------
@@ -16,7 +16,7 @@ res <- PhenoFlex(temp=hourtemps$hourtemps$Temp[iSeason[[1]]],
                  times=c(1: length(hourtemps$hourtemps$Temp[iSeason[[1]]])),
                  zc=zc, stopatzc=TRUE, yc=yc, basic_output=FALSE)
 
-## ---- fig.width = 6, fig.height=4, fig.cap="Chill accumulation over time. The dashed line respresents $y_c$, the critical amount of chill units for ecodormancy to be broken."----
+## ----fig.width = 6, fig.height=4, fig.cap="Chill accumulation over time. The dashed line respresents $y_c$, the critical amount of chill units for ecodormancy to be broken."----
 DBreakDay <- res$bloomindex
 seasontemps<-hourtemps$hourtemps[iSeason[[1]],]
 seasontemps[,"x"]<-res$x
@@ -30,7 +30,7 @@ ggplot(data=seasontemps[1:DBreakDay,],aes(x=Date,y=y)) +
   geom_hline(yintercept=yc,lty=2) +
   labs(title="Chill (y) accumulation")
 
-## ---- fig.width = 6, fig.height=4, fig.cap="Heat accumulation over time. The dashed line respresents the $z_c$, the critical amount of heat units for ecodormancy to be broken."----
+## ----fig.width = 6, fig.height=4, fig.cap="Heat accumulation over time. The dashed line respresents the $z_c$, the critical amount of heat units for ecodormancy to be broken."----
 ggplot(data=seasontemps[1:DBreakDay,],aes(x=Date,y=z)) +
   geom_line(col="red",lwd=1.5) +
   theme_bw(base_size=20) +
@@ -54,17 +54,17 @@ Fit_res <- phenologyFitter(par.guess=par,
                            control=list(smooth=FALSE, verbose=FALSE, maxit=10,
                                         nb.stop.improvement=5))
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  control=list(smooth=FALSE, verbose=TRUE, maxit=1000,
 #               nb.stop.improvement=250)
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  modelfn=StepChill_Wrapper
 
-## ---- comment=""--------------------------------------------------------------
+## ----comment=""---------------------------------------------------------------
 summary(Fit_res)
 
-## ---- fig.width = 6, fig.height=4---------------------------------------------
+## ----fig.width = 6, fig.height=4----------------------------------------------
 plot(Fit_res)
 
 ## -----------------------------------------------------------------------------
@@ -73,9 +73,9 @@ Fit_res.boot <- bootstrap.phenologyFit(Fit_res, boot.R=10,
                                                     nb.stop.improvement=5),
                                        lower=lower, upper=upper, seed=1726354)
 
-## ---- comment=""--------------------------------------------------------------
+## ----comment=""---------------------------------------------------------------
 summary(Fit_res.boot)
 
-## ---- fig.width = 6, fig.height=4---------------------------------------------
+## ----fig.width = 6, fig.height=4----------------------------------------------
 plot(Fit_res.boot)
 
