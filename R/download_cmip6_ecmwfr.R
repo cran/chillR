@@ -1,6 +1,6 @@
 #' Download CMIP6 Data via the ecwfr package
 #' 
-#' Accesses the CMIP6 data of the Coperincus API via the
+#' Accesses the CMIP6 data of the Copernicus API via the
 #' \code{\link[ecmwfr:wf_request_batch]{ecmwfr}} package. Saves the downloaded
 #' files as .zip objects in the specified path in a subfolder with the
 #' coordinates of the downloaded area as subfolder name. You can either specify
@@ -235,9 +235,9 @@ download_cmip6_ecmwfr <- function(scenarios,
   #first and third entry must be in -90, and 90
   assertthat::assert_that(area[1] <= 90 & area[1] >= -90)
   assertthat::assert_that(area[3] <= 90 & area[3] >= -90)
-  #first entry must be larger than third
+  #first entry must be greater than third
   assertthat::assert_that(area[1] > area[3])
-  #second and fourht entry must be in -180 to 180
+  #second and fourth entry must be in -180 to 180
   assertthat::assert_that(area[2] <= 180 & area[2] >= -180)
   assertthat::assert_that(area[4] <= 180 & area[4] >= -180)
   #second entry must be smaller than fourth
@@ -471,7 +471,7 @@ download_cmip6_ecmwfr <- function(scenarios,
     
     
     #drop blacklisted stations
-    if(Models == 'default'){
+    if(Models[1] == 'default'){
       Model_download <- default_gcm_list[[frequency]][[scenario]] 
     } else {
       Model_download <- Models

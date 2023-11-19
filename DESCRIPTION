@@ -2,8 +2,8 @@ Package: chillR
 Type: Package
 Title: Statistical Methods for Phenology Analysis in Temperate Fruit
         Trees
-Version: 0.74
-Date: 2023-11-03
+Version: 0.74.1
+Date: 2023-11-19
 Authors@R: 
     c(person(given = "Eike",
              family = "Luedeling",
@@ -53,10 +53,10 @@ LazyData: TRUE
 RoxygenNote: 7.2.3
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2023-11-03 18:21:49 UTC; Eike
+Packaged: 2023-11-19 15:45:24 UTC; Eike
 Author: Eike Luedeling [aut, cre] (<https://orcid.org/0000-0002-7316-3631>),
   Lars Caspersen [aut] (<https://orcid.org/0009-0000-3057-7327>),
   Eduardo Fernandez [aut] (<https://orcid.org/0000-0002-6949-9685>)
 Maintainer: Eike Luedeling <eike@eikeluedeling.com>
 Repository: CRAN
-Date/Publication: 2023-11-03 20:20:02 UTC
+Date/Publication: 2023-11-19 16:20:02 UTC

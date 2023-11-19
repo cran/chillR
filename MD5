@@ -1,4 +1,4 @@
-f1407ab93da45bef91a24f506e23cae1 *DESCRIPTION
+25ef97a0cf8320a87faa26b0dc794910 *DESCRIPTION
 75b479ba086795cf53fbde94acb66d00 *NAMESPACE
 2c3732bcc5a9bf44dc8546b620067f2c *R/Date2YEARMODA.R
 dc47d95ec5f6f07698b94fc6a92af863 *R/Empirical_temperature_curve.R
@@ -24,8 +24,8 @@ bd60f5c45f44574acefa55470be7b742 *R/chilling.R
 88323f7f7f9e4d50ccc7e701ef34114d *R/color_bar_maker.R
 7c62e53c6248383fb04323e66aa59c01 *R/daily_chill.R
 01f2dbb8d6f038753877ee459c761a8e *R/daylength.R
-0b74c454ac66b773ea0427fe0bfb0838 *R/download_cmip6_ecmwfr.R
-299cfbef63015d66cf349cf6254722c7 *R/extract_cmip6_data.R
+a7af1f7f3d9340ecabf752a8c1ca685c *R/download_cmip6_ecmwfr.R
+600a1fe4c98c95fac2204f44f3420d58 *R/extract_cmip6_data.R
 d044d3321eaf9b2542d767057ce570df *R/extract_differences_between_characters.R
 7178d1f814c9bc75d45130b717f10597 *R/extract_temperatures_from_grids.R
 dc97e072c946637d8f9fc95b9e9aa61b *R/filter_temperatures.R
@@ -90,10 +90,10 @@ bc6c01922610dd0c1f80f97a938f00ef *data/KA_bloom.rda
 dfe396905139e63e255d9049c1f8fc0d *data/california_stations.rda
 b50772f46446143207b929f9aa0a0c0d *inst/doc/PhenoFlex.R
 abc91f336779baf8c88868f79a0bb963 *inst/doc/PhenoFlex.Rmd
-9321b1f6c02592452dbb9895a9abb849 *inst/doc/PhenoFlex.html
+05b56122d64bceb40276583cab622072 *inst/doc/PhenoFlex.html
 7c72a0fe6808552265f8f184891d8d74 *inst/doc/hourly_temperatures.R
 757c48876fdf0cae52e8196d2f46c3c7 *inst/doc/hourly_temperatures.Rmd
-61b3ebb0ff59859ca4c05d94c1755d84 *inst/doc/hourly_temperatures.html
+bfda7ba10536fc2a52e3438fd8b2ef87 *inst/doc/hourly_temperatures.html
 83fcf726305bc980f0d2c9779373c53d *man/Chilling_Hours.Rd
 f85216497c478b89bfe70c34c7d33f45 *man/ChuineCF.Rd
 47c058abb6819d8fb5d16de3a5805869 *man/ChuineFstar.Rd
@@ -145,7 +145,7 @@ eb17d2a060f6bc793c6a5588cd58e705 *man/check_temperature_record.Rd
 af942cb8726d65637521c07eceb7d9b8 *man/color_bar_maker.Rd
 9e57bb521c55fbb32d6980225e089e3d *man/daily_chill.Rd
 9f44ee1fc4214bd7488ee3c2b39614a6 *man/daylength.Rd
-53e4c8152f48d5ae1a3de4ac77cba484 *man/download_cmip6_ecmwfr.Rd
+1f2c83cb8abeb029a0f30b23959ed9d4 *man/download_cmip6_ecmwfr.Rd
 783a7112e46718a045eda75c274aa40f *man/extract_cmip6_data.Rd
 e0894396e9cab9660fc643dc0bde8ae9 *man/extract_differences_between_characters.Rd
 8c5ea0af0779998fc6de144238de74a1 *man/extract_temperatures_from_grids.Rd

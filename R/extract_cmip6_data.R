@@ -155,7 +155,7 @@ extract_cmip6_data <- function(stations,
       if(nrow(stations_extract) == 0){
         stop('After dropping stations not covered by the downloaded files no more stations are left to work with.\nStopping the extraction')
       }
-    }
+    } else stations_extract <- stations
     
     
     #---------------------------------#

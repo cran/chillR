@@ -94,7 +94,7 @@ The path is relative to the working directory.}
 NULL, the downloaded files are saved in the stated directory
 }
 \description{
-Accesses the CMIP6 data of the Coperincus API via the
+Accesses the CMIP6 data of the Copernicus API via the
 \code{\link[ecmwfr:wf_request_batch]{ecmwfr}} package. Saves the downloaded
 files as .zip objects in the specified path in a subfolder with the
 coordinates of the downloaded area as subfolder name. You can either specify
