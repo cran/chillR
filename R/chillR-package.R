@@ -23,7 +23,6 @@
 #' @importFrom pls plsr explvar crossval
 #' @importFrom Kendall Kendall
 #' @importFrom fields Krig surface tim.colors image.plot predictSurface
-#' @importFrom sp spDistsN1
 #' @importFrom readxl read_excel
 #' @importFrom XML htmlParse getNodeSet xmlToDataFrame getChildrenStrings
 #' @importFrom httr POST content

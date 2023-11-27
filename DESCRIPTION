@@ -2,8 +2,8 @@ Package: chillR
 Type: Package
 Title: Statistical Methods for Phenology Analysis in Temperate Fruit
         Trees
-Version: 0.74.1
-Date: 2023-11-19
+Version: 0.75
+Date: 2023-11-27
 Authors@R: 
     c(person(given = "Eike",
              family = "Luedeling",
@@ -43,7 +43,7 @@ Depends: R (>= 3.5.0)
 Imports: assertthat, dplyr, ecmwfr, fields, GenSA, ggplot2, graphics,
         grDevices, httr, jsonlite, Kendall, lubridate, magrittr, metR,
         patchwork, pls, plyr, progress, purrr, R.utils, raster, Rcpp,
-        RCurl, readxl, reshape2, rlang, RMAWGEN, scales, sp, stats,
+        RCurl, readxl, reshape2, rlang, RMAWGEN, scales, stats,
         stringr, tidyr, utils, XML
 LinkingTo: Rcpp
 Suggests: knitr, rmarkdown, testthat
@@ -53,10 +53,10 @@ LazyData: TRUE
 RoxygenNote: 7.2.3
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2023-11-19 15:45:24 UTC; Eike
+Packaged: 2023-11-27 21:53:05 UTC; Eike
 Author: Eike Luedeling [aut, cre] (<https://orcid.org/0000-0002-7316-3631>),
   Lars Caspersen [aut] (<https://orcid.org/0009-0000-3057-7327>),
   Eduardo Fernandez [aut] (<https://orcid.org/0000-0002-6949-9685>)
 Maintainer: Eike Luedeling <eike@eikeluedeling.com>
 Repository: CRAN
-Date/Publication: 2023-11-19 16:20:02 UTC
+Date/Publication: 2023-11-27 22:20:02 UTC

@@ -347,12 +347,18 @@ handle_dwd_old <- function(action,
     
     # Add the distance to the location of interest
     
-    myPoint <- c(longitude, latitude)
+    lat_rad <- latitude*pi/180
+    lon_rad <- longitude*pi/180
+    lat_rad_stat <- station_in_period$Latitude*pi/180
+    lon_rad_stat <- station_in_period$Longitude*pi/180
     
-    station_in_period[, "Distance"] <- round(sp::spDistsN1(
-      as.matrix(station_in_period[, c("Longitude", "Latitude")]), myPoint,
-      longlat = TRUE), 2) 
+    station_in_period[, "Distance"] <-
+      round(6378.388 * acos(sin(lat_rad) * sin(lat_rad_stat) +
+                              cos(lat_rad) * cos(lat_rad_stat) *
+                              cos(lon_rad_stat - lon_rad)), 
+            2) 
     
+
     # Order the station according to the distance to the point
     
     stations_sorted <- station_in_period[order(station_in_period$Distance), ]

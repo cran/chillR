@@ -24,7 +24,7 @@ is usually the same as in download_cmip6_ecmwfr function.}
 file. If not already present, then a new folder will be created. The path is
 relative to working directory.}
 
-\item{keep_downloaded}{Booloean, by default set to TRUE. If TRUE, the
+\item{keep_downloaded}{Boolean, by default set to TRUE. If TRUE, the
 function will not delete the downloaded .nc files. This makes sense when the
 user may want to use the climate change data for other locations.}
 }

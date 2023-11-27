@@ -15,7 +15,7 @@
 #' file. If not already present, then a new folder will be created. The path is
 #' relative to working directory.
 #' 
-#' @param keep_downloaded Booloean, by default set to TRUE. If TRUE, the
+#' @param keep_downloaded Boolean, by default set to TRUE. If TRUE, the
 #' function will not delete the downloaded .nc files. This makes sense when the
 #' user may want to use the climate change data for other locations.
 #' 

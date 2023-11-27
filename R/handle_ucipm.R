@@ -167,8 +167,17 @@ handle_ucipm<-function(action,location=NA,time_interval=NA,station_list=californ
 
         res["End_date"]<-ends
 
-        myPoint<-c(long,lat)
-        res[,"distance"]<-round(spDistsN1(as.matrix(res[,c("Longitude","Latitude")]), myPoint, longlat=TRUE),2)
+        lat_rad <- lat*pi/180
+        lon_rad <- long*pi/180
+        lat_rad_stat <- res$Latitude*pi/180
+        lon_rad_stat <- res$Longitude*pi/180
+        
+        res[, "distance"] <-
+          round(6378.388 * acos(sin(lat_rad) * sin(lat_rad_stat) +
+                                  cos(lat_rad) * cos(lat_rad_stat) *
+                                  cos(lon_rad_stat - lon_rad)), 
+                2) 
+        
         sorted_list<-res[order(res$distance),]
         if(!is.na(elev)) sorted_list[,"elevation_diff"]<-elev-sorted_list$Elevation
         sorted_list[,"chillR_code"]<-as.character(sorted_list$Code)

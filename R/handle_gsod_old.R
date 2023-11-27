@@ -218,8 +218,18 @@ handle_gsod_old <- function(action,
     colnames(stat_list)[which(colnames(stat_list) %in% c("LAT","Lat"))]<-"Lat"
     colnames(stat_list)[which(colnames(stat_list) %in% c("ELEV.M.","Elev"))]<-"Elev"
     stat_list<-stat_list[which(!is.na(stat_list$Lat)&(!is.na(stat_list$Long))),]
-    myPoint<-c(long,lat)
-    stat_list[,"distance"]<-round(sp::spDistsN1(as.matrix(stat_list[,c("Long","Lat")]), myPoint, longlat=TRUE),2)
+
+    lat_rad <- lat*pi/180
+    lon_rad <- long*pi/180
+    lat_rad_stat <- stat_list$Lat*pi/180
+    lon_rad_stat <- stat_list$Long*pi/180
+    
+    stat_list[,"distance"]<-
+      round(6378.388 * acos(sin(lat_rad) * sin(lat_rad_stat) +
+                              cos(lat_rad) * cos(lat_rad_stat) *
+                              cos(lon_rad_stat - lon_rad)), 
+                                  2)
+      
     sorted_list<-stat_list[order(stat_list$distance),]
     if(!is.na(elev)) sorted_list[,"elevation_diff"]<-elev-sorted_list$Elev
     sorted_list<-sorted_list[1:max(stations_to_choose_from,500),]

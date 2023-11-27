@@ -6,12 +6,9 @@
 \usage{
 gen_rel_change_scenario(
   downloaded_list,
-  years_local_weather,
-  weather_list = NULL,
-  times = c(2050, 2085),
-  baseline_year_relative_change = 2022,
-  baseline_window_width = 15,
-  future_window_width = 31
+  scenarios = c(2050, 2085),
+  reference_period = c(1986:2014),
+  future_window_width = 30
 )
 }
 \arguments{
@@ -19,32 +16,17 @@ gen_rel_change_scenario(
 extract_cmip6_data function. Elements are named after the shared socioeconomic
 pathway ('SSP') and global climate model ('GCM')}
 
-\item{years_local_weather}{by default set to NULL. If provided, this states
-the earliest and latest baseline year for which the relative scenario should
-be generated. The same values will be used for all weather stations in this
-case. Either years_local_weather or weather_list needs to be provided.}
+\item{scenarios}{numeric vector, states the future years, for which the climate
+change scenarios should be generated. By default set to c(2050, 2085).}
 
-\item{weather_list}{by default set to NULL. If provided, should be a list of
-data.frames containing the locally observed weather. This is used to determine
-the earliest and latest years for which we have observations.}
-
-\item{times}{numeric vector, states the future years, for which the climate
-change scenario should be generated. By default set to c(2050, 2085).}
-
-\item{baseline_year_relative_change}{numeric, states for which year within
-the downloaded CMIP6 data the relative change should be calculated.
-By default set to 2022.}
-
-\item{baseline_window_width}{numeric, sets the window width of the running
-mean calculation for the mean temperatures of the year indicated by
-baseline_year_relative_change.}
+\item{reference_period}{numeric vector specifying the years to be used as the
+reference period. Defaults to c(1986:2014).}
 
 \item{future_window_width}{numeric, sets the window width of the running mean
-calculation for the mean temperatures of the years indicated by times.}
+calculation for the mean temperatures of the years indicated by scenarios}
 }
 \value{
-list of relative climate change scenarios. The list is ordered by
-three levels: 1) location 2) SSP_GCM and 3) timepoint of interest.
+data.frame for the calculated relative change scenarios, all locations, SSPs, timepoints, GCMs combined
 }
 \description{
 Takes the extracted CMIP6 data and returns climate change scenarios, which
@@ -54,23 +36,31 @@ can then be used to generate weather data.
 \dontrun{
 download_cmip6_ecmwfr(scenario = 'ssp1_2_6', 
                       area = c(55, 5.5, 47, 15.1),
-                      user = 'write user id here'
+                      user = 'write user id here',
                       key = 'write key here',
                       model = 'AWI-CM-1-1-MR',
                       frequency = 'monthly', 
                       variable = c('Tmin', 'Tmax'),
                       year_start = 2015, 
                       year_end = 2100)
+                      
+download_baseline_cmip6_ecmwfr(
+    area = c(55, 5.5, 47, 15.1),
+    user = 'write user id here',
+    key = 'write key here',
+    model = 'AWI-CM-1-1-MR',
+    frequency = 'monthly', 
+   
 station <- data.frame(
       station_name = c('Zaragoza', 'Klein-Altendorf', 'Sfax',
       'Cieza', 'Meknes', 'Santomera'),
       longitude = c(-0.88,  6.99, 10.75, -1.41, -5.54, -1.05),
       latitude = c(41.65, 50.61, 34.75, 38.24, 33.88, 38.06))
       
-      extracted <- extract_cmip6_data(stations = station)
-      extracted$`ssp126_AWI-CM-1-1-MR`
-      scenario <- gen_rel_change_scenario(extracted, years_local_weather = c(1992, 2021))
-      scenario$`Klein-Altendorf`$`ssp126_AWI-CM-1-1-MR`$'2050'
+extracted <- extract_cmip6_data(stations = station)
+
+gen_rel_change_scenario(extracted)
+
 }
 
 }

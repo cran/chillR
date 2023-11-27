@@ -24,9 +24,6 @@
 #' attached to the input temperature_scenario. A subset of these elements can
 #' also be specified, but 'data' must be present.
 #' 
-#' corresponds to the period, for
-#' which observed weather records are available. The first step in this is to compute the change
-#' generation. This is needed for making extracting information on prospective changes from sense of future climate scenarios, climate change analyses
 #' @param temperature_scenario can be one of three options:
 #' 1) a data.frame with two columns Tmin and Tmax and n_intervals (default: 12) rows containing
 #' temperature changes for all time intervals, or absolute temperatures for these intervals.

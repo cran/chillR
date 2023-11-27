@@ -262,12 +262,24 @@ handle_gsod <- function (action, location = NULL, time_interval = c(1950, 2020),
     stat_list <- read.csv(paste0(path, "/station_list.csv")) %>% 
       rename(Long = contains("lo"), Lat = contains("la"), 
              Elev = contains("ele"))
-    stat_list <- stat_list %>% dplyr::mutate(chillR_code = paste(stat_list$USAF, 
-                                                                 stat_list$WBAN, sep = "")) %>% dplyr::filter(!is.na(.data$Lat) | 
-                                                                                                                !is.na(.data$Long)) %>% dplyr::filter(.data$Lat != 
-                                                                                                                                                        0, .data$Long != 0)
-    stat_list_filtered <- stat_list %>% dplyr::mutate(Distance = round(sp::spDistsN1(as.matrix(stat_list[c("Long", 
-                                                                                                           "Lat")]), location, longlat = TRUE), 2)) %>% dplyr::arrange(.data$Distance) %>% 
+    stat_list <- stat_list %>% 
+      dplyr::mutate(chillR_code = paste(stat_list$USAF, 
+                                        stat_list$WBAN, sep = "")) %>% 
+      dplyr::filter(!is.na(.data$Lat) | !is.na(.data$Long)) %>%
+      dplyr::filter(.data$Lat != 0, .data$Long != 0)
+    
+    lat_rad <- location[2]*pi/180
+    lon_rad <- location[1]*pi/180
+    lat_rad_stat <- stat_list$Lat*pi/180
+    lon_rad_stat <- stat_list$Long*pi/180
+    
+    stat_list_filtered <- stat_list %>%
+      dplyr::mutate(
+        Distance = round(6378.388 * acos(sin(lat_rad) * sin(lat_rad_stat) +
+                         cos(lat_rad) * cos(lat_rad_stat) *
+                           cos(lon_rad_stat - lon_rad)), 
+                         2)) %>%
+      dplyr::arrange(.data$Distance) %>% 
       dplyr::filter(.data$Distance <= max_distance) %>% 
       select(c(12, 3, 4, 7, 8, 10, 11, 13))
     start_date <- as.Date(paste0(start_y, "0101"), format = "%Y%m%d")

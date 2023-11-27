@@ -7,161 +7,211 @@
 #' extract_cmip6_data function. Elements are named after the shared socioeconomic
 #' pathway ('SSP') and global climate model ('GCM')
 #' 
-#' @param years_local_weather by default set to NULL. If provided, this states
-#' the earliest and latest baseline year for which the relative scenario should
-#' be generated. The same values will be used for all weather stations in this
-#' case. Either years_local_weather or weather_list needs to be provided.
+#' @param scenarios numeric vector, states the future years, for which the climate
+#' change scenarios should be generated. By default set to c(2050, 2085).
 #' 
-#' @param weather_list by default set to NULL. If provided, should be a list of
-#' data.frames containing the locally observed weather. This is used to determine
-#' the earliest and latest years for which we have observations. 
-#' 
-#' @param times numeric vector, states the future years, for which the climate
-#' change scenario should be generated. By default set to c(2050, 2085).
-#' 
-#' @param baseline_year_relative_change numeric, states for which year within
-#' the downloaded CMIP6 data the relative change should be calculated.
-#' By default set to 2022.
-#' 
-#' @param baseline_window_width numeric, sets the window width of the running
-#' mean calculation for the mean temperatures of the year indicated by
-#' baseline_year_relative_change.
+#' @param reference_period numeric vector specifying the years to be used as the
+#' reference period. Defaults to c(1986:2014).
 #' 
 #' @param future_window_width numeric, sets the window width of the running mean
-#' calculation for the mean temperatures of the years indicated by times.
+#' calculation for the mean temperatures of the years indicated by scenarios
 #' 
 #' 
-#' @return list of relative climate change scenarios. The list is ordered by
-#' three levels: 1) location 2) SSP_GCM and 3) timepoint of interest.
+#' @return data.frame for the calculated relative change scenarios, all locations, SSPs, timepoints, GCMs combined 
 #' 
 #' @author Lars Caspersen
 #' 
 #' @examples \dontrun{
 #' download_cmip6_ecmwfr(scenario = 'ssp1_2_6', 
 #'                       area = c(55, 5.5, 47, 15.1),
-#'                       user = 'write user id here'
+#'                       user = 'write user id here',
 #'                       key = 'write key here',
 #'                       model = 'AWI-CM-1-1-MR',
 #'                       frequency = 'monthly', 
 #'                       variable = c('Tmin', 'Tmax'),
 #'                       year_start = 2015, 
 #'                       year_end = 2100)
+#'                       
+#'download_baseline_cmip6_ecmwfr(
+#'     area = c(55, 5.5, 47, 15.1),
+#'     user = 'write user id here',
+#'     key = 'write key here',
+#'     model = 'AWI-CM-1-1-MR',
+#'     frequency = 'monthly', 
+#'    
 #' station <- data.frame(
 #'       station_name = c('Zaragoza', 'Klein-Altendorf', 'Sfax',
 #'       'Cieza', 'Meknes', 'Santomera'),
 #'       longitude = c(-0.88,  6.99, 10.75, -1.41, -5.54, -1.05),
 #'       latitude = c(41.65, 50.61, 34.75, 38.24, 33.88, 38.06))
 #'       
-#'       extracted <- extract_cmip6_data(stations = station)
-#'       extracted$`ssp126_AWI-CM-1-1-MR`
-#'       scenario <- gen_rel_change_scenario(extracted, years_local_weather = c(1992, 2021))
-#'       scenario$`Klein-Altendorf`$`ssp126_AWI-CM-1-1-MR`$'2050'
+#' extracted <- extract_cmip6_data(stations = station)
+#' 
+#' gen_rel_change_scenario(extracted)
+#' 
 #' }
 #' 
-#' @importFrom purrr map
-#' @importFrom purrr map_dbl
-#' @importFrom purrr map2
+#' @importFrom dplyr group_by
+#' @importFrom dplyr select
+#' @importFrom dplyr summarise
+#' @importFrom tidyr pivot_wider
+#' @importFrom tidyr pivot_longer
+#' @importFrom dplyr mutate
+#' @importFrom dplyr arrange
+#' @importFrom magrittr "%>%"
+#' 
 #'  
 #' @export gen_rel_change_scenario
 
 #higher-level function to create temperature scenario
 gen_rel_change_scenario <- function(downloaded_list, 
-                                    years_local_weather,
-                                    weather_list = NULL,
-                                    times = c(2050, 2085), 
-                                    baseline_year_relative_change = 2022,
-                                    baseline_window_width = 15, 
-                                    future_window_width = 31){
+                                    scenarios = c(2050, 2085),
+                                    reference_period = c(1986:2014),
+                                    future_window_width = 30){
+  
+  #downloaded_list <- extracted
+  
+  #---------------------#
+  #match scenarios with historic ones
+  #---------------------#
   
   
   
-  #lower level function to generate temperature scenario for one weather station
-  create_scenario_list <- function(cmip6_one_station, 
-                                   reference_year,
-                                   times = c(2050, 2085), 
-                                   baseline_year_relative_change = 2022,
-                                   baseline_window_width = 15, 
-                                   future_window_width = 31){
-    
-    
-    
-    #iterate over the different points of time we are interested in (2050, 2085)
-    int <- purrr::map(times, function(time){
-      
-      #create baseline scenario (usually 2015)
-      clim_senc <- chillR::temperature_scenario_from_records(weather = cmip6_one_station, 
-                                                             runn_mean = baseline_window_width,
-                                                             year = baseline_year_relative_change)
-      
-      #create scenario for future point in time we are interested in (usually 2050 or 2085)
-      clim_senc_later <- chillR::temperature_scenario_from_records(weather = cmip6_one_station, 
-                                                                   runn_mean = future_window_width,
-                                                                   year = time)
-      
-      #calculate the realtive change and put that into a list, mimicking the structure in chillR
-      clim_scen_adjusted <- list(data =  clim_senc_later[[1]]$data - clim_senc[[1]]$data,
-                                 scenario = unique(cmip6_one_station$ssp),
-                                 start_year = time - baseline_window_width,
-                                 end_year = time + baseline_window_width,
-                                 scenario_year = time,
-                                 reference_year = reference_year,
-                                 scenario_type = 'relative',
-                                 labels = unique(cmip6_one_station$model))
-      
-    })
-    
-    #adjust names
-    names(int) <- times
-    
-    return(int)
-    
-  }
+  #first get all the historic scenarios
+  hist_i <- grep(x = names(downloaded_list), pattern = 'historical')
+  
+  models_with_baseline <- 
+    gsub(x = names(downloaded_list)[hist_i],
+         pattern = 'historical_',
+         replacement = '')
+  
+  scenario_list <- list()
   
   
-  # downloaded_list <- extracted
-  # weather_list <- local_weather
-  
-  
-  #iterate over the different weather stations (locally observed data and climate change data)
-  cat('Generating climate change scenario\n')
-  scenario <- purrr::map(downloaded_list, function(x){
+  for(m in models_with_baseline){
+    #m <- models_with_baseline[1]
     
+    scenario_list[[m]] <- list()
     
-    # x <- downloaded_list[[1]]
-    # y <- weather_list[[1]]
+    m_hist <- downloaded_list[[paste0('historical_', m)]]
+    
+    m_hist_mean <- m_hist[,c("Month", "location", "Tmin", "Tmax")]
+    
+    m_hist_mean <- tidyr::pivot_longer(m_hist_mean,
+                                       cols = -c('location', 'Month'))
+
+    m_hist_mean <- stats::aggregate(m_hist_mean[,"value"],
+                                    by = list(location = m_hist_mean$location,
+                                              Month = m_hist_mean$Month,
+                                              name = m_hist_mean$name),
+                                    FUN = function(x) mean(x, na.rm=TRUE) 
+                                    )[, c("location", "Month", "name", "value")]
+    
+    # m_hist_mean <- dplyr::group_by(m_hist_mean,
+    #                                location,
+    #                                Month,
+    #                                name)
     # 
+    # m_hist_mean <- dplyr::summarise(m_hist_mean,
+    #                                 value = mean(value),
+    #                                 .groups = 'keep')
+
+ 
+    #get indices of scenarios matching with the model (exclude the historic scenario)
+    future_i <- grep(pattern = m, 
+                     names(downloaded_list)[-hist_i]) 
     
-    if(is.null(years_local_weather) & is.null(weather_list) == FALSE){
-      #calculate the mean year of observation
+    #iterate over 
+    for(i in future_i){
+      #i <- future_i[1]
+      scenario_list[[m]][[as.character(i)]] <- list()
       
-      reference_years <- purrr::map_dbl(weather_list, function(y) mean(c(min(y$Year), max(y$Year))))
+      scenario <- downloaded_list[-hist_i][[i]]$ssp %>% 
+        unique()
       
-    } else {
-      reference_years <- rep(mean(years_local_weather), length(unique(x$location)))
+      #iterate over timepoints
+      for(t in scenarios){
+        scenario_list[[m]][[as.character(i)]][[as.character(t)]] <- list()
+        #t <- scenarios[1]
+        t_upper <- t + floor(future_window_width/2)
+        t_lower <- t - floor(future_window_width/2)
+        
+        m_future_mean <- downloaded_list[-hist_i][[i]]
+        m_future_mean <- m_future_mean[m_future_mean$Year >= t_lower & 
+                                         m_future_mean$Year <= t_upper,]
+        m_future_mean <- dplyr::select(m_future_mean,-c('Date', 'Year', 'Day', 'lat', 'lon', 'model', 'ssp'))
+        m_future_mean <- tidyr::pivot_longer(m_future_mean, cols = -c('location', 'Month'))
+        m_future_mean <- stats::aggregate(m_future_mean[,"value"],
+                                        by = list(location = m_future_mean$location,
+                                                  Month = m_future_mean$Month,
+                                                  name = m_future_mean$name),
+                                        FUN = function(x) mean(x, na.rm=TRUE) 
+        )[, c("location", "Month", "name", "value")]
+        
+         
+        m_change <- merge(m_future_mean, m_hist_mean, 
+                          by = c('location', 'Month', 'name'), suffixes = c('.future', '.hist'))
+        
+        m_change[,"change"] <- m_change$value.future - m_change$value.hist
+       
+        m_change <- dplyr::select(m_change,-c('value.future', 'value.hist'))
+        m_change <- tidyr::pivot_wider(m_change, id_cols = c('location', 'Month'), values_from = 'change')
+        
+        
+        
+        # 
+        # m_future_mean <- downloaded_list[-hist_i][[i]] %>%
+        #   dplyr::filter(Year >= t_lower, Year <= t_upper) %>%
+        #   dplyr::select(-c('Date', 'Year', 'Day', 'lat', 'lon', 'model', 'ssp')) %>%
+        #   tidyr::pivot_longer(cols = -c('location', 'Month')) %>%
+        #   dplyr::group_by(location, Month, name) %>%
+        #   dplyr::summarise(value = mean(value), .groups = 'keep')
+        # 
+        # 
+        # m_change <- m_future_mean %>% 
+        #   merge(m_hist_mean, by = c('location', 'Month', 'name'), suffixes = c('.future', '.hist')) %>% 
+        #   dplyr::mutate(change = value.future - value.hist) %>% 
+        #   dplyr::select(-c('value.future', 'value.hist')) %>% 
+        #   tidyr::pivot_wider(id_cols = c('location', 'Month'), values_from = 'change')
+        # 
+        # 
+        
+        
+        
+        #split by location
+        m_change <- split(m_change, f = m_change$location)
+        
+        #iterate over each location and save scenario file
+        for(l in 1:length(m_change)){
+          
+          scenario_list[[m]][[as.character(i)]][[as.character(t)]][[l]] <-      
+            m_change[[l]] %>% 
+            dplyr::mutate(scenario = scenario,
+                          start_year = t_lower,
+                          end_year = t_upper,
+                          scenario_year = t,
+                          reference_year = median(reference_period),
+                          scenario_type = 'relative',
+                          labels = m)
+          
+          scenario_list[[m]][[as.character(i)]][[as.character(t)]][[l]] <-
+            scenario_list[[m]][[as.character(i)]][[as.character(t)]][[l]][order(as.numeric(scenario_list[[m]][[as.character(i)]][[as.character(t)]][[l]]$Month)),]
+        }
+        
+        scenario_list[[m]][[as.character(i)]][[as.character(t)]] <- dplyr::bind_rows(scenario_list[[m]][[as.character(i)]][[as.character(t)]])
+      }
+      
+      scenario_list[[m]][[as.character(i)]] <- dplyr::bind_rows( scenario_list[[m]][[as.character(i)]])
     }
     
-    weather_down_splitted <- split(x, x$location)
+    scenario_list[[m]] <- dplyr::bind_rows(scenario_list[[m]])
     
-    
-    purrr::map2(weather_down_splitted, reference_years, function(cmip6, ref_year){
-      #run the function on the list of scenario for one station
-      create_scenario_list(cmip6_one_station = cmip6, 
-                           reference_year = ref_year,
-                           times = times,
-                           baseline_year_relative_change = baseline_year_relative_change,
-                           baseline_window_width = baseline_window_width, 
-                           future_window_width = future_window_width)
-    })
-    
-    
-  }, .progress = TRUE)
+  }
+
+  scenario_list <- dplyr::bind_rows(scenario_list)
   
-  #rearrange the scenario so that the hierachy is: 1) location; 2)GCM + SSP; 3)time 
-  scenario_rearranged <- purrr::map(names(scenario[[1]]), function(loc) purrr::map(scenario, loc))
-  
-  names(scenario_rearranged) <- names(scenario[[1]])
-  
-  return(scenario_rearranged)
+
+  return(scenario_list)
   
 }
 

@@ -86,7 +86,6 @@
 #' 
 #' @importFrom readxl read_excel
 #' @importFrom RCurl getURL
-#' @importFrom sp spDistsN1
 #' @author Eike Luedeling
 #' @references The chillR package:
 #' 
@@ -155,8 +154,17 @@ handle_cimis<-function(action,location=NA,time_interval=NA,station_list=NULL,sta
     cimis$Elevation<-cimis$Elevation*0.3048
     
     if(is.na(long)) return(cimis)
-    myPoint<-c(long,lat)
-    cimis[,"distance"]<-round(spDistsN1(as.matrix(cimis[,c("Longitude","Latitude")]), myPoint, longlat=TRUE),2)
+
+    lat_rad <- lat*pi/180
+    lon_rad <- long*pi/180
+    lat_rad_stat <- cimis$Lat*pi/180
+    lon_rad_stat <- cimis$Long*pi/180
+    
+    cimis[,"distance"]<-
+      round(6378.388 * acos(sin(lat_rad) * sin(lat_rad_stat) +
+                              cos(lat_rad) * cos(lat_rad_stat) *
+                              cos(lon_rad_stat - lon_rad)), 
+            2)
     sorted_list<-cimis[order(cimis$distance),]
     if(!is.na(elev)) sorted_list[,"elevation_diff"]<-elev-sorted_list$Elevation
     sorted_list[,"chillR_code"]<-as.character(sorted_list$Stat_num)
