@@ -7,8 +7,6 @@
 download_cmip6_ecmwfr(
   scenarios,
   area,
-  user,
-  key,
   model = "default",
   service = "cds",
   frequency = "monthly",
@@ -19,7 +17,9 @@ download_cmip6_ecmwfr(
   sec_wait = 3600,
   n_try = 10,
   update_everything = FALSE,
-  path_download = "cmip6_downloaded"
+  path_download = "cmip6_downloaded",
+  user = "ecmwfr",
+  key = NULL
 )
 }
 \arguments{
@@ -34,20 +34,13 @@ c(maximum latitude, minimum longitude, minimum latitude, maximum longitude),
 which corresponds to the northern extent, western extent, southern extent
 and eastern extent of the area of interest.}
 
-\item{user}{a character, user name from the Copernicus climate data store.
-See 'Details' for more information.}
-
-\item{key}{a character. Can be found just beneath the user id on the profile
-when registering for the Copernicus website. Should be provided as a
-character (so in quotation marks).}
-
 \item{model}{character, by default "default". Decides which global climate
 models are requested. If set to "default" then depending on the scenario and
 temporal resolution around 20 models are selected for which we know that
 certain combinations of scenario and variables are available. If this is set
 to "all", then all potential models are requested. You can also hand-pick the
 models you want to download as a vector of the model names.
-You can check \url{https://cds.climate.copernicus.eu/cdsapp#!/dataset/projections-cmip6?tab=form}
+You can check \url{https://cds.climate.copernicus.eu/datasets/projections-cmip6?tab=download}
 for the list of models. In case a certain request fails because either the
 model name is wrong or the requested combination of SSP, time period and
 variable is not available, then the model is dropped from the requests and
@@ -89,6 +82,14 @@ name is already present.}
 \item{path_download}{character, sets the path for the download of the CMIP6
 file. If not already present, then a new folder will be created. 
 The path is relative to the working directory.}
+
+\item{user}{a character, user name provided by ECMWF data service. The default 
+"ecmwfr" should be fine. Otherwise provide the email address which was
+used to sign-up at ECMWF / Copernicus Climate Data Store}
+
+\item{key}{a character. Can be found just beneath the user id on the profile
+when registering for the Copernicus website next to "Personal Access Token". 
+Should be provided as a character (so in quotation marks).}
 }
 \value{
 NULL, the downloaded files are saved in the stated directory
@@ -104,7 +105,7 @@ take the ones for which there is data (model = 'all').
 }
 \details{
 Registering for cds.climate.coperincus.eu:
-\url{https://cds.climate.copernicus.eu/cdsapp#!/home}
+\url{https://cds.climate.copernicus.eu/}
 
 Finding the user id and the key:
 
@@ -120,7 +121,7 @@ Copernicus Climate Store" and the "Data Protection and Privacy Agreement",
 you also need to agree to the "CMIP6 - Data Access - Terms of Use". 
 This needs to be done after registering. You can agree to the terms via the
 following link:
-\url{https://cds.climate.copernicus.eu/cdsapp/#!/terms/cmip6-wps}. 
+\url{https://cds.climate.copernicus.eu/datasets/projections-cmip6?tab=download#manage-licences}. 
 
 Alternatively, you can navigate to the terms within the Copernicus webpage.
 Go to "Datasets", you can find it in the upper ribbon of the main page. 
@@ -145,8 +146,6 @@ from the requests.
 download_cmip6_ecmwfr(
     scenarios = 'ssp126', 
     area = c(55, 5.5, 47, 15.1),
-    user = 'write user id here'
-    key = 'write key here',
     model = 'AWI-CM-1-1-MR',
     frequency = 'monthly', 
     variable = c('Tmin', 'Tmax'),
@@ -157,8 +156,6 @@ download_cmip6_ecmwfr(
 download_cmip6_ecmwfr(
     scenarios = 'ssp126', 
     area = c(55, 5.5, 47, 15.1),
-    user = 'write user id here'
-    key = 'write key here',
     model = 'default',
     frequency = 'monthly', 
     variable = c('Tmin', 'Tmax'),
@@ -170,8 +167,6 @@ download_cmip6_ecmwfr(
 download_cmip6_ecmwfr(
     scenarios = 'ssp126', 
     area = c(55, 5.5, 47, 15.1),
-    user = 'write user id here'
-    key = 'write key here',
     model = 'all',
     frequency = 'monthly', 
     variable = c('Tmin', 'Tmax'),

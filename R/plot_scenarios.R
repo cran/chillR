@@ -1,4 +1,4 @@
-#' Plot historic and future scenarios for climate-related metrics (\code{\link{ggplot2}} version)
+#' Plot historic and future scenarios for climate-related metrics (\href{https://CRAN.R-project.org/package=ggplot2}{ggplot2} version)
 #' 
 #' Visualize outputs from the \code{\link[chillR:temperature_generation]{temperature_generation}} function used
 #' in climate-related assessments. These outputs are usually compiled with the
@@ -83,9 +83,9 @@
 #' @param base_size is an integer to define the relative size of the text in the final plot. This argument
 #' is passed to \code{\link[ggplot2:ggtheme]{ggpplot2::theme_bw}}. Default is set to 11.
 #' 
-#' @details \code{plot_scenarios} uses the \code{\link{ggplot2}} syntax for producing separated
+#' @details \code{plot_scenarios} uses the \href{https://CRAN.R-project.org/package=ggplot2}{ggplot2} syntax for producing separated
 #' plots for historic and future scenarios. Later, the plots are merged into one final figure by using the
-#' \code{\link{patchwork}} library.
+#' \href{https://CRAN.R-project.org/package=patchwork}{patchwork} library.
 #' 
 #' @return A plot of classes \code{'patchwork'}, \code{'gg'}, and \code{'ggplot'}. This allows the user to
 #' continue editing some features of the plots through the syntax (i.e. \code{'&'},

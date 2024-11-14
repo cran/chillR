@@ -57,10 +57,12 @@ NULL
 #' As of version 0.65, it also includes functions for generating weather scenarios with a weather generator,
 #' for conducting climate change analyses for temperature-based climatic metrics and for plotting results from such
 #' analyses. Since version 0.70, \code{chillR} contains a function for interpolating hourly temperature records.
-#' As of version 0.72.6, the package contains functions to design elegant plots using the \code{\link{ggplot2}} package.
+#' As of version 0.72.6, the package contains functions to design elegant plots using the
+#' \href{https://CRAN.R-project.org/package=ggplot2}{ggplot2} package.
 #' 
-#' @docType package
-#' @name chillR-package
+#' 
+#' @keywords internal
+"_PACKAGE"
 #' 
 #' @references
 #' Luedeling E and Gassner A, 2012. Partial Least Squares Regression for

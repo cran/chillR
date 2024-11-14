@@ -55,11 +55,11 @@ Fit_res <- phenologyFitter(par.guess=par,
                                         nb.stop.improvement=5))
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  control=list(smooth=FALSE, verbose=TRUE, maxit=1000,
-#               nb.stop.improvement=250)
+# control=list(smooth=FALSE, verbose=TRUE, maxit=1000,
+#              nb.stop.improvement=250)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  modelfn=StepChill_Wrapper
+# modelfn=StepChill_Wrapper
 
 ## ----comment=""---------------------------------------------------------------
 summary(Fit_res)

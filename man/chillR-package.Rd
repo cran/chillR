@@ -2,6 +2,7 @@
 % Please edit documentation in R/chillR-package.R
 \docType{package}
 \name{chillR-package}
+\alias{chillR}
 \alias{chillR-package}
 \title{\if{html}{\figure{chillR.png}{options: width='25\%' alt='chillR logo'}}
 chillR: statistical methods for phenology analysis in temperate fruit trees}
@@ -17,28 +18,17 @@ based on long-term weather and phenology records (Luedeling and Gassner 2012).
 As of version 0.65, it also includes functions for generating weather scenarios with a weather generator,
 for conducting climate change analyses for temperature-based climatic metrics and for plotting results from such
 analyses. Since version 0.70, \code{chillR} contains a function for interpolating hourly temperature records.
-As of version 0.72.6, the package contains functions to design elegant plots using the \code{\link{ggplot2}} package.
-}
-\references{
-Luedeling E and Gassner A, 2012. Partial Least Squares Regression for
-analyzing walnut phenology in California. Agricultural and Forest
-Meteorology 158, 43-52. \doi{10.1016/j.agrformet.2011.10.020}
+As of version 0.72.6, the package contains functions to design elegant plots using the
+\href{https://CRAN.R-project.org/package=ggplot2}{ggplot2} package.
 }
 \author{
-\tabular{ll}{
-\strong{Prof. Dr. Eike Luedeling} (creator)\cr
-\email{eike@eikeluedeling.com}\cr   
-\href{https://orcid.org/0000-0002-7316-3631}{ORCID}\cr
-\href{https://github.com/eikeluedeling}{eikeluedeling on GitHub}\cr   
- \cr
-\strong{Lars Caspersen} (contributor)\cr
-\email{lcaspers@uni-bonn.de}\cr
-\href{https://orcid.org/0009-0000-3057-7327}{ORCID}\cr
-\href{https://github.com/larscaspersen}{larscaspersen on GitHub}\cr
- \cr
-\strong{Dr. Eduardo Fernández} (contributor)\cr
-\email{eduardo.fernandez.c@pucv.cl}\cr
-\href{https://orcid.org/0000-0002-6949-9685}{ORCID}\cr
-\href{https://github.com/EduardoFernandezC}{EduardoFernandezC on GitHub}
+\strong{Maintainer}: Eike Luedeling \email{eike@eikeluedeling.com} (\href{https://orcid.org/0000-0002-7316-3631}{ORCID})
+
+Authors:
+\itemize{
+  \item Lars Caspersen \email{lcaspers@uni-bonn.de} (\href{https://orcid.org/0009-0000-3057-7327}{ORCID})
+  \item Eduardo Fernandez \email{eduardo.fernandez.c@pucv.cl} (\href{https://orcid.org/0000-0002-6949-9685}{ORCID})
 }
+
 }
+\keyword{internal}

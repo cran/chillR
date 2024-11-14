@@ -13,13 +13,6 @@
 #' which corresponds to the northern extent, western extent, southern extent
 #' and eastern extent of the area of interest.
 #' 
-#' @param user a character, user name from the Copernicus climate data store.
-#' See 'Details' for more information.
-#' 
-#' @param key a character. Can be found just beneath the user id on the profile
-#' when registering for the Copernicus website. Should be provided as a
-#' character (so in quotation marks).
-#' 
 #' @param model character, by default "match_downloaded". Looks up the already downloaded GCMs for
 #' the climate change scenarios of the "download_cmip6_ecmwfr()" function. You can
 #' also specify the models by name as a vector.
@@ -59,11 +52,18 @@
 #' @param path_download character, sets the path for the download of the CMIP6
 #' file. If not already present, then a new folder will be created. 
 #' The path is relative to the working directory.
+#' @param user a character, user name provided by ECMWF data service. The default 
+#' "ecmwfr" should be fine. Otherwise provide the email address which was
+#' used to sign-up at ECMWF / Copernicus Climate Data Store 
+#' 
+#' @param key a character. Can be found just beneath the user id on the profile
+#' when registering for the Copernicus website next to "Personal Access Token". 
+#' Should be provided as a character (so in quotation marks).
 #' 
 #' @return NULL, the downloaded files are saved in the stated directory
 #' 
 #' @details Registering for cds.climate.coperincus.eu:
-#' \url{https://cds.climate.copernicus.eu/cdsapp#!/home}
+#' \url{https://cds.climate.copernicus.eu/}
 #' 
 #' @author Lars Caspersen
 #' 
@@ -72,8 +72,6 @@
 #' # example with one specified GCM 
 #' download_baseline_cmip6_ecmwfr(
 #'     area = c(55, 5.5, 47, 15.1),
-#'     user = 'write user id here',
-#'     key = 'write key here',
 #'     model = 'AWI-CM-1-1-MR',
 #'     frequency = 'monthly', 
 #'     variable = c('Tmin', 'Tmax'))
@@ -84,19 +82,19 @@
 #' @export download_baseline_cmip6_ecmwfr
 
 download_baseline_cmip6_ecmwfr <- function(area,
-                              user,
-                              key,
-                              model =  'match_downloaded',
-                              service = 'cds',
-                              frequency = 'monthly', 
-                              variable = c('Tmin', 'Tmax'),
-                              year_start = 1986, 
-                              year_end = 2014, 
-                              month = 1:12,
-                              sec_wait = 3600,
-                              n_try = 10,
-                              update_everything = FALSE,
-                              path_download = 'cmip6_downloaded'){
+                                           model =  'match_downloaded',
+                                           service = 'cds',
+                                           frequency = 'monthly', 
+                                           variable = c('Tmin', 'Tmax'),
+                                           year_start = 1985, 
+                                           year_end = 2014, 
+                                           month = 1:12,
+                                           sec_wait = 3600,
+                                           n_try = 10,
+                                           update_everything = FALSE,
+                                           path_download = 'cmip6_downloaded',
+                                           user = 'ecmwfr',
+                                           key = NULL){
   
   
   #check which models have been already downloaded and then select only those
@@ -125,8 +123,6 @@ download_baseline_cmip6_ecmwfr <- function(area,
   #run download function
   download_cmip6_ecmwfr(scenarios = 'historical',
                         area = area,
-                        user = user,
-                        key = key,
                         model = model,
                         service = service,
                         frequency = frequency, 
@@ -137,6 +133,8 @@ download_baseline_cmip6_ecmwfr <- function(area,
                         sec_wait = sec_wait,
                         n_try = n_try,
                         update_everything = update_everything,
-                        path_download = path_download)
+                        path_download = path_download,
+                        user = user,
+                        key = key)
   
 }

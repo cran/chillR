@@ -19,20 +19,13 @@
 #' which corresponds to the northern extent, western extent, southern extent
 #' and eastern extent of the area of interest.
 #' 
-#' @param user a character, user name from the Copernicus climate data store.
-#' See 'Details' for more information.
-#' 
-#' @param key a character. Can be found just beneath the user id on the profile
-#' when registering for the Copernicus website. Should be provided as a
-#' character (so in quotation marks).
-#' 
 #' @param model character, by default "default". Decides which global climate
 #' models are requested. If set to "default" then depending on the scenario and
 #' temporal resolution around 20 models are selected for which we know that
 #' certain combinations of scenario and variables are available. If this is set
 #' to "all", then all potential models are requested. You can also hand-pick the
 #' models you want to download as a vector of the model names.
-#' You can check \url{https://cds.climate.copernicus.eu/cdsapp#!/dataset/projections-cmip6?tab=form}
+#' You can check \url{https://cds.climate.copernicus.eu/datasets/projections-cmip6?tab=download}
 #' for the list of models. In case a certain request fails because either the
 #' model name is wrong or the requested combination of SSP, time period and
 #' variable is not available, then the model is dropped from the requests and
@@ -75,10 +68,18 @@
 #' file. If not already present, then a new folder will be created. 
 #' The path is relative to the working directory.
 #' 
+#' @param user a character, user name provided by ECMWF data service. The default 
+#' "ecmwfr" should be fine. Otherwise provide the email address which was
+#' used to sign-up at ECMWF / Copernicus Climate Data Store 
+#' 
+#' @param key a character. Can be found just beneath the user id on the profile
+#' when registering for the Copernicus website next to "Personal Access Token". 
+#' Should be provided as a character (so in quotation marks).
+#' 
 #' @return NULL, the downloaded files are saved in the stated directory
 #' 
 #' @details Registering for cds.climate.coperincus.eu:
-#' \url{https://cds.climate.copernicus.eu/cdsapp#!/home}
+#' \url{https://cds.climate.copernicus.eu/}
 #' 
 #' Finding the user id and the key:
 #' 
@@ -94,7 +95,7 @@
 #' you also need to agree to the "CMIP6 - Data Access - Terms of Use". 
 #' This needs to be done after registering. You can agree to the terms via the
 #' following link:
-#' \url{https://cds.climate.copernicus.eu/cdsapp/#!/terms/cmip6-wps}. 
+#' \url{https://cds.climate.copernicus.eu/datasets/projections-cmip6?tab=download#manage-licences}. 
 #' 
 #' Alternatively, you can navigate to the terms within the Copernicus webpage.
 #' Go to "Datasets", you can find it in the upper ribbon of the main page. 
@@ -121,8 +122,6 @@
 #' download_cmip6_ecmwfr(
 #'     scenarios = 'ssp126', 
 #'     area = c(55, 5.5, 47, 15.1),
-#'     user = 'write user id here'
-#'     key = 'write key here',
 #'     model = 'AWI-CM-1-1-MR',
 #'     frequency = 'monthly', 
 #'     variable = c('Tmin', 'Tmax'),
@@ -133,8 +132,6 @@
 #' download_cmip6_ecmwfr(
 #'     scenarios = 'ssp126', 
 #'     area = c(55, 5.5, 47, 15.1),
-#'     user = 'write user id here'
-#'     key = 'write key here',
 #'     model = 'default',
 #'     frequency = 'monthly', 
 #'     variable = c('Tmin', 'Tmax'),
@@ -146,8 +143,6 @@
 #' download_cmip6_ecmwfr(
 #'     scenarios = 'ssp126', 
 #'     area = c(55, 5.5, 47, 15.1),
-#'     user = 'write user id here'
-#'     key = 'write key here',
 #'     model = 'all',
 #'     frequency = 'monthly', 
 #'     variable = c('Tmin', 'Tmax'),
@@ -160,16 +155,16 @@
 #' @importFrom assertthat is.dir
 #' @importFrom assertthat assert_that
 #' @importFrom ecmwfr wf_set_key
+#' @importFrom ecmwfr wf_get_key
 #' @importFrom purrr compact
 #' @importFrom ecmwfr wf_request_batch
+#' @importFrom keyring key_delete
 #'  
 #' @export download_cmip6_ecmwfr
 #' 
 #' 
 download_cmip6_ecmwfr <- function(scenarios, 
                                   area,
-                                  user,
-                                  key,
                                   model =  'default',
                                   service = 'cds',
                                   frequency = 'monthly', 
@@ -180,17 +175,19 @@ download_cmip6_ecmwfr <- function(scenarios,
                                   sec_wait = 3600,
                                   n_try = 10,
                                   update_everything = FALSE,
-                                  path_download = 'cmip6_downloaded'){
+                                  path_download = 'cmip6_downloaded',
+                                  user = 'ecmwfr',
+                                  key = NULL){
   
   #---------------------------#
   #check inputs
   #---------------------------#
-
+  
   
   #check that arguments are sensible
   assertthat::assert_that(is.character(scenarios))
   assertthat::is.string(user)
-  assertthat::is.string(key)
+  assertthat::assert_that(is.character(key) | is.null(key))
   assertthat::is.string(frequency)
   assertthat::is.number(n_try)
   assertthat::is.number(year_start)
@@ -204,7 +201,7 @@ download_cmip6_ecmwfr <- function(scenarios,
     stop('You need to have the package dplyr installed for the function to work properly.')
   }
   
-
+  
   #check if packages are loaded, load them if not
   if('dplyr' %in% (.packages()) == FALSE){
     stop('The dplyr package needs to be loaded for the function to work properly. Try running library(dplyr) or library(tidyverse) and re-run the download function')
@@ -243,10 +240,66 @@ download_cmip6_ecmwfr <- function(scenarios,
   #second entry must be smaller than fourth
   assertthat::assert_that(area[2] < area[4])
   
-  #set key for download
-  ecmwfr::wf_set_key(user = user, key = key, service = service)
   
-
+  
+  #----------------------------------#
+  #checking if the keys for API work #
+  #----------------------------------#
+  
+  #check if there is a key set
+  key_retrieved <- try(ecmwfr::wf_get_key(), silent = TRUE)
+  
+  #if there is an error message from getting the key, then it means 
+  #there is no key set so far
+  if(inherits(key_retrieved, "try-error")){
+    key_retrieved <- NULL
+  }
+  
+  #when both provided and retrieved key are NULL
+  #--> force user to set a key
+  if(is.null(key_retrieved) & is.null(key)){
+    message('You have not set a key / personal access token to download the CMIP6 data.
+            You need to sign in / register your ECM. When you scroll down
+            your profile you can find the point "Personal Access Token". Copy the
+            token to the dialog window that opened in R. Alternatively, you can set
+            the token via: ecmwfr::wf_set_key(key = "your key here")')
+    ecmwfr::wf_set_key( )
+  }
+  
+  #when there is a key supplied, and there is no key retrieved
+  #--> set the supplied key as the new key
+  if(is.null(key_retrieved) & is.null(key) == FALSE){
+    ecmwfr::wf_set_key(key = key, user = user)
+  }
+  
+  #when there is a key provided and a key is set
+  #--> compare the two: 
+  #                     if they are the same, great! dont do anything
+  #                     if they are different, warning. set the provided key as the new key
+  
+  if(is.null(key) == FALSE & is.null(key_retrieved) == FALSE){
+    
+    if(key != key_retrieved){
+      warning('Provided key differs from the key set in your system. Will set
+              provided key as the new key.')
+      ecmwfr::wf_set_key(key = key, user = user)
+    }
+    
+  }
+  
+  # #--> then we do not need the arguments anymore (user, key)
+  # #that would be nice
+  # 
+  # #set key for download
+  # ecmwfr::wf_set_key(key = '28b3c7fd-df41-46f5-a0c0-0fec2a33e03c', user = user)
+  
+  
+  
+  
+  #--------------------------------------#
+  #handling climate scenarios and models
+  #--------------------------------------#
+  
   #translate common ssp names to names used by the data provider
   if('ssp126' %in% scenarios){
     scenarios[scenarios == 'ssp126'] <- 'ssp1_2_6'
@@ -265,10 +318,6 @@ download_cmip6_ecmwfr <- function(scenarios,
   }
   
   
-  
-  #------------------------------------
-  #select gcms
-  #------------------------------------
   
   #placeholder
   Models <- NULL
@@ -307,11 +356,11 @@ download_cmip6_ecmwfr <- function(scenarios,
                                   'cesm2','cnrm_cm6_1','cnrm_esm2_1',
                                   'ec_earth3_cc', 'ec_earth3_veg_lr','fgoals_g3','gfdl_esm4',
                                   'inm_cm4_8','mpi_esm1_2_lr','nesm3','ukesm1_0_ll'),
-                   'sp3_7_0' = c('access_cm2','awi_cm_1_1_mr', 'bcc_csm2_mr',  'cnrm_cm6_1_hr',
-                                 'ec_earth3_aerchem',  'inm_cm5_0','ipsl_cm6a_lr',  'miroc6',
-                                 'miroc_es2l',    'mri_esm2_0','cesm2','cnrm_cm6_1',    'cnrm_esm2_1',
-                                 'ec_earth3_veg_lr',   'fgoals_g3','gfdl_esm4',  'inm_cm4_8',
-                                 'mpi_esm1_2_lr',    'ukesm1_0_ll'),
+                   'ssp3_7_0' = c('access_cm2','awi_cm_1_1_mr', 'bcc_csm2_mr',  'cnrm_cm6_1_hr',
+                                  'ec_earth3_aerchem',  'inm_cm5_0','ipsl_cm6a_lr',  'miroc6',
+                                  'miroc_es2l',    'mri_esm2_0','cesm2','cnrm_cm6_1',    'cnrm_esm2_1',
+                                  'ec_earth3_veg_lr',   'fgoals_g3','gfdl_esm4',  'inm_cm4_8',
+                                  'mpi_esm1_2_lr',    'ukesm1_0_ll'),
                    'ssp5_8_5' = c('access_cm2', 'awi_cm_1_1_mr','bcc_csm2_mr',
                                   'cmcc_esm2',  'cnrm_cm6_1_hr','fio_esm_2_0',
                                   'inm_cm5_0',    'ipsl_cm6a_lr',  'miroc6',  'miroc_es2l',
@@ -324,9 +373,9 @@ download_cmip6_ecmwfr <- function(scenarios,
   #in case it is default
   if(length(model) == 1){
     
-
+    
     if(model == 'default'){
-
+      
       Models <- 'default'
     }
     
@@ -438,7 +487,7 @@ download_cmip6_ecmwfr <- function(scenarios,
     if(length(drop) > 0){
       x <- x[-drop]
     }
-
+    
     
     split_i <- grep(pattern = '\\$', x)
     blacklist <- list()
@@ -457,13 +506,13 @@ download_cmip6_ecmwfr <- function(scenarios,
         blacklist[[name_clean]] <- x[(s+1):(split_i[i+1]-1)]
         
       }
-
+      
     }
     #remove duplicates per scenario
     blacklist <- purrr::map(blacklist, unique)
-
+    
   }
-
+  
   
   
   #loop for the different scenarios
@@ -476,7 +525,7 @@ download_cmip6_ecmwfr <- function(scenarios,
     } else {
       Model_download <- Models
     }
-
+    
     
     #remove the models which were blacklisted, but let the user know about it
     if(is.null(blacklist) == FALSE){
@@ -513,7 +562,7 @@ download_cmip6_ecmwfr <- function(scenarios,
     #make a batch of requests..........
     prec_request <- tmax_request <- tmin_request <- NULL
     
-
+    
     if('Tmax' %in% variable & length(Model_download) != 0){
       tmax_request <-   purrr::map(Model_download, function(mod){
         
@@ -634,7 +683,7 @@ download_cmip6_ecmwfr <- function(scenarios,
         }
       }
     }
-
+    
     
     #combine the requests
     #request <- c(tmax_request, tmin_request, prec_request)
@@ -654,26 +703,44 @@ download_cmip6_ecmwfr <- function(scenarios,
     #-------------------------------------#
     #run the download
     #-------------------------------------#
-    
     #cycle through the requests, if a request was failed for a model, then drop the model from the requests
     
     
-    #check for wrong weather stations
+    #flags that control the download of the files
+    
+    #indicates that we keep trying to download, when turned to FALSE, then download stops
     run_request <- TRUE
-    send_warning_message_missing_model <- send_warning_message_2100 <- send_warning_message_no_points <- send_warning_message_2056 <- send_warning_message_unknown_error <- FALSE
-    dropped_model_names <- dropped_model_names_no_points <- dropped_model_names_2100 <- dropped_model_names_2056 <- dropped_model_names_unknown_error <- c()
+    
+    #flags controling which warning messages will be sent and for which requests
+    send_warning_message_missing_model <- send_warning_message_2100 <- send_warning_message_no_points <- send_warning_message_unknown_error <- FALSE
+    dropped_model_names <- dropped_model_names_no_points <- dropped_model_names_2100 <-  dropped_model_names_unknown_error <- c()
+    
+    #counts the failed download attemps
     n <- 1
+    #keeps track for which model the download failed. this controls how often we keep 
+    #trying to download
     model_2100_before <- ''
     model_2100_current <- ''
     
+    #cases of error messages indicating an error from the serve to answer fast enough
+    #update this vector in case we discover new error messages
+    error_messages_process_error <- c('Process error: 2100', 
+                                      'Process error: 2056', 
+                                      'Error : internal server error---')
     
-    #keep track on the combinations for which the data is not available
     
+    
+    #say how many files will be downloaded
+    cat(paste0('\nDownloading: ', length(request), ' file(s)\n'))
+    
+    #thus loops runs the download attempts
     while(run_request){
-      tmp <- try(  ecmwfr::wf_request_batch(request_list = request,
-                                            path = path_download, 
-                                            time_out = sec_wait,
-                                            user = user), silent = TRUE)
+      
+      tmp <- try(ecmwfr::wf_request_batch(request_list = request,
+                                          user = user,
+                                          path = path_download, 
+                                          time_out = sec_wait), silent = TRUE) %>% 
+        suppressMessages()
       
       #allows to end the while loop
       run_request <- FALSE
@@ -682,8 +749,14 @@ download_cmip6_ecmwfr <- function(scenarios,
       if(inherits(tmp, "try-error")){
         
         #users did not agree to terms and condtions of cmip6 dataset
-        if(grepl("Client has not agreed to the required terms and conditions", tmp)){
-          stop("User did not agree to the required terms and conditions to download CMIP6 data.\nPlease go to 'https://cds.climate.copernicus.eu/cdsapp/#!/terms/cmip6-wps' or see the Details section of the download_cmip6_ecmwfr function")
+        if(grepl("Error : permission deniedrequired licences", tmp)){
+          stop("User did not agree to the required terms and conditions to download CMIP6 data.\nPlease go to 'https://cds.climate.copernicus.eu/datasets/projections-cmip6?tab=download#manage-licences' or see the Details section of the download_cmip6_ecmwfr function")
+        }
+        
+        #user set a wrong key that does not work
+        else if(grepl('Error : permission deniedAuthentication failed401', tmp)){
+          stop('User provided a key that does not work.\nThe function will remove the faulty key now from the system.\nEither try running ecmwfr::wf_set_key() and select the Personal Access Token from your profile in the Climate Data Store')
+          keyring::key_delete(service = service, username = user)
         }
         
         #if it contains the error message that the No matching data for request
@@ -771,25 +844,27 @@ download_cmip6_ecmwfr <- function(scenarios,
         
         #in case of failure of website to answer, try again after some seconds
         #if it fails to answer too often for the same model, then skip it
-        else if(grepl('Process error: 2100', tmp)){
+        else if(purrr::map_lgl(error_messages_process_error, function(err_msg) grepl(err_msg, tmp)) %>% any()){
           
+          #update the list of already downloaded files
+          #clean the to-do list, in case files have been already downloaded
           already_downloaded <- which(purrr::map_chr(request, 'target') %in% list.files(path_download))
           if(length(already_downloaded) != 0){
             request <- request[-already_downloaded]
           }
           
-          
           #this controls a counter, if we fail to download a station because of that error for too often, then we will drop the station
           model_2100_before <- model_2100_current
           model_2100_current <- request[[1]]$model
           
-          
+          #in case it failed for that file in the previous step, increase the counter
           if(model_2100_before == model_2100_current){
             n <- n + 1
           } else {
             n <- 1
           }
           
+          #in case we have not tried more often then try-threshold
           if(n < n_try){
             #wait a moment before repeating the download
             Sys.sleep(wait)
@@ -810,53 +885,6 @@ download_cmip6_ecmwfr <- function(scenarios,
               run_request <- TRUE
             }
           }
-          
-          
-          
-        } 
-        
-        #in case of this error message, try again after some seconds
-        else if(grepl('Process error: 2056', tmp)){
-          
-          already_downloaded <- which(purrr::map_chr(request, 'target') %in% list.files(path_download))
-          if(length(already_downloaded) != 0){
-            request <- request[-already_downloaded]
-          }
-          
-          
-          #this controls a counter, if we fail to download a station because of that error for too often, then we will drop the station
-          model_2100_before <- model_2100_current
-          model_2100_current <- request[[1]]$model
-          
-          
-          if(model_2100_before == model_2100_current){
-            n <- n + 1
-          } else {
-            n <- 1
-          }
-          
-          if(n < n_try){
-            #wait a moment before repeating the download
-            Sys.sleep(wait)
-            run_request <- TRUE
-          } else {
-            
-            #flag to send later warning message
-            send_warning_message_2056 <- TRUE
-            
-            dropped_model_names_2056 <- c(dropped_model_names_2056, request[[1]]$model)
-            
-            #drop the model from the requests
-            drop_request <- which(purrr::map_chr(request, 'model') %in% dropped_model_names_2056)
-            request <- request[-drop_request]
-            
-            #only run again if there is something remaining
-            if(length(request) > 0){
-              run_request <- TRUE
-            }
-          }
-          
-          
           
         }   else {
           
@@ -889,6 +917,10 @@ download_cmip6_ecmwfr <- function(scenarios,
       }
     } #end of while loop which downloads the data
     
+    #----------------------#
+    #send warning messages
+    #----------------------#
+    
     if(send_warning_message_missing_model){
       message(paste0('Dropped model: ', paste0(dropped_model_names, collapse = ', '), ' from the request, because the requested combination of\n SSP: ', scenario, ', Model: ', paste0(dropped_model_names, collapse = ', '), ', and Variables: ', paste0(variable, collapse = ', '),
                      ' does not exist.'))
@@ -904,13 +936,6 @@ download_cmip6_ecmwfr <- function(scenarios,
       modelname_warning_message <- gcm_lookup_df$model_name[gcm_lookup_df$api_name %in% dropped_model_names_2100]
       
       message(paste0('Dropped model: ', paste0(modelname_warning_message, collapse = ', '), ' from the request, the server failed to answer to that request too often.'))
-    }
-    
-    if(send_warning_message_2056){
-      
-      modelname_warning_message <- gcm_lookup_df$model_name[gcm_lookup_df$api_name %in% dropped_model_names_2056]
-      
-      message(paste0('Dropped model: ', paste0(modelname_warning_message, collapse = ', '), ' from the request, because of an internal process error of the ecmwf download function.'))
     }
     
     if(send_warning_message_unknown_error){
@@ -933,7 +958,7 @@ download_cmip6_ecmwfr <- function(scenarios,
   
   names(blacklist_updated) <- scenarios
   utils::capture.output(blacklist_updated, file = paste0(path_download_old, '/blacklist.txt'))
-
-
+  
+  
   
 }
