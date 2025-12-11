@@ -52,6 +52,7 @@
 #' @param path_download character, sets the path for the download of the CMIP6
 #' file. If not already present, then a new folder will be created. 
 #' The path is relative to the working directory.
+#' 
 #' @param user a character, user name provided by ECMWF data service. The default 
 #' "ecmwfr" should be fine. Otherwise provide the email address which was
 #' used to sign-up at ECMWF / Copernicus Climate Data Store 
@@ -59,11 +60,11 @@
 #' @param key a character. Can be found just beneath the user id on the profile
 #' when registering for the Copernicus website next to "Personal Access Token". 
 #' Should be provided as a character (so in quotation marks).
-#' 
+#'
 #' @return NULL, the downloaded files are saved in the stated directory
 #' 
 #' @details Registering for cds.climate.coperincus.eu:
-#' \url{https://cds.climate.copernicus.eu/}
+#' point to the registration link in the top right corner of \url{https://cds.climate.copernicus.eu/datasets}
 #' 
 #' @author Lars Caspersen
 #' 
@@ -82,19 +83,19 @@
 #' @export download_baseline_cmip6_ecmwfr
 
 download_baseline_cmip6_ecmwfr <- function(area,
-                                           model =  'match_downloaded',
-                                           service = 'cds',
-                                           frequency = 'monthly', 
-                                           variable = c('Tmin', 'Tmax'),
-                                           year_start = 1985, 
-                                           year_end = 2014, 
-                                           month = 1:12,
-                                           sec_wait = 3600,
-                                           n_try = 10,
-                                           update_everything = FALSE,
-                                           path_download = 'cmip6_downloaded',
-                                           user = 'ecmwfr',
-                                           key = NULL){
+                              model =  'match_downloaded',
+                              service = 'cds',
+                              frequency = 'monthly', 
+                              variable = c('Tmin', 'Tmax'),
+                              year_start = 1986, 
+                              year_end = 2014, 
+                              month = 1:12,
+                              sec_wait = 3600,
+                              n_try = 10,
+                              update_everything = FALSE,
+                              path_download = 'cmip6_downloaded',
+                              user = 'ecmwfr',
+                              key = NULL){
   
   
   #check which models have been already downloaded and then select only those
@@ -105,24 +106,78 @@ download_baseline_cmip6_ecmwfr <- function(area,
            SSP scenarios and that you used the same area argument.')
     }
     
-    f <- list.files(paste0(path_download, '/', paste(area, collapse = '_')))
+    #check for zipfiles
+    f_zip <- list.files(path = paste0(path_download, '/', paste(area, collapse = '_')), 
+                        pattern = '*.zip$')
+    f_nc <- list.files(path = paste0(path_download, '/', paste(area, collapse = '_')), 
+                       pattern = '*.nc$')
+    
+    f <- c(f_zip, f_nc)
     
     if(length(f) == 0){
       stop('The directory is empty. Please chekc if the "path_download" and the "area" 
            argument are correct')
     }
     
+    model_zip <- model_nc <- NULL
     
-    model <- f %>%
-      strsplit('_') %>% 
-      purrr::map(function(x) paste(x[5:(length(x) - 5)], collapse = '_')) %>% 
-      unique() %>% 
-      unlist()
+    #split f_zip
+    if(length(f_zip) > 0){
+      
+      #drop entries with historical
+      i_drop <- grepl(pattern = 'historical', x = f_zip) 
+      model_zip_drop <- f_zip[i_drop] %>%
+        strsplit('_') %>% 
+        purrr::map(function(x) paste(x[3:(length(x) - 5)], collapse = '_')) %>% 
+        unlist() %>% 
+        unique() 
+      
+      model_zip <- f_zip[i_drop == FALSE] %>%
+        strsplit('_') %>% 
+        purrr::map(function(x) paste(x[5:(length(x) - 5)], collapse = '_')) %>% 
+        unlist() %>% 
+        unique() 
+      
+      if(update_everything == FALSE){  
+        model_zip <- model_zip[(model_zip %in% model_zip_drop) == FALSE]
+      }
+    }
+    
+    if(length(f_nc) > 0){
+      
+      #drop entries with historical
+      i_drop <- grepl(pattern = 'historical', x = f_nc) 
+      model_nc_drop <- f_nc[i_drop] %>%
+        strsplit('_') %>% 
+        purrr::map(3) %>% 
+        unlist() %>% 
+        unique() %>% 
+        tolower() %>% 
+        gsub(pattern = '-', replacement = '_')
+      
+      model_nc <- f_nc[i_drop == FALSE] %>%
+        strsplit('_') %>% 
+        purrr::map(3) %>% 
+        unlist() %>% 
+        unique() %>% 
+        tolower() %>% 
+        gsub(pattern = '-', replacement = '_')
+      
+      if(update_everything == FALSE){
+        model_nc <- model_nc[(model_nc %in% model_nc_drop) == FALSE]
+      }
+      
+    }
+    
+    
+    model <- c(model_nc, model_zip) %>% unique()
   }
   
   #run download function
   download_cmip6_ecmwfr(scenarios = 'historical',
                         area = area,
+                        user = user,
+                        key = key,
                         model = model,
                         service = service,
                         frequency = frequency, 
@@ -133,8 +188,6 @@ download_baseline_cmip6_ecmwfr <- function(area,
                         sec_wait = sec_wait,
                         n_try = n_try,
                         update_everything = update_everything,
-                        path_download = path_download,
-                        user = user,
-                        key = key)
+                        path_download = path_download)
   
 }

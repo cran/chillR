@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_scenarios.R
 \name{plot_scenarios}
 \alias{plot_scenarios}
-\title{Plot historic and future scenarios for climate-related metrics (\href{https://CRAN.R-project.org/package=ggplot2}{ggplot2} version)}
+\title{Plot historic and future scenarios for climate-related metrics (\code{\link[ggplot2:ggplot2-package]{ggplot2}} version)}
 \usage{
 plot_scenarios(
   scenario_list,
@@ -105,7 +105,7 @@ A plot of classes \code{'patchwork'}, \code{'gg'}, and \code{'ggplot'}. This all
 continue editing some features of the plots through the syntax (i.e. \code{'&'},
 and \code{'+'}) from both libraries (see examples).
 
-\if{html}{\figure{plotscenariosexample.png}{options: width='100\%' alt='plot_scenarios example'}}
+\if{html}{\figure{plotscenariosexample.png}{options: width=600 alt='plot_scenarios example'}}
 \if{latex}{\figure{plotscenariosexample.png}{options: width=5.5in}}
 }
 \description{
@@ -114,9 +114,9 @@ in climate-related assessments. These outputs are usually compiled with the
 \code{\link[chillR:make_climate_scenario]{make_climate_scenario}} function.
 }
 \details{
-\code{plot_scenarios} uses the \href{https://CRAN.R-project.org/package=ggplot2}{ggplot2} syntax for producing separated
+\code{plot_scenarios} uses the \code{\link[ggplot2:ggplot2-package]{ggplot2}} syntax for producing separated
 plots for historic and future scenarios. Later, the plots are merged into one final figure by using the
-\href{https://CRAN.R-project.org/package=patchwork}{patchwork} library.
+\code{\link[patchwork:patchwork-package]{patchwork}} library.
 }
 \examples{
 

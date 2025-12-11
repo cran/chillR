@@ -2,8 +2,8 @@ Package: chillR
 Type: Package
 Title: Statistical Methods for Phenology Analysis in Temperate Fruit
         Trees
-Version: 0.76
-Date: 2024-11-13
+Version: 0.77
+Date: 2025-12-10
 Authors@R: 
     c(person(given = "Eike",
              family = "Luedeling",
@@ -41,22 +41,24 @@ Description: The phenology of plants (i.e. the timing of their annual life
     hourly temperature records.
 Depends: R (>= 3.5.0)
 Imports: assertthat, dplyr, ecmwfr, fields, GenSA, ggplot2, graphics,
-        grDevices, httr, jsonlite, Kendall, keyring, lubridate,
-        magrittr, metR, patchwork, pls, plyr, progress, purrr, R.utils,
-        raster, Rcpp, RCurl, readxl, reshape2, rlang, RMAWGEN, scales,
-        stats, stringr, tidyr, utils, XML
+        grDevices, httr, jsonlite, lubridate, magrittr, metR,
+        patchwork, pls, plyr, progress, purrr, R.utils, raster, Rcpp,
+        RCurl, readxl, reshape2, rlang, RMAWGEN, scales, stats,
+        stringr, tidyr, utils, XML
 LinkingTo: Rcpp
-Suggests: knitr, rmarkdown, testthat
+Suggests: knitr, ncdf4, rmarkdown, testthat
 VignetteBuilder: knitr
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2024-11-14 09:11:15 UTC; luede
-Author: Eike Luedeling [aut, cre] (<https://orcid.org/0000-0002-7316-3631>),
-  Lars Caspersen [aut] (<https://orcid.org/0009-0000-3057-7327>),
-  Eduardo Fernandez [aut] (<https://orcid.org/0000-0002-6949-9685>)
+Packaged: 2025-12-10 22:31:47 UTC; luede
+Author: Eike Luedeling [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-7316-3631>),
+  Lars Caspersen [aut] (ORCID: <https://orcid.org/0009-0000-3057-7327>),
+  Eduardo Fernandez [aut] (ORCID:
+    <https://orcid.org/0000-0002-6949-9685>)
 Maintainer: Eike Luedeling <eike@eikeluedeling.com>
 Repository: CRAN
-Date/Publication: 2024-11-14 09:40:02 UTC
+Date/Publication: 2025-12-11 06:10:44 UTC

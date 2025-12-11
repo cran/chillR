@@ -105,7 +105,7 @@ take the ones for which there is data (model = 'all').
 }
 \details{
 Registering for cds.climate.coperincus.eu:
-\url{https://cds.climate.copernicus.eu/}
+Point to the registration link in the top right corner of \url{https://cds.climate.copernicus.eu/datasets}
 
 Finding the user id and the key:
 
@@ -120,8 +120,8 @@ able to download CMIP6 data. In addition to the "Terms of use of the
 Copernicus Climate Store" and the "Data Protection and Privacy Agreement",
 you also need to agree to the "CMIP6 - Data Access - Terms of Use". 
 This needs to be done after registering. You can agree to the terms via the
-following link:
-\url{https://cds.climate.copernicus.eu/datasets/projections-cmip6?tab=download#manage-licences}. 
+following link and scroll to the bottom of the page:
+\url{https://cds.climate.copernicus.eu/datasets/projections-cmip6?tab=download}. 
 
 Alternatively, you can navigate to the terms within the Copernicus webpage.
 Go to "Datasets", you can find it in the upper ribbon of the main page. 
@@ -131,7 +131,6 @@ There you need to click on "Download data" and scroll to the very bottom of
 the page to the field "Terms of Use". There you need to click on the button
 saying "Accept Terms". If you do not accept the terms the download via the
 API (and consequently via this function) will not be possible!
-
 
 Sometimes the server is not responding in time, which can make the download
 fail. In such cases, after a short waiting time of 5 seconds, the request is
@@ -146,6 +145,7 @@ from the requests.
 download_cmip6_ecmwfr(
     scenarios = 'ssp126', 
     area = c(55, 5.5, 47, 15.1),
+    key = 'write key here',
     model = 'AWI-CM-1-1-MR',
     frequency = 'monthly', 
     variable = c('Tmin', 'Tmax'),
@@ -156,6 +156,7 @@ download_cmip6_ecmwfr(
 download_cmip6_ecmwfr(
     scenarios = 'ssp126', 
     area = c(55, 5.5, 47, 15.1),
+    key = 'write key here',
     model = 'default',
     frequency = 'monthly', 
     variable = c('Tmin', 'Tmax'),
@@ -167,6 +168,7 @@ download_cmip6_ecmwfr(
 download_cmip6_ecmwfr(
     scenarios = 'ssp126', 
     area = c(55, 5.5, 47, 15.1),
+    key = 'write key here',
     model = 'all',
     frequency = 'monthly', 
     variable = c('Tmin', 'Tmax'),

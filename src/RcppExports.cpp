@@ -39,13 +39,3 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-
-static const R_CallMethodDef CallEntries[] = {
-    {"_chillR_PhenoFlex", (DL_FUNC) &_chillR_PhenoFlex, 19},
-    {NULL, NULL, 0}
-};
-
-RcppExport void R_init_chillR(DllInfo *dll) {
-    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
-    R_useDynamicSymbols(dll, FALSE);
-}

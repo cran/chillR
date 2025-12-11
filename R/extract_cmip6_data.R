@@ -95,13 +95,13 @@ extract_cmip6_data <- function(stations,
   if(system.file(package='ncdf4') == ''){
     stop('You need to have the package ncdf4 installed for the function to work properly.')
   }
-  if(system.file(package = 'PCICt') == ''){
-    stop('You need to have the package PCICt installed for the function to work properly.')
-  }
+  # if(system.file(package = 'PCICt') == ''){
+  #   stop('You need to have the package PCICt installed for the function to work properly.')
+  # }
   
   #need to transform the latitude because netcdf latitude only goes from 0 to 360
-  stations$longitude_old <- stations$longitude
-  stations$longitude <- stations$longitude + 360
+  #stations$longitude_old <- stations$longitude
+  stations$longitude_mod <- stations$longitude + 360
 
   #detect if there are folders with data
   sub_dirs <- list.dirs(download_path)
@@ -142,10 +142,10 @@ extract_cmip6_data <- function(stations,
     
     
     #at least one stations is not covered by the downloaded area
-    if(any(extends$lon_low > stations$longitude_old | extends$lon_high < stations$longitude_old) |
+    if(any(extends$lon_low > stations$longitude | extends$lon_high < stations$longitude) |
        any(extends$lat_low > stations$latitude | extends$lat_high < stations$latitude)){
       
-      drop_station_id <- which((extends$lon_low > stations$longitude_old | extends$lon_high < stations$longitude_old) |
+      drop_station_id <- which((extends$lon_low > stations$longitude | extends$lon_high < stations$longitude) |
                                  (extends$lat_low > stations$latitude | extends$lat_high < stations$latitude))
       
       #warning('The stations: ', paste(stations$station_name[drop_station_id], collapse = ', '), ' are not covered by the downloaded files. Consider checking either station coordinates or changing the "area" argument when downloading the file. The mentioned stations will be dropped from the extraction.')
@@ -276,21 +276,49 @@ extract_cmip6_data <- function(stations,
         #loop3: read the files for the individual locations
         #######
         Datatemp_raw_1 <- purrr::map(1:nrow(stations_extract), function(i){
-          tmp <- try(suppressWarnings(metR::ReadNetCDF(fnames_fullname[ind], 
-                                                       vars = variable_1, 
-                                                       subset = list(lon = stations_extract[i,"longitude"], 
-                                                                     lat= stations_extract[i,"latitude"]))) %>% 
-                       dplyr::mutate(location = stations_extract$station_name[i],
-                                     model = gcm,
-                                     ssp = ssp), silent = TRUE)
           
-          if(inherits(tmp, "try-error")){
-            warning(paste('Failed to properly read file:', fnames_fullname[ind]), '\nreturned NULL instead')
-            return(data.frame(ssp = ssp, gcm = gcm, location = stations_extract$station_name[i], time = NA, lat = stations_extract$latitude[i], lon = stations_extract$longitude[i]))
-          } else {
-            return(tmp)
+          #try to read file
+          tmp <- try(suppressWarnings(metR::ReadNetCDF(file = fnames_fullname[ind], 
+                                                       vars = variable_1, 
+                                                       subset = list(lon = stations_extract[i, "longitude"], 
+                                                                     lat = stations_extract[i, "latitude"]))))
+          
+          #check if there was an error, if so send a warning message in the end and 
+          #return empty data.frame
+          error_read_file <- FALSE
+          if (inherits(tmp, "try-error")) error_read_file <- TRUE
+          
+          #if there was no error but the tmp is empty, then it might be that people
+          #are still using the old metR version
+          #--> try running the function with latitude projected between 0 and 360
+          
+          if(error_read_file == FALSE){
+            if(is.null(tmp)){
+              tmp <- metR::ReadNetCDF(file = fnames_fullname[ind], 
+                                      vars = variable_1, 
+                                      subset = list(lon = stations_extract[i, "longitude_mod"], 
+                                                    lat = stations_extract[i, "latitude"]))
+            }
           }
           
+          #if it still is empty, then the error must be somewhere else
+          if(is.null(tmp)) error_read_file <- TRUE
+          
+          if(error_read_file){
+            warning(paste("Failed to properly read file:", 
+                          fnames_fullname[ind]), "\nreturned NULL instead")
+            return(data.frame(ssp = ssp, model = gcm, 
+                              location = stations_extract$station_name[i], 
+                              time = NA, lat = stations_extract$latitude[i], 
+                              lon = stations_extract$longitude[i]))
+          } 
+          
+          #if there is no problem, add some extra info to the file
+          tmp$location <- stations_extract$station_name[i]
+          tmp$model <- gcm
+          tmp$ssp <- ssp
+          
+          return(tmp)
         }) 
         ####end loop3
         
@@ -345,6 +373,11 @@ extract_cmip6_data <- function(stations,
     
     #if there is only one row, remove the entry and replace with NA
     all_weather <- purrr::map(all_weather, function(x) if(nrow(x) == 1) return(NULL) else x)
+    
+    #remove unzipped files
+    unlink(fnames_fullname)
+    
+    return(all_weather)
   })
   
   #match elements of all weather based on their names and rbind

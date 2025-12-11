@@ -3,8 +3,8 @@
 #' The timing of many development stages of temperate trees may depend on temperatures during two
 #' phases (e.g. bloom dates depend on the temperature during both the chilling and forcing phase of dormancy).
 #' \code{plot_phenology_trends()} illustrates this dependency as a colored surface with contour lines by applying an
-#' interpolating procedure with functions in the \href{https://CRAN.R-project.org/package=fields}{fields} package. The plot is implemented
-#' through functions in the \href{https://CRAN.R-project.org/package=ggplot2}{ggplot2} package.
+#' interpolating procedure with functions in the \code{\link[fields:fields-package]{fields}} package. The plot is implemented
+#' through functions in the \code{\link[ggplot2:ggplot2-package]{ggplot2}} package.
 #' 
 #' @param pheno_data is a data frame that contains information on the timing of phenology events by year.
 #' It should consist of two columns called \code{Year} and \code{pheno}. Data in the \code{pheno} column should be in
@@ -63,9 +63,9 @@
 #' 
 #' @return \code{plot_phenology_trends()} is expected to return an object of class \code{gg} and \code{ggplot}. This
 #' means that the plot can be later modified by using the syntax \code{'+'} from the
-#' \href{https://CRAN.R-project.org/package=ggplot2}{ggplot2} package (see examples). The plot returned in the function should look as the following:
+#' \code{\link[ggplot2:ggplot2-package]{ggplot2}} package (see examples). The plot returned in the function should look as the following:
 #' 
-#' \if{html}{\figure{rainbowplotexample.png}{options: width='100\%' alt='rainbow_plot example'}}
+#' \if{html}{\figure{rainbowplotexample.png}{options: width= 500 alt='rainbow_plot example'}}
 #' \if{latex}{\figure{rainbowplotexample.png}{options: width=5.5in}}
 #' 
 #' @examples 

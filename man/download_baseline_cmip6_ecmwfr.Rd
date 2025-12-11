@@ -10,7 +10,7 @@ download_baseline_cmip6_ecmwfr(
   service = "cds",
   frequency = "monthly",
   variable = c("Tmin", "Tmax"),
-  year_start = 1985,
+  year_start = 1986,
   year_end = 2014,
   month = 1:12,
   sec_wait = 3600,
@@ -89,7 +89,7 @@ change scenarios (model = "match_downloaded").
 }
 \details{
 Registering for cds.climate.coperincus.eu:
-\url{https://cds.climate.copernicus.eu/}
+point to the registration link in the top right corner of \url{https://cds.climate.copernicus.eu/datasets}
 }
 \examples{
 \dontrun{

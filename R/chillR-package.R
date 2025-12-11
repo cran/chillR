@@ -21,7 +21,6 @@
 #' @source UC IPM website: http://www.ipm.ucdavis.edu/WEATHER/index.html
 #' @keywords datasets
 #' @importFrom pls plsr explvar crossval
-#' @importFrom Kendall Kendall
 #' @importFrom fields Krig surface tim.colors image.plot predictSurface
 #' @importFrom readxl read_excel
 #' @importFrom XML htmlParse getNodeSet xmlToDataFrame getChildrenStrings
@@ -41,7 +40,7 @@ NULL
 
 
 
-#' \if{html}{\figure{chillR.png}{options: width='25\%' alt='chillR logo'}}
+#' \if{html}{\figure{chillR.png}{options: width=75 alt='chillR logo'}}
 #' chillR: statistical methods for phenology analysis in temperate fruit trees
 #' 
 #' @description 
@@ -57,12 +56,9 @@ NULL
 #' As of version 0.65, it also includes functions for generating weather scenarios with a weather generator,
 #' for conducting climate change analyses for temperature-based climatic metrics and for plotting results from such
 #' analyses. Since version 0.70, \code{chillR} contains a function for interpolating hourly temperature records.
-#' As of version 0.72.6, the package contains functions to design elegant plots using the
-#' \href{https://CRAN.R-project.org/package=ggplot2}{ggplot2} package.
-#' 
+#' As of version 0.72.6, the package contains functions to design elegant plots using the \code{\link[ggplot2:ggplot2-package]{ggplot2}} package.
 #' 
 #' @keywords internal
-"_PACKAGE"
 #' 
 #' @references
 #' Luedeling E and Gassner A, 2012. Partial Least Squares Regression for
@@ -85,7 +81,7 @@ NULL
 #' \href{https://orcid.org/0000-0002-6949-9685}{ORCID}\cr
 #' \href{https://github.com/EduardoFernandezC}{EduardoFernandezC on GitHub}
 #' }
-NULL
+"_PACKAGE"
 
 
 
